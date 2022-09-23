@@ -1,4 +1,5 @@
 # IFJ_project
+[Assignment](ifj2022.pdf)
 ## Authors:
   - [Timotej Bučka](https://github.com/TimothyBucka) (xbucka00)
   - [Patrik Früštök](https://github.com/Patrick0482) (xfrust00)
