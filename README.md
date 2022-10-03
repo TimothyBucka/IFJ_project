@@ -5,5 +5,3 @@
   - [Patrik Früštök](https://github.com/Patrick0482) (xfrust00)
   - [Daniel Mačura](https://github.com/DanielMacura) (xmacur09)
   - [Tobiáš Štec](https://github.com/Tobsterr58) (xstect00)
-
-tobias dava test
