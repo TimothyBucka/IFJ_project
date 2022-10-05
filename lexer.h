@@ -48,3 +48,9 @@ void lexer_skip_whitespace(lexer_T* lexer);
 void lexer_next_token(lexer_T* lexer, token *Token);
 
 int is_keyword(char* src);
+
+int str_to_int(char* src);  //12 2431424343
+
+double str_to_doule(char* src); //1e4 1E4 1.2e5  1.4E-/+6449
+
+void clean_string(char* src);  // "\123 \xAF"

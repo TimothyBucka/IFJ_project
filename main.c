@@ -6,7 +6,7 @@
 
 
 int main(){
-    char* src = "fd else fun ====* 1E5 2e-4 2.5e+23 3<4 5>=1.2";
+    char* src = "fd else fun ====* 2E5 2e-4 2.5e+23 3<4 5>=1.2";
     lexer_T* lexer = lexer_init(src);
     for (size_t i = 0; i < 15; i++)
     {
