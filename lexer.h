@@ -1,4 +1,5 @@
 #include "token.h"
+
 typedef enum{
     STATE_START,
     STATE_VARIABLE_START,
@@ -18,6 +19,11 @@ typedef enum{
 
 
 }lexer_state;
+
+typedef enum {
+    ASCII_LF = 10,
+    ASCII_CR = 13,
+}ascii_char_codes;
 
 typedef struct lexer_struct
 {

@@ -28,7 +28,7 @@ void lexer_advance(lexer_T *lexer)
 
 void lexer_skip_whitespace(lexer_T *lexer)
 {
-    while (lexer->c == 13 || lexer->c == 10 || lexer->c == ' ' || lexer->c == '\t')
+    while (lexer->c == ASCII_CR || lexer->c == ASCII_LF || lexer->c == ' ' || lexer->c == '\t' || lexer->c == '\n')
     {
         lexer_advance(lexer);
     }
@@ -178,10 +178,6 @@ token lexer_next_token(lexer_T *lexer)
                 token Token = {.ID=TOKEN_ID_DOUBLE, .VAL =tok_val};
                 return Token ;
             }
-
-
-
-
         }
     }
 }

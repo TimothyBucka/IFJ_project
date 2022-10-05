@@ -1,7 +1,14 @@
 # Custom
 ifj22
 
-# Prerequisites
+### VisualStudioCode ###
+.vscode
+.history/
+*.vsix
+.history
+.ionide
+.vscode/*.code-snippets
+*.code-workspace
 *.d
 
 # Object files
