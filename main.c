@@ -6,13 +6,23 @@
 
 
 int main(){
-    char* src = "$aB_c_ $_D88 $0 $ abc 111 1.2";
-    lexer_T* lexer = init_lexer(src);
-    for (size_t i = 0; i < 8; i++)
+    char* src = "fd else fun ====* 1E5 2e-4 2.5e+23 3<4 5>=1.2";
+    lexer_T* lexer = lexer_init(src);
+    for (size_t i = 0; i < 15; i++)
     {
-        token Token = lexer_next_token(lexer);
-        printf("TOKEN --- type:%d   value:%s\n",Token.ID, Token.VAL);
+        token Token;
+        lexer_next_token(lexer, &Token);
+        if (Token.ID == 5){
+            printf("TOKEN --- type:%d   value:%d\n",Token.ID, Token.VAL);
+        }
+        else if (Token.ID <5){
+            printf("TOKEN --- type:%d   value:%s\n",Token.ID, Token.VAL);
+        }
+        else{
+            printf("TOKEN --- type:%d   value:---\n",Token.ID);
+        }
     }
+
     
     return 0;
 }
