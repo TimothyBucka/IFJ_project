@@ -17,16 +17,21 @@ typedef enum{
     STATE_QUOTATION_START,
     STATE_QUOTATION_CENTER,
     STATE_QUOTATION_END_E,
+    STATE_SLASH,
+    STATE_LINE_COMMENT_E,
+    STATE_BLOCK_COMMENT_START,
+    STATE_BLOCK_COMMENT_E,
 
     STATE_GT_E,   //greater than
     STATE_ST_E,   //smaller than
     STATE_EQ_E,   //first eq
     STATE_EQEQ, //second eq
-
-    
-
-
 }lexer_state;
+
+typedef enum{
+    STATE_NONE,
+    STATE_
+}lexer_comment_state;
 
 typedef enum {
     ASCII_LF = 10,
@@ -51,7 +56,8 @@ void lexer_advance(lexer_T* lexer);
 
 void lexer_skip_whitespace(lexer_T* lexer);
 
-void lexer_next_token(lexer_T* lexer, token *Token);
+
+void lexer_next_token(lexer_T* lexer, token *Token, int* ended);
 
 int is_keyword(char* src);
 

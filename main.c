@@ -6,12 +6,14 @@
 
 
 int main(){
-    char* src = "fd else fun ====* 2E5 2e-4 2.5e+23 3<4 5>=1.2";
+    char* src = "fd \"ddd\" /*lalala***a/*/ abc";
+    int ended = 0;
     lexer_T* lexer = lexer_init(src);
-    for (size_t i = 0; i < 15; i++)
+
+    while (ended == 0)
     {
         token Token;
-        lexer_next_token(lexer, &Token);
+        lexer_next_token(lexer, &Token, &ended);
         if (Token.ID == 5){
             printf("TOKEN --- type:%d   value:%d\n",Token.ID, Token.VAL);
         }
@@ -22,6 +24,7 @@ int main(){
             printf("TOKEN --- type:%d   value:---\n",Token.ID);
         }
     }
+    
 
     
     return 0;

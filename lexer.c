@@ -63,16 +63,12 @@ int is_keyword(char *src)
     return 0;
 }
 
-void lexer_next_token(lexer_T *lexer, token *Token)
+void lexer_next_token(lexer_T *lexer, token *Token, int *ended)
 {
     char *value = chararray_init();
-    int one_more = 1;
-    while (one_more)
+    while (1)
     {
-        if (lexer->c == '\0')
-        {
-            one_more = 0;
-        }
+
         printf("State %d, character '%c'\n", lexer->state, lexer->c);
         switch (lexer->state)
         {
@@ -152,14 +148,8 @@ void lexer_next_token(lexer_T *lexer, token *Token)
             }
             else if (lexer->c == '/')
             {
-                printf("Token is division\n");
-                lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
-                Token->ID = TOKEN_ID_DIVISION;
-                Token->VAL = tok_val;
+                lexer->state = STATE_SLASH;
                 lexer_advance(lexer);
-                return;
             }
             else if (lexer->c == '.')
             {
@@ -171,6 +161,13 @@ void lexer_next_token(lexer_T *lexer, token *Token)
                 Token->VAL = tok_val;
                 lexer_advance(lexer);
                 return;
+            }
+            else if (lexer->c == '"')
+            {
+                // chararray_append(value, lexer->c);
+                lexer_advance(lexer);
+                lexer->state = STATE_QUOTATION_CENTER;
+                break;
             }
 
             else
@@ -477,6 +474,79 @@ void lexer_next_token(lexer_T *lexer, token *Token)
                 Token->ID = TOKEN_ID_ST;
                 return;
             }
+        case STATE_QUOTATION_CENTER:
+            if (lexer->c == '"')
+            { // TODO add chceck if " is not escaped
+                printf("Token is string\n");
+                lexer->state = STATE_START;
+                lexer_advance(lexer);
+                token_VAL tok_val;
+                tok_val.string = value;
+                Token->ID = TOKEN_ID_STRING;
+                Token->VAL = tok_val;
+                return;
+            }
+            else
+            {
+                chararray_append(value, lexer->c);
+                lexer_advance(lexer);
+                break;
+            }
+
+        case STATE_SLASH:
+            if (lexer->c == '/')
+            {
+                lexer->state = STATE_LINE_COMMENT_E;
+                lexer_advance(lexer);
+            }
+            else if (lexer->c == '*')
+            {
+                lexer->state = STATE_BLOCK_COMMENT_START;
+                lexer_advance(lexer);
+            }
+            else
+            {
+                printf("Token is division\n");
+                lexer->state = STATE_START;
+                token_VAL tok_val;
+                tok_val.string = value;
+                Token->ID = TOKEN_ID_DIVISION;
+                Token->VAL = tok_val;
+                return;
+            }
+        case STATE_LINE_COMMENT_E:
+            if (lexer->c == '\n')
+            {
+                lexer->state = STATE_START;
+            }
+            lexer_advance(lexer);
+            break;
+
+        case STATE_BLOCK_COMMENT_START:
+            if (lexer->c == '*')
+            {
+                lexer->state = STATE_BLOCK_COMMENT_E;
+            }
+            lexer_advance(lexer);
+            break;
+
+        case STATE_BLOCK_COMMENT_E:
+            if (lexer->c == '/')
+            {
+                lexer->state = STATE_START;
+            }
+            else
+            {
+                lexer->state = STATE_BLOCK_COMMENT_START;
+            }
+            lexer_advance(lexer);
+            break;
+        }
+
+        if (lexer->c == '\0')
+        {
+            *ended = 1;
+            return;
         }
     }
 }
