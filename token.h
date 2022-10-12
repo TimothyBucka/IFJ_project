@@ -1,5 +1,3 @@
-
-
 typedef enum
 {
     TOKEN_ID_IDENTIFIER,
@@ -9,6 +7,13 @@ typedef enum
     TOKEN_ID_STRING,
     TOKEN_ID_KEYWORD,
 
+    TOKEN_ID_SEMICOLON,
+
+    TOKEN_ID_PARENTHESIS_LEFT,
+    TOKEN_ID_PARENTHESIS_RIGHT,
+
+    TOKEN_ID_CURLY_LEFT,
+    TOKEN_ID_CURLY_RIGHT,
 
     TOKEN_ID_PLUS,
     TOKEN_ID_MINUS,
@@ -42,7 +47,6 @@ typedef enum
 
 }keyword;
 
-
 typedef union
 {
     int integer;
@@ -56,5 +60,3 @@ typedef struct
     token_ID ID;
     token_VAL VAL;
 }token;
-
-

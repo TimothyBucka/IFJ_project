@@ -10,9 +10,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     long length;
     int ended = 0;
-    lexer_T* lexer = lexer_init(src);
 
-    // src get the content of the file input.txt
     fseek(fp, 0, SEEK_END);
     length = ftell(fp);
     fseek(fp, 0, SEEK_SET);
@@ -23,23 +21,7 @@ int main(){
     }
     fclose(fp);
 
-    printf("src: %s\n------------------------------\n", src);
-
-    for (int i = 0; src[i] != '\0'; i++) {
-        if (isalnum(src[i])) {
-            printf("%c", src[i]);
-        }
-        else if (src[i] == ' ') {
-            printf(" ");
-        }
-        else if (src[i] == '\n') {
-            printf("\n");
-        } else {
-            printf("%d", src[i]);
-        }
-    }
-
-    printf("\n------------------------------\n");
+    lexer_T* lexer = lexer_init(src);
 
     while (ended == 0)
     {
@@ -48,15 +30,13 @@ int main(){
         if (Token.ID == 5){
             printf("TOKEN --- type:%d   value:%d\n",Token.ID, Token.VAL);
         }
-        else if (Token.ID <5){
+        else if (Token.ID < 5){
             printf("TOKEN --- type:%d   value:%s\n",Token.ID, Token.VAL);
         }
         else{
             printf("TOKEN --- type:%d   value:---\n",Token.ID);
         }
     }
-    
-
-    
+       
     return 0;
 }

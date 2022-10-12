@@ -1,29 +1,30 @@
 #include <stdlib.h>
 #include <string.h>
-char* chararray_init (){
-    char* value = calloc(0, sizeof(char));
+
+char *chararray_init() {
+    char *value = calloc(0, sizeof(char));
 
     /*
-    
-    ADD calloc CHECK 
-    
-    */
-   
-    return value;
-}
-char* chararray_append (char* chararray, char c){
-    char* value = realloc(chararray, (strlen(chararray) + 1) * sizeof(char));
 
-    /*
-    
-    ADD realloc CHECK 
-    
+    TODO add calloc check
+
     */
 
-    strcat(value, (char[]){c, 0});
     return value;
 }
 
-void chararray_free (char* chararray){
+void chararray_append(char *chararray, char c) {
+    size_t len = strlen(chararray);
+    chararray = realloc(chararray, len + 2); // 1 for the new char, 1 for the null terminator
+    /*
+
+    TODO add realloc check
+
+    */
+    chararray[len] = c;
+    chararray[len + 1] = '\0';
+}
+
+void chararray_free(char *chararray) {
     free(chararray);
 }
