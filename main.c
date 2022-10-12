@@ -6,7 +6,7 @@
 
 
 int main(){
-    char* src = "fd \"ddd\" /*lalala***a/*/ abc";
+    char* src = "fd 1.2 /*l**/ abc";
     int ended = 0;
     lexer_T* lexer = lexer_init(src);
 

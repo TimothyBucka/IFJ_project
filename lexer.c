@@ -170,6 +170,14 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended)
                 break;
             }
 
+            else if (lexer->c == '\0')
+            {
+                Token->ID = TOKEN_ID_EOF;
+                *ended = 1;
+                return;
+            }
+
+
             else
             {
                 printf("Lexer error in %d\n", lexer->state);
@@ -535,6 +543,9 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended)
             {
                 lexer->state = STATE_START;
             }
+            else if (lexer->c == '*'){
+
+            }
             else
             {
                 lexer->state = STATE_BLOCK_COMMENT_START;
@@ -543,10 +554,5 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended)
             break;
         }
 
-        if (lexer->c == '\0')
-        {
-            *ended = 1;
-            return;
-        }
     }
 }
