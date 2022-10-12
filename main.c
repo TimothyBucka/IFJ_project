@@ -6,9 +6,40 @@
 
 
 int main(){
-    char* src = "fd \"ddd\" /*lalala***a/*/ abc";
+    char* src;
+    FILE *fp = fopen("input.txt", "r");
+    long length;
     int ended = 0;
     lexer_T* lexer = lexer_init(src);
+
+    // src get the content of the file input.txt
+    fseek(fp, 0, SEEK_END);
+    length = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    src = malloc(length);
+    if (src)
+    {
+        fread(src, 1, length, fp);
+    }
+    fclose(fp);
+
+    printf("src: %s\n------------------------------\n", src);
+
+    for (int i = 0; src[i] != '\0'; i++) {
+        if (isalnum(src[i])) {
+            printf("%c", src[i]);
+        }
+        else if (src[i] == ' ') {
+            printf(" ");
+        }
+        else if (src[i] == '\n') {
+            printf("\n");
+        } else {
+            printf("%d", src[i]);
+        }
+    }
+
+    printf("\n------------------------------\n");
 
     while (ended == 0)
     {
