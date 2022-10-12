@@ -27,6 +27,9 @@ typedef enum
     TOKEN_ID_DIVISION,
     TOKEN_ID_MULTIPLICATION,
 
+    TOKEN_ID_EOL,
+    TOKEN_ID_EOF,
+
 
 }token_ID;
 
