@@ -37,14 +37,22 @@ typedef enum
 
 typedef enum
 {
+    KW_BOOLEAN,             //rozsirenie bool
+    KW_BREAK,               //rozsirenie cykly
+    KW_CONTINUE,            //rozsirenie cykly
     KW_ELSE,
+    KW_ELSEIF,              //rozsirenie bool
+    KW_FALSE,               //rozsirenie bool
     KW_FLOAT,
+    KW_FOR,                 //rozsirenie cykly
     KW_FUNCTION,
+    KW_GLOBAL,              //rozsirenie glob
     KW_IF,
     KW_INT,
     KW_NULL,
     KW_RESULT,
     KW_STRING,
+    KW_TRUE,                //rozsirenie bool
     KW_VOID,
     KW_WHILE,
 

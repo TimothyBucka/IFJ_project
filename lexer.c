@@ -39,7 +39,7 @@ void lexer_skip_whitespace(lexer_T *lexer) {
     }
 }
 
-int is_keyword(char *src) {
+int is_keyword(char *src) {         //TODO ret keyword
     if (!strcmp(src, "else")) {
         return 1;
     } else if (!strcmp(src, "float")) {
