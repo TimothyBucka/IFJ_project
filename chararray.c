@@ -12,7 +12,7 @@ char* chararray_init (){
     return value;
 }
 char* chararray_append (char* chararray, char c){
-    char* value = realloc(chararray, (strlen(chararray) + 1) * sizeof(char));
+    char* value = realloc(chararray, (strlen(chararray) + 2) * sizeof(char));
 
     /*
     

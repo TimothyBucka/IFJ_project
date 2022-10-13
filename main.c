@@ -10,7 +10,7 @@ int main(){
     FILE *fp = fopen("input.txt", "r");
     long length;
     int ended = 0;
-    lexer_T* lexer = lexer_init(src);
+    
 
     // src get the content of the file input.txt
     fseek(fp, 0, SEEK_END);
@@ -23,6 +23,7 @@ int main(){
     }
     fclose(fp);
 
+    lexer_T* lexer = lexer_init(src);
     printf("src: %s\n------------------------------\n", src);
 
     for (int i = 0; src[i] != '\0'; i++) {
