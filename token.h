@@ -1,5 +1,3 @@
-
-
 typedef enum
 {
     TOKEN_ID_IDENTIFIER,
@@ -8,7 +6,6 @@ typedef enum
     TOKEN_ID_DOUBLE,
     TOKEN_ID_STRING,
     TOKEN_ID_KEYWORD,
-
 
     TOKEN_ID_PLUS,
     TOKEN_ID_MINUS,
@@ -53,7 +50,6 @@ typedef enum
 
 }keyword;
 
-
 typedef union
 {
     int integer;
@@ -67,5 +63,3 @@ typedef struct
     token_ID ID;
     token_VAL VAL;
 }token;
-
-

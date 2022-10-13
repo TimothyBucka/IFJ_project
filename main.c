@@ -12,7 +12,6 @@ int main(){
     int ended = 0;
     
 
-    // src get the content of the file input.txt
     fseek(fp, 0, SEEK_END);
     length = ftell(fp);
     fseek(fp, 0, SEEK_SET);
@@ -49,15 +48,13 @@ int main(){
         if (Token.ID == 5){
             printf("TOKEN --- type:%d   value:%d\n",Token.ID, Token.VAL);
         }
-        else if (Token.ID <5){
+        else if (Token.ID < 5){
             printf("TOKEN --- type:%d   value:%s\n",Token.ID, Token.VAL);
         }
         else{
             printf("TOKEN --- type:%d   value:---\n",Token.ID);
         }
     }
-    
-
-    
+       
     return 0;
 }

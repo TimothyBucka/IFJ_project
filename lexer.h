@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <stdlib.h>
 #include "token.h"
 
 typedef enum{
@@ -33,11 +34,6 @@ typedef enum{
     STATE_NONE,
     STATE_
 }lexer_comment_state;
-
-typedef enum {
-    ASCII_LF = 10,
-    ASCII_CR = 13,
-}ascii_char_codes;
 
 typedef struct lexer_struct
 {
