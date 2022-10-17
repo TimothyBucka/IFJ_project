@@ -221,7 +221,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             break;
 
         case STATE_VARIABLE_START:
-            if (isalpha(lexer->c) || lexer->c == '_')   //TODO len male pismenka
+            if (isalpha(lexer->c) || lexer->c == '_')  
             {
                 chararray_append(value, lexer->c);
                 lexer_advance(lexer);
@@ -278,15 +278,18 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             if (isdigit(lexer->c)) {
                 chararray_append(value, lexer->c);
                 lexer_advance(lexer);
-            } else if (lexer->c == '.') {
+            } 
+            else if (lexer->c == '.') {
                 chararray_append(value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_AND_SEPARATOR;
-            } else if (tolower(lexer->c) == 'e') {
+            } 
+            else if (tolower(lexer->c) == 'e') {
                 chararray_append(value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_EXPONENT_START;
-            } else {
+            } 
+            else {
                 printf("Token is integer\n");
                 lexer->state = STATE_START;
                 token_VAL tok_val;
@@ -483,10 +486,22 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 Token->ID = TOKEN_ID_STRING;
                 Token->VAL = tok_val;
                 return;
-            } else {
+            }
+            else if(lexer->c == '\\'){
+                lexer->state = STATE_QUOTATION_ESCAPE_CHAR;
                 chararray_append(value, lexer->c);
                 lexer_advance(lexer);
             }
+            else {
+                chararray_append(value, lexer->c);
+                lexer_advance(lexer);
+            }
+            break;
+        
+        case STATE_QUOTATION_ESCAPE_CHAR:
+            lexer->state = STATE_QUOTATION_CENTER;
+            chararray_append(value, lexer->c);
+            lexer_advance(lexer);
             break;
 
         case STATE_SLASH:
