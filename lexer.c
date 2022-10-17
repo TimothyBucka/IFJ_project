@@ -129,7 +129,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             } else if (lexer->c == '"') {
                 // chararray_append(value, lexer->c);
                 lexer_advance(lexer);
-                lexer->state = STATE_QUOTATION_CENTER;
+                lexer->state = STATE_QUOTATION_CENTER_E;
                 break;
             }
 
@@ -476,7 +476,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             }
 
 
-        case STATE_QUOTATION_CENTER:
+        case STATE_QUOTATION_CENTER_E:
             if (lexer->c == '"') { // TODO add chceck if " is not escaped
                 printf("Token is string\n");
                 lexer->state = STATE_START;
@@ -499,7 +499,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             break;
         
         case STATE_QUOTATION_ESCAPE_CHAR:
-            lexer->state = STATE_QUOTATION_CENTER;
+            lexer->state = STATE_QUOTATION_CENTER_E;
             chararray_append(value, lexer->c);
             lexer_advance(lexer);
             break;
