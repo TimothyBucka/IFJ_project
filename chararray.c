@@ -15,7 +15,8 @@ char *chararray_init() {
 
 void chararray_append(char *chararray, char c) {
     size_t len = strlen(chararray);
-    chararray = realloc(chararray, len + 2); // 1 for the new char, 1 for the null terminator
+    chararray = realloc(
+        chararray, len + 2); // 1 for the new char, 1 for the null terminator
     /*
 
     TODO add realloc check
@@ -25,6 +26,4 @@ void chararray_append(char *chararray, char c) {
     chararray[len + 1] = '\0';
 }
 
-void chararray_free(char *chararray) {
-    free(chararray);
-}
+void chararray_free(char *chararray) { free(chararray); }

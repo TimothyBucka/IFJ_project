@@ -1,5 +1,4 @@
-typedef enum
-{
+typedef enum {
     TOKEN_ID_IDENTIFIER,
     TOKEN_ID_VARIABLE,
     TOKEN_ID_INTEGER,
@@ -11,16 +10,15 @@ typedef enum
     TOKEN_ID_MINUS,
     TOKEN_ID_EQUALS,
     TOKEN_ID_TRIPLE_EQUALS,
-    TOKEN_ID_GT,        //>
-    TOKEN_ID_ST,        //<
-    TOKEN_ID_GTE,       //>=
-    TOKEN_ID_STE,       //<=
+    TOKEN_ID_GT,  //>
+    TOKEN_ID_ST,  //<
+    TOKEN_ID_GTE, //>=
+    TOKEN_ID_STE, //<=
     TOKEN_ID_CONCAT,
     TOKEN_ID_DIVISION,
     TOKEN_ID_MULTIPLICATION,
     TOKEN_ID_COMMA,
     TOKEN_ID_SEMICOLLON,
-
 
     TOKEN_ID_LBRACKET,
     TOKEN_ID_RBRACKET,
@@ -30,44 +28,39 @@ typedef enum
     TOKEN_ID_EOL,
     TOKEN_ID_EOF,
 
+} token_ID;
 
-}token_ID;
-
-
-
-typedef enum
-{
-    KW_BOOLEAN,             //rozsirenie bool
-    KW_BREAK,               //rozsirenie cykly
-    KW_CONTINUE,            //rozsirenie cykly
+typedef enum {
+    KW_BOOLEAN,  //rozsirenie bool
+    KW_BREAK,    //rozsirenie cykly
+    KW_CONTINUE, //rozsirenie cykly
     KW_ELSE,
-    KW_ELSEIF,              //rozsirenie bool
-    KW_FALSE,               //rozsirenie bool
+    KW_ELSEIF, //rozsirenie bool
+    KW_FALSE,  //rozsirenie bool
     KW_FLOAT,
-    KW_FOR,                 //rozsirenie cykly
+    KW_FOR, //rozsirenie cykly
     KW_FUNCTION,
-    KW_GLOBAL,              //rozsirenie glob
+    KW_GLOBAL, //rozsirenie glob
     KW_IF,
     KW_INT,
     KW_NULL,
     KW_RESULT,
     KW_STRING,
-    KW_TRUE,                //rozsirenie bool
+    KW_TRUE, //rozsirenie bool
     KW_VOID,
     KW_WHILE,
 
-}keyword;
+} keyword;
 
-typedef union
-{
+typedef union {
     int integer;
     double decimal;
-    char* string;
+    char *string;
     keyword keyword;
-}token_VAL;
+} token_VAL;
 
 typedef struct
 {
     token_ID ID;
     token_VAL VAL;
-}token;
+} token;

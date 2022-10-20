@@ -1,8 +1,8 @@
+#include "token.h"
 #include <ctype.h>
 #include <stdlib.h>
-#include "token.h"
 
-typedef enum{
+typedef enum {
     STATE_START,
     STATE_VARIABLE_START,
     STATE_VARIABLE_E,
@@ -23,20 +23,19 @@ typedef enum{
     STATE_BLOCK_COMMENT_START,
     STATE_BLOCK_COMMENT_E,
 
-    STATE_GT_E,   //greater than
-    STATE_ST_E,   //smaller than
-    STATE_EQ_E,   //first eq
+    STATE_GT_E, //greater than
+    STATE_ST_E, //smaller than
+    STATE_EQ_E, //first eq
     STATE_EQEQ, //second eq
-}lexer_state;
+} lexer_state;
 
-typedef enum{
+typedef enum {
     STATE_NONE,
     STATE_
-}lexer_comment_state;
+} lexer_comment_state;
 
-typedef struct lexer_struct
-{
-    char* src;
+typedef struct lexer_struct {
+    char *src;
     size_t src_size;
     char c;
     unsigned int i;
@@ -44,21 +43,20 @@ typedef struct lexer_struct
 
 } lexer_T;
 
-lexer_T* lexer_init(char* src);
+lexer_T *lexer_init(char *src);
 
 void lexer_free(lexer_T *lexer);
 
-void lexer_advance(lexer_T* lexer);
+void lexer_advance(lexer_T *lexer);
 
-void lexer_skip_whitespace(lexer_T* lexer);
+void lexer_skip_whitespace(lexer_T *lexer);
 
+void lexer_next_token(lexer_T *lexer, token *Token, int *ended);
 
-void lexer_next_token(lexer_T* lexer, token *Token, int* ended);
+int is_keyword(char *src);
 
-int is_keyword(char* src);
+int str_to_int(char *src); //12 2431424343
 
-int str_to_int(char* src);  //12 2431424343
+double str_to_doule(char *src); //1e4 1E4 1.2e5  1.4E-/+6449
 
-double str_to_doule(char* src); //1e4 1E4 1.2e5  1.4E-/+6449
-
-void clean_string(char* src);  // "\123 \xAF"
+void clean_string(char *src); // "\123 \xAF"
