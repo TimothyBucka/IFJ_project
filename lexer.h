@@ -1,6 +1,7 @@
 #include "token.h"
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef enum {
     STATE_START,
@@ -43,7 +44,7 @@ typedef struct lexer_struct {
 
 } lexer_T;
 
-lexer_T *lexer_init(char *src);
+lexer_T *lexer_init();
 
 void lexer_free(lexer_T *lexer);
 
@@ -53,10 +54,12 @@ void lexer_skip_whitespace(lexer_T *lexer);
 
 void lexer_next_token(lexer_T *lexer, token *Token, int *ended);
 
+int isoctdigit(char c);
+
 int is_keyword(char *src);
 
 int str_to_int(char *src); //12 2431424343
 
 double str_to_doule(char *src); //1e4 1E4 1.2e5  1.4E-/+6449
 
-void clean_string(char *src); // "\123 \xAF"
+void clean_string(char **src); // "\123 \xAF"

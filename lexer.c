@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-lexer_T *lexer_init(char *src) {
+lexer_T *lexer_init() {
     lexer_T *lexer = calloc(1, sizeof(struct lexer_struct));
 
     /*
@@ -13,10 +13,7 @@ lexer_T *lexer_init(char *src) {
 
     */
 
-    lexer->src = src;
-    lexer->src_size = strlen(src);
-    lexer->i = 0;
-    lexer->c = src[lexer->i];
+    lexer_advance(lexer);
     lexer->state = STATE_START;
 
     return lexer;
@@ -27,9 +24,8 @@ void lexer_free(lexer_T *lexer) {
 }
 
 void lexer_advance(lexer_T *lexer) {
-    if (lexer->i < lexer->src_size && lexer->c != '\0') {
-        lexer->i += 1;
-        lexer->c = lexer->src[lexer->i];
+    if (lexer->c != EOF) {
+        lexer->c = getc(stdin);
     }
 }
 
@@ -38,6 +34,8 @@ void lexer_skip_whitespace(lexer_T *lexer) {
         lexer_advance(lexer);
     }
 }
+
+int isoctdigit(char c) { return c >= '0' && c <= '7'; }
 
 int is_keyword(char *src) { //TODO ret keyword
     if (!strcmp(src, "else")) {
@@ -52,10 +50,91 @@ int is_keyword(char *src) { //TODO ret keyword
     return 0;
 }
 
+void clean_string(char **str) {
+    size_t str_len = strlen(*str);
+
+    char *new_str = calloc(strlen(*str) + 1, sizeof(char));
+    if (new_str == NULL) {
+        // TODO error
+    }
+
+    for (size_t i = 0, n_i = 0; i < str_len; i++) {
+        char c = (char)0;
+
+        if ((*str)[i] == '$') {
+            printf("Unescaped $\n");
+            continue; // TODO: implement
+        }
+
+        if ((*str)[i] == '\\') {
+            switch ((*str)[i + 1]) {
+            case 'x':
+                if (i + 3 < str_len && isxdigit((*str)[i + 2]) &&
+                    isxdigit((*str)[i + 3])) {
+                    char hex[3] = {(*str)[i + 2], (*str)[i + 3], '\0'};
+                    int num = (int)strtol(hex, NULL, 16);
+                    if (num >= 0x01 && num <= 0xFF) {
+                        c = num;
+                        i += 3;
+                    }
+                    else {
+                        c = (*str)[i];
+                    }
+                }
+                else {
+                    c = (*str)[i]; // take the backslash
+                }
+                break;
+            case '"':
+                c = '"';
+                i++;
+                break;
+            case 'n':
+                c = '\n';
+                i++;
+                break;
+            case 't':
+                c = '\t';
+                i++;
+                break;
+            case '\\':
+                c = '\\';
+                i++;
+                break;
+            case '$':
+                c = '$';
+                i++;
+                break;
+            default:
+                if (i + 3 < str_len && isoctdigit((*str)[i + 1]) && isoctdigit((*str)[i + 2]) && isoctdigit((*str)[i + 3])) {
+                    char oct[4] = {(*str)[i + 1], (*str)[i + 2], (*str)[i + 3], '\0'};
+                    int num = (int)strtol(oct, NULL, 8);
+                    if (num >= 1 && num <= 255) {
+                        c = num;
+                        i += 3;
+                    }
+                    else {
+                        c = (*str)[i];
+                    }
+                }
+                else {
+                    c = (*str)[i];
+                }
+            }
+        }
+        else {
+            c = (*str)[i];
+        }
+        new_str[n_i++] = c;
+    }
+    free(*str);
+    *str = new_str;
+}
+
 void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
     char *value = chararray_init();
     while (1) {
-        printf("State %d, character '%c'\n", lexer->state, lexer->c);
+        //printf("State %d, character '%c'\n", lexer->state, lexer->c);
         switch (lexer->state) {
 
         case STATE_START:
@@ -154,7 +233,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             }
 
             else if (lexer->c == ')') {
-                printf("Token is (\n");
+                printf("Token is )\n");
                 lexer->state = STATE_START;
                 token_VAL tok_val;
                 tok_val.string = value;
@@ -164,7 +243,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 return;
             }
             else if (lexer->c == '{') {
-                printf("Token is (\n");
+                printf("Token is {\n");
                 lexer->state = STATE_START;
                 token_VAL tok_val;
                 tok_val.string = value;
@@ -175,18 +254,18 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             }
 
             else if (lexer->c == '}') {
-                printf("Token is (\n");
+                printf("Token is }\n");
                 lexer->state = STATE_START;
                 token_VAL tok_val;
                 tok_val.string = value;
-                Token->ID = TOKEN_ID_LCURLYBRACKET;
+                Token->ID = TOKEN_ID_RCURLYBRACKET;
                 Token->VAL = tok_val;
                 lexer_advance(lexer);
                 return;
             }
 
             else if (lexer->c == ';') {
-                printf("Token is (\n");
+                printf("Token is ;\n");
                 lexer->state = STATE_START;
                 token_VAL tok_val;
                 tok_val.string = value;
@@ -197,7 +276,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             }
 
             else if (lexer->c == ',') {
-                printf("Token is (\n");
+                printf("Token is ,\n");
                 lexer->state = STATE_START;
                 token_VAL tok_val;
                 tok_val.string = value;
@@ -207,7 +286,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 return;
             }
 
-            else if (lexer->c == '\0') {
+            else if (lexer->c == EOF) {
                 Token->ID = TOKEN_ID_EOF;
                 *ended = 1;
                 return;
@@ -493,6 +572,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 lexer_advance(lexer);
                 token_VAL tok_val;
                 tok_val.string = value;
+                clean_string(&tok_val.string);
                 Token->ID = TOKEN_ID_STRING;
                 Token->VAL = tok_val;
                 return;
