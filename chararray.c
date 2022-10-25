@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *chararray_init() {
-    char *value = calloc(0, sizeof(char));
+char *chararray_init(unsigned int size) {
+    char *value = calloc(size, sizeof(char));
 
     /*
 

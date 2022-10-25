@@ -37,15 +37,36 @@ void lexer_skip_whitespace(lexer_T *lexer) {
 
 int isoctdigit(char c) { return c >= '0' && c <= '7'; }
 
-int is_keyword(char *src) { //TODO ret keyword
+int is_keyword(char *src) {
     if (!strcmp(src, "else")) {
-        return 1;
+        return KW_ELSE;
     }
     else if (!strcmp(src, "float")) {
-        return 2;
+        return KW_FLOAT;
     }
     else if (!strcmp(src, "function")) {
-        return 3;
+        return KW_FUNCTION;
+    }
+    else if (!strcmp(src, "if")) {
+        return KW_IF;
+    }
+    else if (!strcmp(src, "int")) {
+        return KW_INT;
+    }
+    else if (!strcmp(src, "null")) {
+        return KW_NULL;
+    }
+    else if (!strcmp(src, "return")) {
+        return KW_RETURN;
+    }
+    else if (!strcmp(src, "string")) {
+        return KW_STRING;
+    }
+    else if (!strcmp(src, "void")) {
+        return KW_VOID;
+    }
+    else if (!strcmp(src, "while")) {
+        return KW_WHILE;
     }
     return 0;
 }
@@ -53,7 +74,7 @@ int is_keyword(char *src) { //TODO ret keyword
 void clean_string(char **str) {
     size_t str_len = strlen(*str);
 
-    char *new_str = calloc(strlen(*str) + 1, sizeof(char));
+    char *new_str = chararray_init(str_len + 1);
     if (new_str == NULL) {
         // TODO error
     }
@@ -132,7 +153,7 @@ void clean_string(char **str) {
 }
 
 void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
-    char *value = chararray_init();
+    char *value = chararray_init(0);
     while (1) {
         //printf("State %d, character '%c'\n", lexer->state, lexer->c);
         switch (lexer->state) {
@@ -170,32 +191,25 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
 
             else if (lexer->c == '+') {
                 printf("Token is plus\n");
-
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_PLUS;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
             else if (lexer->c == '-') {
                 printf("Token is minus\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_MINUS;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
             else if (lexer->c == '*') {
                 printf("Token is multiplication\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_MULTIPLICATION;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
@@ -207,10 +221,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else if (lexer->c == '.') {
                 printf("Token is concatenanion\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_CONCAT;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
@@ -224,10 +236,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else if (lexer->c == '(') {
                 printf("Token is (\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_LBRACKET;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
@@ -235,20 +245,16 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else if (lexer->c == ')') {
                 printf("Token is )\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_RBRACKET;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
             else if (lexer->c == '{') {
                 printf("Token is {\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_LCURLYBRACKET;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
@@ -256,10 +262,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else if (lexer->c == '}') {
                 printf("Token is }\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_RCURLYBRACKET;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
@@ -267,10 +271,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else if (lexer->c == ';') {
                 printf("Token is ;\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_SEMICOLLON;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
@@ -278,10 +280,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else if (lexer->c == ',') {
                 printf("Token is ,\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_COMMA;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 lexer_advance(lexer);
                 return;
             }
@@ -319,10 +319,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else {
                 printf("Token is variable\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_VARIABLE;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 return;
             }
             break;
@@ -333,21 +331,18 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 lexer_advance(lexer);
             }
             else {
-                if (is_keyword(value)) {
+                keyword kw = is_keyword(value);
+                if (kw) {
                     printf("Token is keyword %s\n", value);
                     lexer->state = STATE_START;
-                    token_VAL tok_val;
-                    tok_val.keyword = KW_FUNCTION;
                     Token->ID = TOKEN_ID_KEYWORD;
-                    Token->VAL = tok_val;
+                    Token->VAL.keyword = kw;
                 }
                 else {
                     printf("Token is identifier\n");
                     lexer->state = STATE_START;
-                    token_VAL tok_val;
-                    tok_val.string = value;
                     Token->ID = TOKEN_ID_IDENTIFIER;
-                    Token->VAL = tok_val;
+                    Token->VAL.string = value;
                 }
                 return;
             }
@@ -371,10 +366,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else {
                 printf("Token is integer\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_INTEGER;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 return;
             }
             break;
@@ -405,10 +398,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else {
                 printf("Token is double\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_DOUBLE;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 return;
             }
             break;
@@ -452,10 +443,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else {
                 printf("Token is integer exponent\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_INTEGER;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 return;
             }
             break;
@@ -499,10 +488,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else {
                 printf("Token is double exponent\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_INTEGER;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 return;
             }
             break;
@@ -570,11 +557,9 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 printf("Token is string\n");
                 lexer->state = STATE_START;
                 lexer_advance(lexer);
-                token_VAL tok_val;
-                tok_val.string = value;
-                clean_string(&tok_val.string);
+                clean_string(&value);
                 Token->ID = TOKEN_ID_STRING;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 return;
             }
             else if (lexer->c == '\\') {
@@ -606,10 +591,8 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             else {
                 printf("Token is division\n");
                 lexer->state = STATE_START;
-                token_VAL tok_val;
-                tok_val.string = value;
                 Token->ID = TOKEN_ID_DIVISION;
-                Token->VAL = tok_val;
+                Token->VAL.string = value;
                 return;
             }
             break;

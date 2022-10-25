@@ -31,6 +31,7 @@ typedef enum {
 } token_ID;
 
 typedef enum {
+    KW_NOKW,
     KW_BOOLEAN,  //rozsirenie bool
     KW_BREAK,    //rozsirenie cykly
     KW_CONTINUE, //rozsirenie cykly
@@ -45,6 +46,7 @@ typedef enum {
     KW_INT,
     KW_NULL,
     KW_RESULT,
+    KW_RETURN,
     KW_STRING,
     KW_TRUE, //rozsirenie bool
     KW_VOID,
