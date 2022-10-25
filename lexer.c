@@ -13,8 +13,9 @@ lexer_T *lexer_init() {
 
     */
 
-    lexer_advance(lexer);
     lexer->state = STATE_START;
+    lexer->i = 0;
+    lexer_advance(lexer);
 
     return lexer;
 }
@@ -25,7 +26,40 @@ void lexer_free(lexer_T *lexer) {
 
 void lexer_advance(lexer_T *lexer) {
     if (lexer->c != EOF) {
+        lexer->i += 1;
         lexer->c = getc(stdin);
+    }
+}
+
+void lexer_skip_comment(lexer_T *lexer) {
+    if (lexer->c != '/')
+        return;
+
+    char prev;
+    int block_start;
+
+    lexer_advance(lexer);
+    switch (lexer->c) {
+    case '/':
+        while (lexer->c != '\n' && lexer->c != EOF) {
+            lexer_advance(lexer);
+        }
+        lexer_skip_whitespace(lexer);
+        break;
+    case '*':
+        prev = '/';
+        block_start = 0;
+        while ((prev != '*' || lexer->c != '/') && lexer->c != EOF) {
+            if (block_start)
+                prev = lexer->c;
+            if (lexer->c == '*')
+                block_start = 1;
+            lexer_advance(lexer);
+        }
+        if (lexer->c == '/')
+            lexer_advance(lexer);
+        lexer_skip_whitespace(lexer);
+        break;
     }
 }
 
@@ -154,6 +188,8 @@ void clean_string(char **str) {
 
 void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
     char *value = chararray_init(0);
+    unsigned int char_i; // used eg char_i=lexer->i to track number of loaded characters
+
     while (1) {
         //printf("State %d, character '%c'\n", lexer->state, lexer->c);
         switch (lexer->state) {
@@ -215,7 +251,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             }
             else if (lexer->c == '/') {
                 lexer->state = STATE_SLASH;
-                lexer_advance(lexer);
+                // without lexer advance. lexer_skip_comment takes care
             }
 
             else if (lexer->c == '.') {
@@ -553,7 +589,7 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             }
 
         case STATE_QUOTATION_CENTER_E:
-            if (lexer->c == '"') { // TODO add chceck if " is not escaped
+            if (lexer->c == '"') {
                 printf("Token is string\n");
                 lexer->state = STATE_START;
                 lexer_advance(lexer);
@@ -580,48 +616,42 @@ void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
             break;
 
         case STATE_SLASH:
-            if (lexer->c == '/') {
-                lexer->state = STATE_LINE_COMMENT_E;
-                lexer_advance(lexer);
-            }
-            else if (lexer->c == '*') {
-                lexer->state = STATE_BLOCK_COMMENT_START;
-                lexer_advance(lexer);
-            }
-            else {
+            char_i = lexer->i;
+            lexer_skip_comment(lexer);
+            lexer->state = STATE_START;
+            if (lexer->i - char_i == 1) { // moved just one character ie no comment skipped
                 printf("Token is division\n");
-                lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_DIVISION;
                 Token->VAL.string = value;
                 return;
             }
             break;
 
-        case STATE_LINE_COMMENT_E:
-            if (lexer->c == '\n') {
-                lexer->state = STATE_START;
-            }
-            lexer_advance(lexer);
-            break;
+            // case STATE_LINE_COMMENT_E:
+            //     if (lexer->c == '\n') {
+            //         lexer->state = STATE_START;
+            //     }
+            //     lexer_advance(lexer);
+            //     break;
 
-        case STATE_BLOCK_COMMENT_START:
-            if (lexer->c == '*') {
-                lexer->state = STATE_BLOCK_COMMENT_E;
-            }
-            lexer_advance(lexer);
-            break;
+            // case STATE_BLOCK_COMMENT_START:
+            //     if (lexer->c == '*') {
+            //         lexer->state = STATE_BLOCK_COMMENT_E;
+            //     }
+            //     lexer_advance(lexer);
+            //     break;
 
-        case STATE_BLOCK_COMMENT_E:
-            if (lexer->c == '/') {
-                lexer->state = STATE_START;
-            }
-            else if (lexer->c == '*') {
-            }
-            else {
-                lexer->state = STATE_BLOCK_COMMENT_START;
-            }
-            lexer_advance(lexer);
-            break;
+            // case STATE_BLOCK_COMMENT_E:
+            //     if (lexer->c == '/') {
+            //         lexer->state = STATE_START;
+            //     }
+            //     else if (lexer->c == '*') {
+            //     }
+            //     else {
+            //         lexer->state = STATE_BLOCK_COMMENT_START;
+            //     }
+            //     lexer_advance(lexer);
+            //     break;
         }
     }
 }

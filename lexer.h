@@ -36,8 +36,6 @@ typedef enum {
 } lexer_comment_state;
 
 typedef struct lexer_struct {
-    char *src;
-    size_t src_size;
     char c;
     unsigned int i;
     lexer_state state;
@@ -49,6 +47,8 @@ lexer_T *lexer_init();
 void lexer_free(lexer_T *lexer);
 
 void lexer_advance(lexer_T *lexer);
+
+void lexer_skip_comment(lexer_T *lexer);
 
 void lexer_skip_whitespace(lexer_T *lexer);
 
