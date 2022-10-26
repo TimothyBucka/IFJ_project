@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 lexer_T *lexer_init() {
     lexer_T *lexer = calloc(1, sizeof(struct lexer_struct));
@@ -184,6 +185,93 @@ void clean_string(char **str) {
     }
     free(*str);
     *str = new_str;
+}
+
+enum stav {CEL, DES, EXP};
+
+void separate (char *string)
+{ 
+    // ------------------------------------ SEPAROVANIE CISEL ------------------------------------
+    int stringCounter = 0;
+    int CELCounter = 0;
+    int haveDES = 0;
+    int EXPCounter = 0;
+    char znamienko='+';
+    char arrayCEL [100];
+    char arrayEXP [10];
+    arrayEXP [0] = '1';
+    enum stav mojstav=CEL;
+    while (1)
+    {
+        if (mojstav==CEL && (string[stringCounter] >= '0' && string[stringCounter] <= '9'))
+        {
+            arrayCEL[CELCounter] = string[stringCounter];
+            stringCounter++;
+            CELCounter++;
+        }
+        else if (mojstav==CEL && string[stringCounter] == '.')
+        {
+            //convert arrayCEL to integer
+            int cel = atoi(arrayCEL);
+            if (cel>=1000000000) //mozno netreba ak teda nemusime overovať ak som ťa DANNY dobre pochopil
+            {
+                printf("Chyba: cislo je prilis velke");
+                exit(1);
+            } 
+            haveDES=1;
+            arrayCEL[CELCounter++] = '.';
+            stringCounter++;
+        }
+        else if (mojstav==CEL && (string[stringCounter]=='e' || string[stringCounter]=='E'))
+        {
+            mojstav=EXP;
+            stringCounter++;
+        }
+        else if (mojstav==EXP && (string[stringCounter] == '+' || string[stringCounter] == '-'))
+        {
+            znamienko=string[stringCounter];
+            stringCounter++;
+        }
+        else if (mojstav==EXP && (string[stringCounter] >= '0' && string[stringCounter] <= '9'))
+        {
+            arrayEXP[EXPCounter] = string[stringCounter];
+            stringCounter++;
+            EXPCounter++;
+        }
+        else if (string[stringCounter] == '\0')
+        {
+            arrayEXP[EXPCounter] = '\0';
+            arrayCEL[CELCounter] = '\0';
+            break;
+        }
+        else
+        {
+            //ERROR DANNY ERROR
+            printf("Chyba vstupu");
+            exit(1);
+        }
+    }
+
+    //--------------------------- SPOCITANIE CISEL ---------------------------
+    
+    //tento koniec potom ešte treba upraviť keď mi Danny hodí ten výstup ale ísť to ide :D
+
+    char str[24];
+    strcpy(str, arrayCEL);
+    char exponent[10];
+    strcpy(exponent, arrayEXP);
+    double cisloExponent = atof(exponent);
+    if (znamienko=='-')
+    {
+        cisloExponent = cisloExponent * (-1);
+    }  
+    double doubleNum = atof(str);
+    long long int longIntNum = atoll(arrayCEL);
+    printf("%f\n", doubleNum);
+    printf("%f\n", cisloExponent);
+    double vysledok = round(pow(10, cisloExponent));
+    vysledok=doubleNum*vysledok;
+    printf("%f\n", vysledok);
 }
 
 void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
