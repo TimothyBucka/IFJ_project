@@ -1,6 +1,8 @@
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "token.h"
+
 
 typedef enum{
     STATE_START,
@@ -41,6 +43,7 @@ typedef struct lexer_struct
     char c;
     unsigned int i;
     lexer_state state;
+    bool prologParsed;
 
 } lexer_T;
 

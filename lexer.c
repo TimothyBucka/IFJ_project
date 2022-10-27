@@ -18,6 +18,7 @@ lexer_T *lexer_init(char *src) {
     lexer->i = 0;
     lexer->c = src[lexer->i];
     lexer->state = STATE_START;
+    lexer->prologParsed = false;
 
     return lexer;
 }
@@ -51,6 +52,27 @@ int is_keyword(char *src) {         //TODO ret keyword
 }
 
 void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
+    char prolog[] = "<?php\ndeclare(strict_types=1);";
+
+    if (!lexer->prologParsed)
+    {
+        while (strlen(prolog) != 0)
+        {
+            if (lexer->c == prolog[0])
+            {
+                lexer_advance(lexer);
+                memmove(prolog, prolog+1, strlen(prolog));  //remove first char
+            }
+            else{
+                printf("Invalid prolog\n");
+                return;
+            }
+            
+        }
+        lexer->prologParsed = true;
+        
+    }
+    
     char *value = chararray_init();
     while (1) {
         printf("State %d, character '%c'\n", lexer->state, lexer->c);
