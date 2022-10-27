@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 char *chararray_init() {
     char *value = calloc(0, sizeof(char));
@@ -14,8 +15,17 @@ char *chararray_init() {
 }
 
 void chararray_append(char *chararray, char c) {
+
+
     size_t len = strlen(chararray);
-    chararray = realloc(chararray, len + 2); // 1 for the new char, 1 for the null terminator
+    char* temp = realloc(chararray, len + 2); // 1 for the new char, 1 for the null terminator
+    if (temp != NULL){
+        chararray = temp;
+    }
+    else{
+        printf("Big memory problem.\n");
+    }
+
     /*
 
     TODO add realloc check
