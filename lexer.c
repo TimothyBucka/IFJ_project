@@ -16,8 +16,8 @@ lexer_T *lexer_init() {
 
     lexer->state = STATE_START;
     lexer->i = 0;
-    lexer_advance(lexer);
     lexer->prologParsed = false;
+    lexer_advance(lexer);
 
     return lexer;
 }
