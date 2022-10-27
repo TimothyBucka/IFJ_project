@@ -189,14 +189,14 @@ void clean_string(char **str) {
 
 enum stav {CEL, DES, EXP};
 
-void separate (char *string)
+void str_to_double (char *string)
 { 
     // ------------------------------------ SEPAROVANIE CISEL ------------------------------------
     int stringCounter = 0;
     int CELCounter = 0;
     int haveDES = 0;
     int EXPCounter = 0;
-    char znamienko='+';
+    char sign='+';
     char arrayCEL [100];
     char arrayEXP [10];
     arrayEXP [0] = '1';
@@ -213,7 +213,7 @@ void separate (char *string)
         {
             //convert arrayCEL to integer
             int cel = atoi(arrayCEL);
-            if (cel>=1000000000) //mozno netreba ak teda nemusime overovať ak som ťa DANNY dobre pochopil
+            if (cel>=1000000000) //TODO mozno netreba ak teda nemusime overovať ak som ťa DANNY dobre pochopil
             {
                 printf("Chyba: cislo je prilis velke");
                 exit(1);
@@ -229,7 +229,7 @@ void separate (char *string)
         }
         else if (mojstav==EXP && (string[stringCounter] == '+' || string[stringCounter] == '-'))
         {
-            znamienko=string[stringCounter];
+            sign=string[stringCounter];
             stringCounter++;
         }
         else if (mojstav==EXP && (string[stringCounter] >= '0' && string[stringCounter] <= '9'))
@@ -246,7 +246,7 @@ void separate (char *string)
         }
         else
         {
-            //ERROR DANNY ERROR
+            //TODO ERROR DANNY ERROR
             printf("Chyba vstupu");
             exit(1);
         }
@@ -256,22 +256,32 @@ void separate (char *string)
     
     //tento koniec potom ešte treba upraviť keď mi Danny hodí ten výstup ale ísť to ide :D
 
-    char str[24];
+    char str[100];
+    char exponent[100];
     strcpy(str, arrayCEL);
-    char exponent[10];
     strcpy(exponent, arrayEXP);
-    double cisloExponent = atof(exponent);
-    if (znamienko=='-')
-    {
-        cisloExponent = cisloExponent * (-1);
-    }  
+    double exponentNumber = atof(exponent);
     double doubleNum = atof(str);
-    long long int longIntNum = atoll(arrayCEL);
-    printf("%f\n", doubleNum);
-    printf("%f\n", cisloExponent);
-    double vysledok = round(pow(10, cisloExponent));
-    vysledok=doubleNum*vysledok;
-    printf("%f\n", vysledok);
+    long long int longIntNum = atoll(arrayCEL); //tu sa hodi podmienka podla toho aky bol vstup
+    /*
+
+    TODO delete prints (it was just as a control point if everything works) also need to hande situations when output should be
+    print as a floating point number (range of double in C) or inteager (range of long long int in c)
+
+     */
+    if (sign=='-')
+    {
+        for (int i = 0; i < exponentNumber; i++)
+        {
+            doubleNum=doubleNum/10;
+        }
+        printf("%f\n",doubleNum);
+    }
+    else {
+    double outcome = round(pow(10, exponentNumber));
+    outcome=doubleNum*outcome;
+    printf("%a\n", outcome);
+    }
 }
 
 void lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
