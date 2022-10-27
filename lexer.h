@@ -25,21 +25,18 @@ typedef enum{
     STATE_BLOCK_COMMENT_START,
     STATE_BLOCK_COMMENT_E,
 
-    STATE_GT_E,   //greater than
-    STATE_ST_E,   //smaller than
-    STATE_EQ_E,   //first eq
+    STATE_GT_E, //greater than
+    STATE_ST_E, //smaller than
+    STATE_EQ_E, //first eq
     STATE_EQEQ, //second eq
-}lexer_state;
+} lexer_state;
 
-typedef enum{
+typedef enum {
     STATE_NONE,
     STATE_
-}lexer_comment_state;
+} lexer_comment_state;
 
-typedef struct lexer_struct
-{
-    char* src;
-    size_t src_size;
+typedef struct lexer_struct {
     char c;
     unsigned int i;
     lexer_state state;
@@ -47,21 +44,24 @@ typedef struct lexer_struct
 
 } lexer_T;
 
-lexer_T* lexer_init(char* src);
+lexer_T *lexer_init();
 
 void lexer_free(lexer_T *lexer);
 
-void lexer_advance(lexer_T* lexer);
+void lexer_advance(lexer_T *lexer);
 
-void lexer_skip_whitespace(lexer_T* lexer);
+void lexer_skip_comment(lexer_T *lexer);
 
+void lexer_skip_whitespace(lexer_T *lexer);
 
-void lexer_next_token(lexer_T* lexer, token *Token, int* ended);
+void lexer_next_token(lexer_T *lexer, token *Token, int *ended);
 
-int is_keyword(char* src);
+int isoctdigit(char c);
 
-int str_to_int(char* src);  //12 2431424343
+int is_keyword(char *src);
 
-double str_to_doule(char* src); //1e4 1E4 1.2e5  1.4E-/+6449
+int str_to_int(char *src); //12 2431424343
 
-void clean_string(char* src);  // "\123 \xAF"
+double str_to_doule(char *src); //1e4 1E4 1.2e5  1.4E-/+6449
+
+void clean_string(char **src); // "\123 \xAF"

@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
-char *chararray_init() {
-    char *value = calloc(0, sizeof(char));
+char *chararray_init(unsigned int size) {
+    char *value = calloc(size, sizeof(char));
 
     /*
 
@@ -35,6 +35,4 @@ void chararray_append(char *chararray, char c) {
     chararray[len + 1] = '\0';
 }
 
-void chararray_free(char *chararray) {
-    free(chararray);
-}
+void chararray_free(char *chararray) { free(chararray); }

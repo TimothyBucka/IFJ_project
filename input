@@ -2,8 +2,7 @@
 declare(strict_types=1);
 // Program 1: Vypocet faktorialu (iterativne)
 
-// Hlavni telo programu
-write("Zadejte cislo pro vypocet faktorialu\n");
+write("Zadejte cislo pro vypocet faktorialu\070\n");
 $a = readi();
 
 if ($a === null) {
