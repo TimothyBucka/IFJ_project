@@ -263,10 +263,25 @@ void str_to_double (char *string)
     strcpy(exponent, arrayEXP);
     double exponentNumber = atof(exponent);
     double doubleNum = atof(str);
-    long long int longIntNum = atoll(arrayCEL); //tu sa hodi podmienka podla toho aky bol vstup
-    /*
+    long long int longIntNum = atoll(arrayCEL); //TODO tu sa hodi podmienka podla toho aky bol vstup
 
-    TODO delete prints (it was just as a control point if everything works) also need to hande situations when output should be
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    //DANNY TIE VSTUPYYYYYYYYYYYYYYYYYYY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+    /*TODO*/
+
+
+    /*TODO delete prints (it was just as a control point if everything works) also need to hande situations when output should be
     print as a floating point number (range of double in C) or inteager (range of long long int in c)
 
      */
