@@ -21,9 +21,8 @@ typedef enum{
     STATE_QUOTATION_CENTER_E,
     STATE_QUOTATION_ESCAPE_CHAR,
     STATE_SLASH,
-    STATE_LINE_COMMENT_E,
-    STATE_BLOCK_COMMENT_START,
-    STATE_BLOCK_COMMENT_E,
+    STATE_QUESTIONMARK,
+    STATE_CLOSING_TAG,
 
     STATE_GT_E, //greater than
     STATE_ST_E, //smaller than
@@ -43,6 +42,8 @@ typedef struct lexer_struct {
     bool prologParsed;
 
 } lexer_T;
+
+enum stav {CEL, DES, EXP};
 
 lexer_T *lexer_init();
 

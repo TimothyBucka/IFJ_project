@@ -9,3 +9,4 @@ FILE(GLOB SOURCES "*.c")
 FILE(GLOB HEADERS "*.h")
 
 ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+target_link_libraries(${PROJECT_NAME} m)

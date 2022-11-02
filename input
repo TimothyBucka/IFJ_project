@@ -19,3 +19,15 @@ if ($a < 0) {
 	}
 	write("Vysledek je: ", $vysl, "\n");
 }
+
+function readi() : ?float {
+	$line = trim(fgets(STDIN));
+	if (is_numeric($line)) {
+		return (int) $line;
+	} else {
+		return null;
+	}
+}
+
+// no newline at end of file
+?>

@@ -19,6 +19,7 @@ typedef enum {
     TOKEN_ID_MULTIPLICATION,
     TOKEN_ID_COMMA,
     TOKEN_ID_SEMICOLLON,
+    TOKEN_ID_COLON,
 
     TOKEN_ID_LBRACKET,
     TOKEN_ID_RBRACKET,
@@ -39,15 +40,18 @@ typedef enum {
     KW_ELSEIF, //rozsirenie bool
     KW_FALSE,  //rozsirenie bool
     KW_FLOAT,
+    KW_FLOAT_NULL,
     KW_FOR, //rozsirenie cykly
     KW_FUNCTION,
     KW_GLOBAL, //rozsirenie glob
     KW_IF,
     KW_INT,
+    KW_INT_NULL,
     KW_NULL,
     KW_RESULT,
     KW_RETURN,
     KW_STRING,
+    KW_STRING_NULL,
     KW_TRUE, //rozsirenie bool
     KW_VOID,
     KW_WHILE,
