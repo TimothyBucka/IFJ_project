@@ -1,6 +1,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "chararray.h"
+#include "errors.h"
 #include "token.h"
 
 
@@ -55,7 +57,7 @@ void lexer_skip_comment(lexer_T *lexer);
 
 void lexer_skip_whitespace(lexer_T *lexer);
 
-void lexer_next_token(lexer_T *lexer, token *Token, int *ended);
+error lexer_next_token(lexer_T *lexer, token *Token, int *ended);
 
 int isoctdigit(char c);
 

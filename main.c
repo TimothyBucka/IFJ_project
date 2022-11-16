@@ -13,7 +13,9 @@ int main() {
 
     while (ended == 0) {
         token Token;
-        lexer_next_token(lexer, &Token, &ended);
+        error ERROR;
+        ERROR = lexer_next_token(lexer, &Token, &ended);
+        if (ERROR != SUCCESS) return ERROR;
         if (Token.ID == 5) {
             printf("TOKEN --- type:%d   value:%d\n", Token.ID, Token.VAL);
         }
