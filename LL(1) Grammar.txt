@@ -1,0 +1,59 @@
+//LL(1) gramatika v yacc-like syntaxe
+//
+// https://cyberzhg.github.io/toolbox/cfg2ll pre pvorbu ll(k) gramatiky z cfg
+// http://www.fit.vutbr.cz/~ikocman/llkptg/ pre tvorbu ll tabulky a overenia stupna gramatiky
+//
+//--------------------//
+
+%token EOF func_id EXPRESSION var_id void
+%%
+BODY : /*eps*/
+| "?>" EOF
+| "function" func_id "(" PARAMETERS ")" ":" TYPE "{" LOCAL_SCOPE "}" BODY
+| "if" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" "else" "{" LOCAL_SCOPE "}" BODY
+| "while" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" BODY
+| ASSIGNMENT ";" BODY
+| FUNCTION_CALL ";" BODY
+| "return" RETURN ";" BODY;
+
+LOCAL_SCOPE : /*eps*/
+| "function" func_id "(" PARAMETERS ")" ":" TYPE "{" LOCAL_SCOPE "}" LOCAL_SCOPE
+| "if" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" "else" "{" LOCAL_SCOPE "}" LOCAL_SCOPE
+| "while" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" LOCAL_SCOPE
+| ASSIGNMENT ";" LOCAL_SCOPE
+| FUNCTION_CALL ";" LOCAL_SCOPE
+| "return" RETURN ";" LOCAL_SCOPE;
+
+ASSIGNMENT : var_id "=" ASSIGNMENT_PRIME;
+
+ASSIGNMENT_PRIME : EXPRESSION
+| FUNCTION_CALL;
+
+
+FUNCTION_CALL : func_id ARGUMENTS;
+
+RETURN : /*eps*/
+| EXPRESSION
+| FUNCTION_CALL;
+
+TYPE : void
+| PREFIX C_TYPE;
+
+PREFIX : /*eps*/
+| "?";
+
+C_TYPE: "int"
+| "float"
+| "string";
+
+ARGUMENTS : /*eps*/
+| EXPRESSION ARGUMENTS_PRIME;
+
+ARGUMENTS_PRIME : /*eps*/
+| "," EXPRESSION ARGUMENTS_PRIME;
+
+PARAMETERS : /*eps*/
+| C_TYPE var_id PARAMETERS_PRIME;
+
+PARAMETERS_PRIME : /*eps*/
+| "," C_TYPE var_id PARAMETERS_PRIME;
