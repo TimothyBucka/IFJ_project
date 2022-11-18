@@ -8,7 +8,6 @@
 %token EOF func_id EXPRESSION var_id void
 %%
 BODY : /*eps*/
-| "?>" EOF
 | "function" func_id "(" PARAMETERS ")" ":" TYPE "{" LOCAL_SCOPE "}" BODY
 | "if" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" "else" "{" LOCAL_SCOPE "}" BODY
 | "while" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" BODY

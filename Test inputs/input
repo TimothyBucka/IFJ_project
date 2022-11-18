@@ -1,0 +1,19 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+// Program 1: Vypocet faktorialu (iterativne)
+
+function lol (): {
+	return;
+}
+
+
+// no newline at end of file
