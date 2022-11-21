@@ -305,11 +305,10 @@ error lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 lexer_skip_comment(lexer);
             }
             if (lexer->c != prolog[i]) {
-                printf("BAD PROLOG BAD\n");
                 if (i >= 5)
                     return LEXICAL_ERR; // error after <?php
                 else
-                    return PROLOG_ERR; // missing <?php tag
+                    return SYNTAX_ERR; // missing <?php tag
             }
             lexer_advance(lexer);
         }
@@ -794,7 +793,7 @@ error lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
                 printf("Lexer error in\n----------------------\n---------------------\n");
                 lexer->state = STATE_START;
                 lexer_advance(lexer);
-                return PROLOG_ERR; // syntactic error
+                return SYNTAX_ERR; // syntactic error
             }
             break;
         }

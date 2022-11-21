@@ -1,5 +1,6 @@
 
 #include "stack.h"
+#include "expressions.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,10 +34,6 @@ bool parse_type(lexer_T *lexer) {
 }
 
 bool parse_local_scope(lexer_T *lexer) {
-    return true;
-}
-
-bool parse_expresion(lexer_T *lexer) { // TODO for Timo
     return true;
 }
 
@@ -80,7 +77,7 @@ bool parse_body(lexer_T *lexer, stack *stack) {
     else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_WHILE) {
         next_tok;
         if (expect(token, TOKEN_ID_LBRACKET)) {
-            if (parse_expresion(lexer)) {
+            if (parse_expresion(lexer, stack)) {
                 next_tok;
                 if (expect(token, TOKEN_ID_RBRACKET)) {
                     next_tok;
