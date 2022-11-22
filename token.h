@@ -8,12 +8,13 @@ typedef enum {
 
     TOKEN_ID_PLUS,
     TOKEN_ID_MINUS,
-    TOKEN_ID_EQUALS,
-    TOKEN_ID_TRIPLE_EQUALS,
-    TOKEN_ID_GT,  //>
-    TOKEN_ID_ST,  //<
-    TOKEN_ID_GTE, //>=
-    TOKEN_ID_STE, //<=
+    TOKEN_ID_EQUALS,        // =
+    TOKEN_ID_TRIPLE_EQUALS, // ===
+    TOKEN_ID_NOT_EQUALS,    // !==
+    TOKEN_ID_GT,            //>
+    TOKEN_ID_LT,            //<
+    TOKEN_ID_GTE,           //>=
+    TOKEN_ID_LTE,           //<=
     TOKEN_ID_CONCAT,
     TOKEN_ID_DIVISION,
     TOKEN_ID_MULTIPLICATION,
@@ -33,17 +34,17 @@ typedef enum {
 
 typedef enum {
     KW_NOKW,
-    KW_BOOLEAN,  //rozsirenie bool
-    KW_BREAK,    //rozsirenie cykly
-    KW_CONTINUE, //rozsirenie cykly
+    KW_BOOLEAN,  // rozsirenie bool
+    KW_BREAK,    // rozsirenie cykly
+    KW_CONTINUE, // rozsirenie cykly
     KW_ELSE,
-    KW_ELSEIF, //rozsirenie bool
-    KW_FALSE,  //rozsirenie bool
+    KW_ELSEIF, // rozsirenie bool
+    KW_FALSE,  // rozsirenie bool
     KW_FLOAT,
     KW_FLOAT_NULL,
-    KW_FOR, //rozsirenie cykly
+    KW_FOR, // rozsirenie cykly
     KW_FUNCTION,
-    KW_GLOBAL, //rozsirenie glob
+    KW_GLOBAL, // rozsirenie glob
     KW_IF,
     KW_INT,
     KW_INT_NULL,
@@ -52,7 +53,7 @@ typedef enum {
     KW_RETURN,
     KW_STRING,
     KW_STRING_NULL,
-    KW_TRUE, //rozsirenie bool
+    KW_TRUE, // rozsirenie bool
     KW_VOID,
     KW_WHILE,
 

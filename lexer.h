@@ -26,10 +26,12 @@ typedef enum{
     STATE_QUESTIONMARK,
     STATE_CLOSING_TAG,
 
-    STATE_GT_E, //greater than
-    STATE_ST_E, //smaller than
-    STATE_EQ_E, //first eq
-    STATE_EQEQ, //second eq
+    STATE_GT_E,      //greater than
+    STATE_ST_E,      //smaller than
+    STATE_EQ_E,      //first eq
+    STATE_EQEQ,      //second eq
+    STATE_NOT,       // !
+    STATE_NOT_EQ,    // !=
 } lexer_state;
 
 typedef enum {
