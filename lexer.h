@@ -57,7 +57,7 @@ void lexer_skip_comment(lexer_T *lexer);
 
 void lexer_skip_whitespace(lexer_T *lexer);
 
-error lexer_next_token(lexer_T *lexer, token *Token, int *ended);
+error lexer_next_token(lexer_T *lexer, token *Token);
 
 int isoctdigit(char c);
 

@@ -295,7 +295,7 @@ void str_to_double(char *string) {
     }
 }
 
-error lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
+error lexer_next_token(lexer_T *lexer, token *Token) {
     char prolog[] = "<?phpdeclare(strict_types=1);";
 
     if (!lexer->prologParsed) {
@@ -467,7 +467,6 @@ error lexer_next_token(lexer_T *lexer, token *Token, int *ended) {
 
             else if (lexer->c == EOF) {
                 Token->ID = TOKEN_ID_EOF;
-                *ended = 1;
                 return SUCCESS;
             }
 

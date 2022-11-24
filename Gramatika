@@ -1,0 +1,146 @@
+
+    1. <PROG>-><?php declare(strict_types=1);<BODY>
+    2. <BODY>-><BODY>ε
+    3. <BODY>-><BODY>?>
+    4. <BODY>->if(<STATEMENT>){<LOCAL>}else{<LOCAL>}<BODY>
+    5. <BODY>->while(<STATEMENT>){<LOCAL>}<BODY>
+    6. <BODY>->function ID(<PARAMS>):<TYPE>{<LOCAL>}<BODY>
+    7. <BODY>->ID
+    8. <STATEMENT>->
+
+
+
+
+
+
+
+
+    1. <PROG>-><?php declare(strict_types=1);<BODY>
+    2. <BODY>-> ε
+    3. <BODY>-> ?>
+    4. <BODY>-><LOCAL><BODY>
+    5. <BODY>->function ID(<PARAMS>):<TYPE>{<LOCAL>}<LOCAL>
+
+    6. <LOCAL>->if(<STATEMENT>){<LOCAL>}else{<LOCAL>}<LOCAL>
+    7. <LOCAL>->while(<STATEMENT>){<LOCAL>}<LOCAL>
+    8. <LOCAL>-><VAR_ASSIGN>;<LOCAL>
+    9. <LOCAL>-><FUN_CALL>;<LOCAL>
+    10. <LOCAL>->return <RETURN_VAL>;<LOCAL>
+
+    11. <VAR_ASSIGN>->$id = <STATEMENT>
+
+    12. <FUN_CALL>->id(<ARGS>)
+
+    13. <RETURN_VAL> -> <VALUE>
+    14. <RETURN_VAL> -> ε
+
+    15. <VALUE>->int_val
+    16. <VALUE>->string_val
+    17. <VALUE>->null
+    18. <VALUE>->float_val
+    19. <VALUE>->$id
+    20. <VALUE>-><FUN_CALL>
+
+    21. <TYPE> -> void
+    22. <TYPE> -> <TYPE_C>
+    23. <TYPE_C> -> int
+    24. <TYPE_C> -> float
+    25. <TYPE_C> -> string
+    26. <TYPE_C> -> ?int
+    27. <TYPE_C> -> ?float
+    28. <TYPE_C> -> ?string
+
+    29. <STATEMENT> -> <VALUE><OPERATOR><STATEMENT>
+    30. <STATEMENT> -> <VALUE>
+    31. <OPERATOR> -> +
+    32. <OPERATOR> -> -
+    33. <OPERATOR> -> *
+    34. <OPERATOR> -> /
+    35. <OPERATOR> -> ==
+    36. <OPERATOR> -> ===
+    37. <OPERATOR> -> !=
+    38. <OPERATOR> -> !==
+    39. <OPERATOR> -> <
+    40. <OPERATOR> -> >
+    41. <OPERATOR> -> <=
+    42. <OPERATOR> -> >=
+
+    43. <ARG> -> ε
+    44. <ARG> -> ,<ARGS>
+    45. <ARGS> -> <VALUE><ARG>
+    46. <ARGS> -> ε
+
+    47. <PARAM> -> ε
+    48. <PARAM> -> ,<PARAMS>
+    49. <PARAMS> -> <TYPE_C> $id <PARAM>
+    50. <PARAMS> -> ε
+
+
+
+
+TODOs
+—--------------------------------------------------------------------
+    • odstrániť operátory -> precedenčná tabuľka
+    • pozrieť na syntax vyplyvájúcu z neterminálu LOCAL, či nemá následovať skôr             neterminál BODY
+
+
+
+
+
+
+
+
+
+
+
+
+
+“hlúpejšia” but asi FINALL verzia
+
+    1. <BODY>
+
+    2. <BODY>-> ε EOL EOF
+    3. <BODY>-> "­?>" EOL EOF
+    4. <BODY>-> "function" ID "(" <PARAM> ")" ":" <TYPE> "{" <LOCAL_SCOPE> "}" <BODY>
+    5. <BODY>-> "if" (<EXPR>) "{" <LOCAL_SCOPE> "}" "else" "{" <LOCAL_SCOPE> "}" <BODY>
+    6. <BODY>-> "while" "(" <EXPR> ")" "{" <LOCAL_SCOPE> "}" <BODY>
+    7. <BODY>-> <VAR_ASSIGN> ";" <BODY>
+    8. <BODY>-> <FUN_CALL> ";" <BODY>
+    9. <BODY>-> "return" <RETURN_VAL> ";" <BODY>
+
+    <LOCAL_SCOPE_PRIME> ε | <LOCAL_SCOPE>
+    11. <LOCAL_SCOPE>-> if(<EXPR>){<LOCAL_SCOPE>}else{<LOCAL_SCOPE>}<LOCAL_SCOPE_PRIME>
+    12. <LOCAL_SCOPE>-> while(<EXPR>){<LOCAL_SCOPE>}<LOCAL_SCOPE_PRIME>
+    13. <LOCAL_SCOPE>-> <VAR_ASSIGN>;<LOCAL_SCOPE>
+    14. <LOCAL_SCOPE>-> <FUN_CALL>;<LOCAL_SCOPE_PRIME>
+    15. <LOCAL_SCOPE>-> return <RETURN_VAL>;<LOCAL_SCOPE_PRIME>
+
+    16. <VAR_ASSIGN>->$id = <EXPR>
+    17. <VAR_ASSIGN>->$id = <FUN_CALL>
+
+    18. <FUN_CALL>->id(<ARG>)
+
+    19. <RETURN_VAL> -> <FUN_CALL>
+    20. <RETURN_VAL> -> <EXPR>
+    21. <RETURN_VAL> -> ε
+
+
+
+
+
+    <TYPE> -> void
+    <TYPE> -> <PREFIX> <TYPE_C>
+    <PREFIX> -> ε | ?
+    <TYPE_C> -> int
+    <TYPE_C> -> float
+    <TYPE_C> -> string
+
+    31. <ARGS> -> ε
+    32. <ARGS> ->,<EXPR><ARG>
+    33. <ARG> -> <EXPR><ARGS>
+    34. <ARG> -> ε
+
+    35. <PARAMS> -> ε
+    36. <PARAMS> -> ,<TYPE_C> $id <PARAM>
+    37. <PARAM> -> <TYPE_C> $id <PARAMS>
+    38. <PARAM> -> ε
