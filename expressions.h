@@ -66,7 +66,7 @@ char get_precedence(token *, token *);
 
 expr_item *get_term_or_dollar(expr_stack *);
 
-error parse_expresion(lexer_T *, DLL *, bool); // TODO symtable argument
+bool parse_expresion(lexer_T *, DLL *, bool); // TODO symtable argument
 
 // gloabal table
 static const char prec_table[8][8] = {

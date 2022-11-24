@@ -292,6 +292,8 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
         next_tok;
         if (expect(token, TOKEN_ID_SEMICOLLON)) {
             parse_body(lexer, dll);
+        } else {
+            return false;
         }
     }
 
@@ -313,7 +315,9 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
         if (!expect(token, TOKEN_ID_SEMICOLLON)) {
             return false;
         }
-        parse_body(lexer, dll);
+        if (!parse_body(lexer, dll)) {
+            return false;
+        }
     }
     else if (accept(token, TOKEN_ID_EOF)) {
         return true;

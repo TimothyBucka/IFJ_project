@@ -108,12 +108,14 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
     return item;
 }
 
-error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
+bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
     token *token = calloc(1, sizeof(token));
     expr_item *new_item;
     expr_stack *expr_stack = expr_stack_new();
-    if (!expr_stack)
-        return INTERNAL_ERR;
+    if (!expr_stack) {
+        ERROR = INTERNAL_ERR;
+        return false;
+    }
 
     NEW_ITEM(new_item, NULL, DOLLAR);
     expr_stack_push(expr_stack, new_item);
@@ -121,7 +123,7 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
     next_tok;
     if (ERROR) {
         expr_stack_free(expr_stack);
-        return ERROR;
+        return false;
     }
 
     do {
@@ -133,7 +135,7 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             next_tok;
             if (ERROR) {
                 expr_stack_free(expr_stack);
-                return ERROR;
+                return false;
             }
             break;
         case '<':
@@ -143,7 +145,7 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             next_tok;
             if (ERROR) {
                 expr_stack_free(expr_stack);
-                return ERROR;
+                return false;
             }
             break;
         case '>':
@@ -151,10 +153,11 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             break;
         case '\0':
             expr_stack_free(expr_stack);
-            return SYNTAX_ERR;
+            ERROR = SYNTAX_ERR;
+            return false;
         }
     } while (1);
 
 
-    return SUCCESS;
+    return true;
 }
