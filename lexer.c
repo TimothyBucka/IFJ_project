@@ -214,9 +214,9 @@ void str_to_double(char *string) {
             CELCounter++;
         }
         else if (mojstav == CEL && string[stringCounter] == '.') {
-            //convert arrayCEL to integer
+            // convert arrayCEL to integer
             int cel = atoi(arrayCEL);
-            if (cel >= 1000000000) //TODO mozno netreba ak teda nemusime overovať ak som ťa DANNY dobre pochopil
+            if (cel >= 1000000000) // TODO mozno netreba ak teda nemusime overovať ak som ťa DANNY dobre pochopil
             {
                 printf("Chyba: cislo je prilis velke");
                 exit(1);
@@ -244,7 +244,7 @@ void str_to_double(char *string) {
             break;
         }
         else {
-            //TODO ERROR DANNY ERROR
+            // TODO ERROR DANNY ERROR
             printf("Chyba vstupu");
             exit(1);
         }
@@ -252,7 +252,7 @@ void str_to_double(char *string) {
 
     //--------------------------- SPOCITANIE CISEL ---------------------------
 
-    //tento koniec potom ešte treba upraviť keď mi Danny hodí ten výstup ale ísť to ide :D
+    // tento koniec potom ešte treba upraviť keď mi Danny hodí ten výstup ale ísť to ide :D
 
     char str[100];
     char exponent[100];
@@ -260,7 +260,7 @@ void str_to_double(char *string) {
     strcpy(exponent, arrayEXP);
     double exponentNumber = atof(exponent);
     double doubleNum = atof(str);
-    long long int longIntNum = atoll(arrayCEL); //TODO tu sa hodi podmienka podla toho aky bol vstup
+    long long int longIntNum = atoll(arrayCEL); // TODO tu sa hodi podmienka podla toho aky bol vstup
 
     /*TODO*/
     /*TODO*/
@@ -270,13 +270,12 @@ void str_to_double(char *string) {
     /*TODO*/
     /*TODO*/
     /*TODO*/
-    //DANNY TIE VSTUPYYYYYYYYYYYYYYYYYYY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // DANNY TIE VSTUPYYYYYYYYYYYYYYYYYYY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     /*TODO*/
     /*TODO*/
     /*TODO*/
     /*TODO*/
     /*TODO*/
-
 
     /*TODO delete prints (it was just as a control point if everything works) also need to hande situations when output should be
     print as a floating point number (range of double in C) or inteager (range of long long int in c)
@@ -299,17 +298,16 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
     char prolog[] = "<?phpdeclare(strict_types=1);";
 
     if (!lexer->prologParsed) {
-        for (int i=0; i<29; i++) {  // length of prolog
-            if (i == 5) {   // after <?php
+        for (int i = 0; i < 29; i++) { // length of prolog
+            if (i == 5) {              // after <?php
                 lexer_skip_whitespace(lexer);
                 lexer_skip_comment(lexer);
             }
             if (lexer->c != prolog[i]) {
-                printf("BAD PROLOG BAD\n");
                 if (i >= 5)
                     return LEXICAL_ERR; // error after <?php
                 else
-                    return PROLOG_ERR; // missing <?php tag
+                    return SYNTAX_ERR; // missing <?php tag
             }
             lexer_advance(lexer);
         }
@@ -320,7 +318,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
     unsigned int char_i; // used eg char_i=lexer->i to track number of loaded characters
 
     while (1) {
-        //printf("State %d, character '%c'\n", lexer->state, lexer->c);
+        // printf("State %d, character '%c'\n", lexer->state, lexer->c);
         switch (lexer->state) {
 
         case STATE_START:
@@ -339,6 +337,16 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 chararray_append(value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_E;
+            }
+
+            else if (lexer->c == '?') {
+                lexer_advance(lexer);
+                lexer->state = STATE_QUESTIONMARK;
+            }
+
+            else if (lexer->c == '!') {
+                lexer_advance(lexer);
+                lexer->state = STATE_NOT;
             }
 
             else if (lexer->c == '=') {
@@ -458,11 +466,6 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 Token->VAL.string = value;
                 lexer_advance(lexer);
                 return SUCCESS;
-            }
-
-            else if (lexer->c == '?') {
-                lexer_advance(lexer);
-                lexer->state = STATE_QUESTIONMARK;
             }
 
             else if (lexer->c == EOF) {
@@ -679,6 +682,31 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 return SUCCESS;
             }
             break;
+        
+        case STATE_NOT:
+            if (lexer->c == '=') {
+                lexer_advance(lexer);
+                lexer->state = STATE_NOT_EQ;
+            } else {
+                lexer_advance(lexer);
+                return LEXICAL_ERR;
+            }
+            break;
+
+        case STATE_NOT_EQ:
+            if (lexer->c == '=') {
+                printf("Token is !==\n");
+                lexer_advance(lexer);
+                lexer->state = STATE_START;
+                Token->ID = TOKEN_ID_NOT_EQUALS;
+                return SUCCESS;
+                
+            } else {
+                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                lexer_advance(lexer);
+                return LEXICAL_ERR;
+            }
+            break;
 
         case STATE_EQ_E:
             if (lexer->c == '=') {
@@ -726,12 +754,12 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 printf("Token is smaller than equals\n");
                 lexer_advance(lexer);
                 lexer->state = STATE_START;
-                Token->ID = TOKEN_ID_STE;
+                Token->ID = TOKEN_ID_LTE;
             }
             else {
                 printf("Token is smaller than\n");
                 lexer->state = STATE_START;
-                Token->ID = TOKEN_ID_ST;
+                Token->ID = TOKEN_ID_LT;
             }
             return SUCCESS;
 
@@ -793,7 +821,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 printf("Lexer error in\n----------------------\n---------------------\n");
                 lexer->state = STATE_START;
                 lexer_advance(lexer);
-                return PROLOG_ERR; // syntactic error
+                return SYNTAX_ERR; // syntactic error
             }
             break;
         }

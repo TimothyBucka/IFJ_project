@@ -1,3 +1,6 @@
+#ifndef LEXER_H
+#define LEXER_H
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -26,10 +29,12 @@ typedef enum{
     STATE_QUESTIONMARK,
     STATE_CLOSING_TAG,
 
-    STATE_GT_E, //greater than
-    STATE_ST_E, //smaller than
-    STATE_EQ_E, //first eq
-    STATE_EQEQ, //second eq
+    STATE_GT_E,      //greater than
+    STATE_ST_E,      //smaller than
+    STATE_EQ_E,      //first eq
+    STATE_EQEQ,      //second eq
+    STATE_NOT,       // !
+    STATE_NOT_EQ,    // !=
 } lexer_state;
 
 typedef enum {
@@ -68,3 +73,5 @@ int str_to_int(char *src); //12 2431424343
 double str_to_doule(char *src); //1e4 1E4 1.2e5  1.4E-/+6449
 
 void clean_string(char **src); // "\123 \xAF"
+
+#endif
