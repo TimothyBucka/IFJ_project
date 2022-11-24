@@ -1,11 +1,30 @@
+#ifndef EXPRESSIONS_H
+#define EXPRESSIONS_H
+
 #include "lexer.h"
-#include "symtable.h"
 #include "stack.h"
+#include "symtable.h"
+#include "DLL.h"
+
+#define NEW_ITEM(new_item, token, type)    \
+    new_item = expr_item_new(token, type); \
+    if (!new_item) {                       \
+        expr_stack_free(expr_stack);       \
+        return INTERNAL_ERR;               \
+    }
+
+#define next_tok   if(dll->activeElement == dll->lastElement)\
+                    {\
+                        ERROR = lexer_next_token(lexer, token);\
+                        DLL_push(dll, token);\
+                    }\
+                    else{DLL_move_active_right(dll);token = DLL_get_active(dll);}
+
+// #define NEXT_TOKEN(lexer, token, ended, error)
 
 typedef enum {
     TERM,
     NONTERM,
-    BREAKPOINT,
     DOLLAR
 } expr_item_type;
 
@@ -29,6 +48,7 @@ typedef enum {
 typedef struct expr_item {
     token *token;
     expr_item_type type;
+    bool breakpoint;
     struct expr_item *next_item;
 } expr_item;
 
@@ -37,17 +57,21 @@ typedef struct {
     expr_item *top_item;
 } expr_stack;
 
-expr_item *expr_item_new(token *token, expr_item_type type);
+expr_item *expr_item_new(token *, expr_item_type);
 
 expr_stack *expr_stack_new();
-void expr_stack_push(expr_stack *stack, expr_item *item);
-expr_item *expr_stack_pop(expr_stack *stack);
-void expr_stack_free(expr_stack *stack);
+void expr_stack_push(expr_stack *, expr_item *);
+expr_item *expr_stack_pop(expr_stack *);
+void expr_stack_free(expr_stack *);
 
-error parse_expresion(lexer_T *lexer, stack *stack); // TODO symtable
+char get_precedence(token *, token *);
+
+expr_item *get_term_or_dollar(expr_stack *);
+
+error parse_expresion(lexer_T *, DLL *, bool); // TODO symtable argument
 
 // gloabal table
-char prec_table[8][8] = {
+static const char prec_table[8][8] = {
 //    0     1     2    3    4    5    6    7
 //    $     (     )    +    *    .    r    i
     {'\0', '<', '\0', '<', '<', '<', '<', '<'}, // $ - 0
@@ -59,3 +83,7 @@ char prec_table[8][8] = {
     {'>', '<', '>', '<', '<', '<', '\0', '<'},  // r - 6
     {'>', '\0', '>', '>', '>', '>', '>', '\0'}  // i - 7
 };
+
+static error ERROR = SUCCESS;
+
+#endif

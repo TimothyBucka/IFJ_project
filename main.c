@@ -6,8 +6,6 @@
 #include <stdbool.h>
 #include "DLL.h"
 
-error ERROR = SUCCESS;
-
 #define next_tok;       if(dll->activeElement == dll->lastElement)\
                         { ERROR = lexer_next_token(lexer, token);\
                         DLL_push(dll, token);\
@@ -60,17 +58,13 @@ bool parse_local_scope(lexer_T *lexer, DLL *dll) {
     return true;
 }
 
-bool parse_expresion(lexer_T *lexer, DLL *dll) { // TODO for Timo
-    return true;
-}
-
 bool parse_assignment_prime (lexer_T *lexer, DLL *dll ){ 
     token *token = calloc(1, sizeof(token));
 
 
     //TODO add FUNCALL case
 
-    return parse_expresion(lexer, dll);
+    return parse_expresion(lexer, dll, false);
 }
 
 bool parse_assignment (lexer_T *lexer, DLL *dll) { 
@@ -107,7 +101,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
         next_tok;
         if (!expect(token, TOKEN_ID_RBRACKET)){return false;}                       //  )
         next_tok;
-        if (!expect(token, TOKEN_ID_COLON)){return false;}                          //  ;
+        if (!expect(token, TOKEN_ID_COLON)){return false;}                          //  :
         if(!parse_type(lexer, dll)){return false;}                                //  type    
         next_tok;
         if(!expect(token, TOKEN_ID_LCURLYBRACKET)){return false;}                   //  {
@@ -121,7 +115,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
     else if(accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_IF){        //  if
         next_tok;
         if(!expect(token, TOKEN_ID_LBRACKET)){return false;}                        //  (
-        if(!parse_expresion(lexer, dll)){return false;}                           //  expresion
+        if(!parse_expresion(lexer, dll, true)){return false;}                           //  expresion
         next_tok;
         if(!expect(token, TOKEN_ID_RBRACKET)){return false;}                        //  )
         next_tok;
@@ -143,7 +137,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
     else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_WHILE) {   //  while
         next_tok;
         if(!expect(token, TOKEN_ID_LBRACKET)){return false;}                        //  (
-        if(!parse_expresion(lexer, dll)){return false;}
+        if(!parse_expresion(lexer, dll, true)){return false;}
         next_tok;
         if(!expect(token, TOKEN_ID_RBRACKET)){return false;}
         next_tok;
