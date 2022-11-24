@@ -11,9 +11,11 @@ BODY : /*eps*/
 | "function" func_id "(" PARAMETERS ")" ":" TYPE "{" LOCAL_SCOPE "}" BODY
 | "if" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" "else" "{" LOCAL_SCOPE "}" BODY
 | "while" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" BODY
-| ASSIGNMENT ";" BODY
-| FUNCTION_CALL ";" BODY
 | "return" RETURN ";" BODY;
+| FUNCTION_CALL ";" BODY
+| ASSIGNMENT ";" BODY
+| EXPRESSION ";" BODY                               //  TODO
+
 
 LOCAL_SCOPE : /*eps*/
 | "function" func_id "(" PARAMETERS ")" ":" TYPE "{" LOCAL_SCOPE "}" LOCAL_SCOPE
@@ -26,14 +28,14 @@ LOCAL_SCOPE : /*eps*/
 ASSIGNMENT : var_id "=" ASSIGNMENT_PRIME;
 
 ASSIGNMENT_PRIME : EXPRESSION
-| FUNCTION_CALL;
+| FUNCTION_CALL;                                //TODO implement later
 
 
-FUNCTION_CALL : func_id ARGUMENTS;
+FUNCTION_CALL : func_id "(" ARGUMENTS ")";
 
 RETURN : /*eps*/
 | EXPRESSION
-| FUNCTION_CALL;
+| FUNCTION_CALL;                                //TODO implement later
 
 TYPE : void
 | PREFIX C_TYPE;
