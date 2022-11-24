@@ -20,8 +20,6 @@
                     }\
                     else{DLL_move_active_right(dll);token = DLL_get_active(dll);}
 
-// #define NEXT_TOKEN(lexer, token, ended, error)
-
 typedef enum {
     TERM,
     NONTERM,

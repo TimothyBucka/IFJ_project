@@ -1,7 +1,8 @@
 #ifndef DLL_H
 #define DLL_H
 
-#include "stack.h"
+#include "token.h"
+#include <stdlib.h>
 
 typedef struct DLLElement {
     token data;

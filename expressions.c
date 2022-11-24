@@ -76,6 +76,7 @@ int get_index_token(token *token) {
     case TOKEN_ID_LTE:
     case TOKEN_ID_GTE:
         return 6;
+    case TOKEN_ID_IDENTIFIER:
     case TOKEN_ID_VARIABLE:
     case TOKEN_ID_INTEGER:
     case TOKEN_ID_DOUBLE:
@@ -108,7 +109,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
 }
 
 error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
-    token *token = NULL;
+    token *token = calloc(1, sizeof(token));
     expr_item *new_item;
     expr_stack *expr_stack = expr_stack_new();
     if (!expr_stack)
@@ -118,7 +119,7 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
     expr_stack_push(expr_stack, new_item);
 
     next_tok;
-    if (!ERROR) {
+    if (ERROR) {
         expr_stack_free(expr_stack);
         return ERROR;
     }
@@ -130,7 +131,7 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             NEW_ITEM(new_item, token, TERM);
             expr_stack_push(expr_stack, new_item);
             next_tok;
-            if (!ERROR) {
+            if (ERROR) {
                 expr_stack_free(expr_stack);
                 return ERROR;
             }
@@ -140,7 +141,7 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             NEW_ITEM(new_item, token, TERM);
             expr_stack_push(expr_stack, new_item);
             next_tok;
-            if (!ERROR) {
+            if (ERROR) {
                 expr_stack_free(expr_stack);
                 return ERROR;
             }
@@ -153,4 +154,7 @@ error parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             return SYNTAX_ERR;
         }
     } while (1);
+
+
+    return SUCCESS;
 }
