@@ -1,3 +1,6 @@
+#ifndef LEXER_H
+#define LEXER_H
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -70,3 +73,5 @@ int str_to_int(char *src); //12 2431424343
 double str_to_doule(char *src); //1e4 1E4 1.2e5  1.4E-/+6449
 
 void clean_string(char **src); // "\123 \xAF"
+
+#endif

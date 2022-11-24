@@ -1,6 +1,9 @@
+#ifndef TOKEN_H
+#define TOKEN_H
+
 typedef enum {
-    TOKEN_ID_IDENTIFIER,
-    TOKEN_ID_VARIABLE,
+    TOKEN_ID_IDENTIFIER, // functions
+    TOKEN_ID_VARIABLE,   // variables
     TOKEN_ID_INTEGER,
     TOKEN_ID_DOUBLE,
     TOKEN_ID_STRING,
@@ -71,3 +74,5 @@ typedef struct
     token_ID ID;
     token_VAL VAL;
 } token;
+
+#endif

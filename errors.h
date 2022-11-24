@@ -1,3 +1,6 @@
+#ifndef ERRORS_H
+#define ERRORS_H
+
 typedef enum error_code {
     SUCCESS,                // 0
     LEXICAL_ERR,            // 1 - chyba programu v ramci lexikalni analyzy (chybna struktura aktualniho lexemu)
@@ -10,3 +13,5 @@ typedef enum error_code {
     SEM_OTHER_ERR,          // 8 - ostatni semanticke chyby
     INTERNAL_ERR = 99,      // 99 interna chyba prekladace (alokace)
 } error;
+
+#endif

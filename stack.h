@@ -1,3 +1,6 @@
+#ifndef STACK_H
+#define STACK_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "lexer.h"
@@ -19,3 +22,5 @@ stack *stack_new();
 void stack_push(stack *s, token *t);
 
 token *stack_pop(stack *s);
+
+#endif
