@@ -45,7 +45,8 @@ PREFIX : /*eps*/
 
 C_TYPE: "int"
 | "float"
-| "string";
+| "string"
+| "void";
 
 ARGUMENTS : /*eps*/
 | EXPRESSION ARGUMENTS_PRIME;
