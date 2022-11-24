@@ -1,3 +1,5 @@
+#ifndef DLL_H
+#define DLL_H
 #include "stack.h"
 
 typedef struct DLLElement {
@@ -24,3 +26,4 @@ void DLL_move_active_left(DLL *dll);
 
 void DLL_move_active_right(DLL *dll);
 
+#endif

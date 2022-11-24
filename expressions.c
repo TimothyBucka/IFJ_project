@@ -1,5 +1,5 @@
 #include "expressions.h"
 
-error parse_expresion(lexer_T *lexer, stack *stack) {
-    
+bool parse_expresion(lexer_T *lexer, DLL *dll) { // TODO for Timo
+    return true;
 }

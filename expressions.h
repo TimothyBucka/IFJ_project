@@ -1,6 +1,10 @@
+#ifndef EXPRESSIONS_H
+#define EXPRESSIONS_H
+
 #include "lexer.h"
 #include "symtable.h"
 #include "stack.h"
+#include "DLL.h"
 
 typedef enum {
     TERM,
@@ -44,10 +48,11 @@ void expr_stack_push(expr_stack *stack, expr_item *item);
 expr_item *expr_stack_pop(expr_stack *stack);
 void expr_stack_free(expr_stack *stack);
 
-error parse_expresion(lexer_T *lexer, stack *stack); // TODO symtable
+
+bool parse_expresion(lexer_T *lexer, DLL *dll); // TODO symtable
 
 // gloabal table
-char prec_table[8][8] = {
+static char prec_table[8][8] = {
 //    0     1     2    3    4    5    6    7
 //    $     (     )    +    *    .    r    i
     {'\0', '<', '\0', '<', '<', '<', '<', '<'}, // $ - 0
@@ -59,3 +64,4 @@ char prec_table[8][8] = {
     {'>', '<', '>', '<', '<', '<', '\0', '<'},  // r - 6
     {'>', '\0', '>', '>', '>', '>', '>', '\0'}  // i - 7
 };
+#endif
