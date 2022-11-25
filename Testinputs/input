@@ -1,14 +1,6 @@
-<?php 
-
-/*sdfdf
- @DanielMacura
- @Patrick0482
- @TimothyBucka
- @Tobsterr58
-
-*/
-
+<?php
 declare(strict_types=1);
 
-write("Zadejte cislo pro vypocet faktorialu\n");
-$a = readi();
+if (($a + 2) + 3 === $b) {
+    
+}
