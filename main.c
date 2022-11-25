@@ -121,6 +121,28 @@ bool parse_arguments(lexer_T *lexer, DLL *dll) {
     return true;
 }
 
+bool parse_type(lexer_T *lexer, DLL *dll) {
+    token *token = calloc(1, sizeof(token));
+
+    next_tok;
+    if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_VOID) {
+        return true;
+    }
+    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_INT) || (token->VAL.keyword ==KW_INT_NULL))) {
+        return true;
+    }
+    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_FLOAT) || (token->VAL.keyword ==KW_FLOAT_NULL))) {
+        return true;
+    }
+    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_STRING) || (token->VAL.keyword ==KW_STRING_NULL))) {
+        return true;
+    }
+    else {
+        DLL_move_active_left(dll);
+        return false;
+    }
+}
+
 bool parse_parameters_prime(lexer_T *lexer, DLL *dll) {
     token *token = calloc(1, sizeof(token));
 
@@ -160,32 +182,20 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll) {
     return true;
 }
 
-bool parse_type(lexer_T *lexer, DLL *dll) {
-    token *token = calloc(1, sizeof(token));
 
-    next_tok;
-    if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_VOID) {
-        return true;
-    }
-    else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_INT) {
-        return true;
-    }
-    else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_FLOAT) {
-        return true;
-    }
-    else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_STRING) {
-        return true;
-    }
-    else {
-        DLL_move_active_left(dll);
-        return_error;
-    }
-}
 
 bool parse_parameters(lexer_T *lexer, DLL *dll) {
     token *token = calloc(1, sizeof(token));
     if(!parse_type(lexer, dll)){
-        return_error;
+        next_tok;
+        if(!expect(token, TOKEN_ID_RBRACKET)){
+
+            return_error;
+        }
+        else{
+            DLL_move_active_left(dll);
+            return true;
+        }
     }
     next_tok;
 
@@ -433,7 +443,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
     }
 
     else {
-        DLL_move_active_left(dll);
+        //DLL_move_active_left(dll);
         // case assignment
         if (parse_assignment(lexer, dll)) {
         }

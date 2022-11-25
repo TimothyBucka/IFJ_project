@@ -1,0 +1,17 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+
+function foo() : ?float {
+    return;
+}
+
+?>

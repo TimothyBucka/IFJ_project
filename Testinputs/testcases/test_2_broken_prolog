@@ -1,0 +1,13 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+false;
+declare(strict_types=0);
+
+write("Zadejte cislo pro vypocet faktorialu\n");
