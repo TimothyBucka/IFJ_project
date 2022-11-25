@@ -64,9 +64,13 @@ void expr_stack_free(expr_stack *);
 
 char get_precedence(token *, token *);
 
+int count_breakpoint(expr_stack *);
+
+bool apply_rule(expr_stack *);
+
 expr_item *get_term_or_dollar(expr_stack *);
 
-error parse_expresion(lexer_T *, DLL *, bool); // TODO symtable argument
+bool parse_expresion(lexer_T *, DLL *, bool); // TODO symtable argument
 
 // gloabal table
 static const char prec_table[8][8] = {
