@@ -10,8 +10,7 @@
 
 declare(strict_types=1);
 
-function foo() : ?float {
-    return;
-}
+write("Zadejte cislo pro vypocet faktorialu\n");
 
-?>
+>?
+asd     //TODO
