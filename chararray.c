@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 char *chararray_init(unsigned int size) {
     char *value = calloc(size, sizeof(char));
@@ -16,14 +16,13 @@ char *chararray_init(unsigned int size) {
 
 void chararray_append(char *chararray, char c) {
 
-
     size_t len = strlen(chararray);
-    char* temp = realloc(chararray, len + 2); // 1 for the new char, 1 for the null terminator
-    if (temp != NULL){
+    char *temp = realloc(chararray, len + 2); // 1 for the new char, 1 for the null terminator
+    if (temp != NULL) {
         chararray = temp;
     }
-    else{
-        printf("Big memory problem.\n");
+    else {
+        // printf("Big memory problem.\n");
     }
 
     /*

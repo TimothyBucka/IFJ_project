@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
-if (($a + 2) + 3 === $b) {
-    
-}
+if (1e2 === 100) {
+    return;
+} 
+else{}
+
+return;

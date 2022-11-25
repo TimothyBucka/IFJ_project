@@ -127,7 +127,7 @@ void clean_string(char **str) {
         char c = (char)0;
 
         if ((*str)[i] == '$') {
-            printf("Unescaped $\n");
+            // printf("Unescaped $\n");
             continue; // TODO: implement
         }
 
@@ -200,7 +200,6 @@ void str_to_double(char *string) {
     // ------------------------------------ SEPAROVANIE CISEL ------------------------------------
     int stringCounter = 0;
     int CELCounter = 0;
-    int haveDES = 0;
     int EXPCounter = 0;
     char sign = '+';
     char arrayCEL[100];
@@ -218,10 +217,9 @@ void str_to_double(char *string) {
             int cel = atoi(arrayCEL);
             if (cel >= 1000000000) // TODO mozno netreba ak teda nemusime overovať ak som ťa DANNY dobre pochopil
             {
-                printf("Chyba: cislo je prilis velke");
+                // printf("Chyba: cislo je prilis velke");
                 exit(1);
             }
-            haveDES = 1;
             arrayCEL[CELCounter++] = '.';
             stringCounter++;
         }
@@ -245,7 +243,7 @@ void str_to_double(char *string) {
         }
         else {
             // TODO ERROR DANNY ERROR
-            printf("Chyba vstupu");
+            // printf("Chyba vstupu");
             exit(1);
         }
     }
@@ -260,7 +258,7 @@ void str_to_double(char *string) {
     strcpy(exponent, arrayEXP);
     double exponentNumber = atof(exponent);
     double doubleNum = atof(str);
-    long long int longIntNum = atoll(arrayCEL); // TODO tu sa hodi podmienka podla toho aky bol vstup
+    //long long int longIntNum = atoll(arrayCEL); // TODO tu sa hodi podmienka podla toho aky bol vstup
 
     /*TODO*/
     /*TODO*/
@@ -285,12 +283,12 @@ void str_to_double(char *string) {
         for (int i = 0; i < exponentNumber; i++) {
             doubleNum = doubleNum / 10;
         }
-        printf("%f\n", doubleNum);
+        // printf("%f\n", doubleNum);
     }
     else {
         double outcome = round(pow(10, exponentNumber));
         outcome = doubleNum * outcome;
-        printf("%a\n", outcome);
+        // printf("%a\n", outcome);
     }
 }
 
@@ -318,7 +316,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
     unsigned int char_i; // used eg char_i=lexer->i to track number of loaded characters
 
     while (1) {
-        // printf("State %d, character '%c'\n", lexer->state, lexer->c);
+        // //printf("State %d, character '%c'\n", lexer->state, lexer->c);
         switch (lexer->state) {
 
         case STATE_START:
@@ -363,7 +361,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == '+') {
-                printf("Token is plus\n");
+                // printf("Token is plus\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_PLUS;
                 Token->VAL.string = value;
@@ -371,7 +369,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 return SUCCESS;
             }
             else if (lexer->c == '-') {
-                printf("Token is minus\n");
+                // printf("Token is minus\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_MINUS;
                 Token->VAL.string = value;
@@ -379,7 +377,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 return SUCCESS;
             }
             else if (lexer->c == '*') {
-                printf("Token is multiplication\n");
+                // printf("Token is multiplication\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_MULTIPLICATION;
                 Token->VAL.string = value;
@@ -392,7 +390,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == '.') {
-                printf("Token is concatenanion\n");
+                // printf("Token is concatenanion\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_CONCAT;
                 Token->VAL.string = value;
@@ -407,7 +405,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == '(') {
-                printf("Token is (\n");
+                // printf("Token is (\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_LBRACKET;
                 Token->VAL.string = value;
@@ -416,7 +414,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == ')') {
-                printf("Token is )\n");
+                // printf("Token is )\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_RBRACKET;
                 Token->VAL.string = value;
@@ -424,7 +422,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 return SUCCESS;
             }
             else if (lexer->c == '{') {
-                printf("Token is {\n");
+                // printf("Token is {\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_LCURLYBRACKET;
                 Token->VAL.string = value;
@@ -433,7 +431,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == '}') {
-                printf("Token is }\n");
+                // printf("Token is }\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_RCURLYBRACKET;
                 Token->VAL.string = value;
@@ -442,7 +440,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == ';') {
-                printf("Token is ;\n");
+                // printf("Token is ;\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_SEMICOLLON;
                 Token->VAL.string = value;
@@ -451,7 +449,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == ',') {
-                printf("Token is ,\n");
+                // printf("Token is ,\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_COMMA;
                 Token->VAL.string = value;
@@ -460,7 +458,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else if (lexer->c == ':') {
-                printf("Token is :\n");
+                // printf("Token is :\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_COLON;
                 Token->VAL.string = value;
@@ -474,7 +472,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
 
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -487,7 +485,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_VARIABLE_E;
             }
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer->state = STATE_START;
                 return LEXICAL_ERR;
             }
@@ -499,7 +497,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer_advance(lexer);
             }
             else {
-                printf("Token is variable\n");
+                // printf("Token is variable\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_VARIABLE;
                 Token->VAL.string = value;
@@ -515,19 +513,19 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             else {
                 keyword kw = is_keyword(value);
                 if (kw) {
-                    printf("Token is keyword %s\n", value);
+                    // printf("Token is keyword %s\n", value);
                     lexer->state = STATE_START;
                     Token->ID = TOKEN_ID_KEYWORD;
                     Token->VAL.keyword = kw;
                 }
                 else if (value[0] == '?') {
-                    printf("Lexer error in\n----------------------\n---------------------\n");
+                    // printf("Lexer error in\n----------------------\n---------------------\n");
                     lexer->state = STATE_START;
                     lexer_advance(lexer);
                     return LEXICAL_ERR;
                 }
                 else {
-                    printf("Token is identifier\n");
+                    // printf("Token is identifier\n");
                     lexer->state = STATE_START;
                     Token->ID = TOKEN_ID_IDENTIFIER;
                     Token->VAL.string = value;
@@ -552,7 +550,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_INTEGER_EXPONENT_START;
             }
             else {
-                printf("Token is integer\n");
+                // printf("Token is integer\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_INTEGER;
                 Token->VAL.string = value;
@@ -568,7 +566,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 break;
             }
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -585,7 +583,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_DOUBLE_EXPONENT_START;
             }
             else {
-                printf("Token is double\n");
+                // printf("Token is double\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_DOUBLE;
                 Token->VAL.string = value;
@@ -605,7 +603,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_INTEGER_EXPONENT_SIGN;
             }
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -618,7 +616,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_INTEGER_EXPONENT_E;
             }
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -630,7 +628,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer_advance(lexer);
             }
             else {
-                printf("Token is integer exponent\n");
+                // printf("Token is integer exponent\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_INTEGER;
                 Token->VAL.string = value;
@@ -650,7 +648,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_DOUBLE_EXPONENT_SIGN;
             }
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -663,7 +661,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_DOUBLE_EXPONENT_E;
             }
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -675,19 +673,20 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer_advance(lexer);
             }
             else {
-                printf("Token is double exponent\n");
+                // printf("Token is double exponent\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_INTEGER;
                 Token->VAL.string = value;
                 return SUCCESS;
             }
             break;
-        
+
         case STATE_NOT:
             if (lexer->c == '=') {
                 lexer_advance(lexer);
                 lexer->state = STATE_NOT_EQ;
-            } else {
+            }
+            else {
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -695,14 +694,14 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_NOT_EQ:
             if (lexer->c == '=') {
-                printf("Token is !==\n");
+                // printf("Token is !==\n");
                 lexer_advance(lexer);
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_NOT_EQUALS;
                 return SUCCESS;
-                
-            } else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+            }
+            else {
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
@@ -714,7 +713,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_EQEQ;
             }
             else {
-                printf("Token is equals\n");
+                // printf("Token is equals\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_EQUALS;
                 return SUCCESS;
@@ -723,27 +722,27 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_EQEQ:
             if (lexer->c == '=') {
-                printf("Token is triple equals\n");
+                // printf("Token is triple equals\n");
                 lexer_advance(lexer);
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_TRIPLE_EQUALS;
                 return SUCCESS;
             }
             else {
-                printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
+                // printf("Lexer error in %d\n----------------------\n---------------------\n", lexer->state);
                 lexer_advance(lexer);
                 return LEXICAL_ERR;
             }
 
         case STATE_GT_E:
             if (lexer->c == '=') {
-                printf("Token is greather than equals\n");
+                // printf("Token is greather than equals\n");
                 lexer_advance(lexer);
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_GTE;
             }
             else {
-                printf("Token is greather than\n");
+                // printf("Token is greather than\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_GT;
             }
@@ -751,13 +750,13 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_ST_E:
             if (lexer->c == '=') {
-                printf("Token is smaller than equals\n");
+                // printf("Token is smaller than equals\n");
                 lexer_advance(lexer);
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_LTE;
             }
             else {
-                printf("Token is smaller than\n");
+                // printf("Token is smaller than\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_LT;
             }
@@ -765,7 +764,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_QUOTATION_CENTER_E:
             if (lexer->c == '"') {
-                printf("Token is string\n");
+                // printf("Token is string\n");
                 lexer->state = STATE_START;
                 lexer_advance(lexer);
                 clean_string(&value);
@@ -795,7 +794,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             lexer_skip_comment(lexer);
             lexer->state = STATE_START;
             if (lexer->i - char_i == 1) { // moved just one character ie no comment skipped
-                printf("Token is division\n");
+                // printf("Token is division\n");
                 Token->ID = TOKEN_ID_DIVISION;
                 Token->VAL.string = value;
                 return SUCCESS;
@@ -804,7 +803,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_QUESTIONMARK:
             if (lexer->c == '>') {
-                printf("CLOSING TAG\n");
+                // printf("CLOSING TAG\n");
                 lexer->state = STATE_CLOSING_TAG;
                 lexer_advance(lexer);
             }
@@ -818,7 +817,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             if (lexer->c == EOF)
                 lexer->state = STATE_START;
             else {
-                printf("Lexer error in\n----------------------\n---------------------\n");
+                // printf("Lexer error in\n----------------------\n---------------------\n");
                 lexer->state = STATE_START;
                 lexer_advance(lexer);
                 return SYNTAX_ERR; // syntactic error

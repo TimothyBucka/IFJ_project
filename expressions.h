@@ -13,7 +13,7 @@
         return INTERNAL_ERR;               \
     }
 
-#define next_tok   if(dll->activeElement == dll->lastElement)\
+#define NEXT_TOKEN  if(dll->activeElement == dll->lastElement)\
                     {\
                         ERROR = lexer_next_token(lexer, token);\
                         DLL_push(dll, token);\
@@ -85,7 +85,5 @@ static const char prec_table[8][8] = {
     {'>', '<', '>', '<', '<', '<', '\0', '<'},  // r - 6
     {'>', '\0', '>', '>', '>', '>', '>', '\0'}  // i - 7
 };
-
-static error ERROR = SUCCESS;
 
 #endif

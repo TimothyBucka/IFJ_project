@@ -1,7 +1,7 @@
 # Custom
 ifj22
 output
-.zip
+*.zip
 
 ### VisualStudioCode ###
 .vscode
