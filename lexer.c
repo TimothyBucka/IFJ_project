@@ -634,7 +634,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_INTEGER;
                 Token->VAL.string = value;
-                return LEXICAL_ERR;
+                return SUCCESS;
             }
             break;
 

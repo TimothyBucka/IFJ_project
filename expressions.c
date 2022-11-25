@@ -178,7 +178,7 @@ bool apply_rule(expr_stack *expr_stack) {
             }
         }
         else if ((item_right->type == TERM && get_index_token(item_right->token) == 2) &&
-                 (item_left->type == TERM && get_index_token(item_right->token) == 1) &&
+                 (item_left->type == TERM && get_index_token(item_left->token) == 1) &&
                  (item_middle->type == NONTERM)) { // E -> (E)
             ret_val = true;
         }
@@ -259,6 +259,12 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
                 return false;
             }
             if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token) == 0) {
+                if (exp_brack) {
+                    ERROR = SYNTAX_ERR;
+                    printf("GAD expresoizn\n");
+                    expr_stack_free(expr_stack);
+                    return false;
+                }
                 expr_stack_free(expr_stack);
                 printf(":D GOOOT expresoizn\n");
                 return true;
