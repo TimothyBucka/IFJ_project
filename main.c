@@ -6,8 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+error ERROR = SUCCESS;
 
-#define return_error;       \
+#define return_error        \
     if (ERROR == SUCCESS) { \
         ERROR = SYNTAX_ERR; \
     }                       \
@@ -29,8 +30,6 @@ bool parse_body(lexer_T *lexer, DLL *dll);
         token = DLL_get_active(dll);              \
     }
 
-
-
 bool accept(token *token, token_ID acceptedID) {
     if (acceptedID == token->ID) {
         return true;
@@ -42,9 +41,9 @@ bool expect(token *token, token_ID acceptedID) {
     if (acceptedID == token->ID) {
         return true;
     }
-    printf("Unexpected token parsed in syntax analisys\n");
-    printf("Expected %d", acceptedID);
-    printf("got %d\n", token->ID);
+    // printf("Unexpected token parsed in syntax analisys\n");
+    // printf("Expected %d", acceptedID);
+    // printf("got %d\n", token->ID);
     return false;
 }
 
@@ -128,13 +127,13 @@ bool parse_type(lexer_T *lexer, DLL *dll) {
     if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_VOID) {
         return true;
     }
-    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_INT) || (token->VAL.keyword ==KW_INT_NULL))) {
+    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_INT) || (token->VAL.keyword == KW_INT_NULL))) {
         return true;
     }
-    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_FLOAT) || (token->VAL.keyword ==KW_FLOAT_NULL))) {
+    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_FLOAT) || (token->VAL.keyword == KW_FLOAT_NULL))) {
         return true;
     }
-    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_STRING) || (token->VAL.keyword ==KW_STRING_NULL))) {
+    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_STRING) || (token->VAL.keyword == KW_STRING_NULL))) {
         return true;
     }
     else {
@@ -182,17 +181,15 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll) {
     return true;
 }
 
-
-
 bool parse_parameters(lexer_T *lexer, DLL *dll) {
     token *token = calloc(1, sizeof(token));
-    if(!parse_type(lexer, dll)){
+    if (!parse_type(lexer, dll)) {
         next_tok;
-        if(!expect(token, TOKEN_ID_RBRACKET)){
+        if (!expect(token, TOKEN_ID_RBRACKET)) {
 
             return_error;
         }
-        else{
+        else {
             DLL_move_active_left(dll);
             return true;
         }
@@ -225,12 +222,6 @@ bool parse_parameters(lexer_T *lexer, DLL *dll) {
         DLL_move_active_left(dll);
         return true;
     }
-    return true;
-}
-
-
-
-bool parse_local_scope(lexer_T *lexer, DLL *dll) {
     return true;
 }
 
@@ -443,9 +434,10 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
     }
 
     else {
-        //DLL_move_active_left(dll);
-        // case assignment
+        // DLL_move_active_left(dll);
+        //  case assignment
         if (parse_assignment(lexer, dll)) {
+            return true;
         }
         else {
             DLL_move_active_left(dll);
@@ -462,11 +454,11 @@ int main() {
 
     DLL *dll = createDLL();
     if (parse_body(lexer, dll)) {
-        printf("PARSED\n");
+        // //printf("PARSED\n");
     }
     else {
-        printf("FAILED TO PARSE\n");
-        printf("error : %d", ERROR);
+        // //printf("error : %d", ERROR);
+        // //printf("FAILED TO PARSE\n");
     }
 
     return ERROR;

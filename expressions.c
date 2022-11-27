@@ -1,5 +1,7 @@
 #include "expressions.h"
 
+extern error ERROR;
+
 expr_item *expr_item_new(token *token, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
     item->token = token;
@@ -178,7 +180,7 @@ bool apply_rule(expr_stack *expr_stack) {
             }
         }
         else if ((item_right->type == TERM && get_index_token(item_right->token) == 2) &&
-                 (item_left->type == TERM && get_index_token(item_right->token) == 1) &&
+                 (item_left->type == TERM && get_index_token(item_left->token) == 1) &&
                  (item_middle->type == NONTERM)) { // E -> (E)
             ret_val = true;
         }
@@ -211,7 +213,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
 }
 
 bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
-    printf("Parsing expression...\n");
+    // printf("Parsing expression...\n");
     token *token = calloc(1, sizeof(token));
     expr_item *new_item;
     expr_stack *expr_stack = expr_stack_new();
@@ -223,7 +225,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
     NEW_ITEM(new_item, NULL, DOLLAR);
     expr_stack_push(expr_stack, new_item);
 
-    next_tok;
+    NEXT_TOKEN;
     if (ERROR) {
         expr_stack_free(expr_stack);
         return false;
@@ -233,7 +235,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
         expr_item *stack_term = get_term_or_dollar(expr_stack);
         switch (get_precedence(stack_term->token, token)) {
         case '=':
-            next_tok;
+            NEXT_TOKEN;
             NEW_ITEM(new_item, &dll->activeElement->previousElement->data, TERM);
             expr_stack_push(expr_stack, new_item);
             if (ERROR) {
@@ -243,7 +245,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             break;
         case '<':
             stack_term->breakpoint = true;
-            next_tok;
+            NEXT_TOKEN;
             NEW_ITEM(new_item, &dll->activeElement->previousElement->data, TERM);
             expr_stack_push(expr_stack, new_item);
             if (ERROR) {
@@ -254,19 +256,25 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
         case '>':
             if (!apply_rule(expr_stack)) {
                 ERROR = SYNTAX_ERR;
-                printf("GAD expresoizn\n");
+                // printf("GAD expresoizn\n");
                 expr_stack_free(expr_stack);
                 return false;
             }
             if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token) == 0) {
+                if (exp_brack) {
+                    ERROR = SYNTAX_ERR;
+                    // printf("GAD expresoizn\n");
+                    expr_stack_free(expr_stack);
+                    return false;
+                }
                 expr_stack_free(expr_stack);
-                printf(":D GOOOT expresoizn\n");
+                // printf(":D GOOOT expresoizn\n");
                 return true;
             }
             break;
         case '\0':
             if (exp_brack && token->ID == TOKEN_ID_RBRACKET) {
-                next_tok;
+                NEXT_TOKEN;
                 if (ERROR) {
                     expr_stack_free(expr_stack);
                     return false;
@@ -275,19 +283,19 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
                     expr_stack_free(expr_stack);
                     DLL_move_active_left(dll);
                     DLL_move_active_left(dll);
-                    printf(":D GOOOT expresoizn\n");
+                    // printf(":D GOOOT expresoizn\n");
                     return true;
                 }
                 else {
                     ERROR = SYNTAX_ERR;
-                    printf("GAD expresoizn\n");
+                    // printf("GAD expresoizn\n");
                     expr_stack_free(expr_stack);
                     return false;
                 }
             }
             expr_stack_free(expr_stack);
             ERROR = SYNTAX_ERR;
-            printf("GAD expresoizn\n");
+            // printf("GAD expresoizn\n");
             return false;
         }
     } while (1);
