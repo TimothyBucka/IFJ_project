@@ -10,6 +10,6 @@
 
 declare(strict_types=1);
 
-write("Zadejte cislo pro vypocet faktorialu\n");
+// generate a function for testing a if statement
 
->? asd     //TODO
+?>
