@@ -10,7 +10,10 @@
 
 declare(strict_types=1);
 
-function foo(string $x) : ?float {
+if (1e2 === 100) {
+    return;
+} 
+else{
     return;
 }
 

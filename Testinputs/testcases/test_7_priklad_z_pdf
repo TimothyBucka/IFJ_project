@@ -1,0 +1,21 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+
+function concat(string $a, string $b) : string {
+    $abc = $a . $b;
+    return $abc . " " . $b;
+}
+$a = "ahoj";
+$ret = concat($a, "svete");
+write($ret, $a);
+
+?>

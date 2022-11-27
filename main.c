@@ -147,6 +147,9 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll) {
 
     next_tok;
     if (accept(token, TOKEN_ID_COMMA)) {
+        if(!parse_type(lexer, dll)) {
+            return_error;
+        }
         next_tok;
         if (expect(token, TOKEN_ID_VARIABLE)) {
             if (!parse_arguments_prime(lexer, dll)) {
@@ -198,22 +201,22 @@ bool parse_parameters(lexer_T *lexer, DLL *dll) {
 
     // case Function
     if (accept(token, TOKEN_ID_VARIABLE)) {
-        if (!parse_arguments_prime(lexer, dll)) {
+        if (!parse_parameters_prime(lexer, dll)) {
             return_error;
         }
     }
     else if (accept(token, TOKEN_ID_INTEGER)) {
-        if (!parse_arguments_prime(lexer, dll)) {
+        if (!parse_parameters_prime(lexer, dll)) {
             return_error;
         }
     }
     else if (accept(token, TOKEN_ID_STRING)) {
-        if (!parse_arguments_prime(lexer, dll)) {
+        if (!parse_parameters_prime(lexer, dll)) {
             return_error;
         }
     }
     else if (accept(token, TOKEN_ID_DOUBLE)) {
-        if (!parse_arguments_prime(lexer, dll)) {
+        if (!parse_parameters_prime(lexer, dll)) {
             return_error;
         }
     }
@@ -231,7 +234,12 @@ bool parse_assignment_prime(lexer_T *lexer, DLL *dll) {
     // TODO add FUNCALL case
 
     error r = parse_expresion(lexer, dll, false);
-    return r;
+    next_tok;
+    DLL_move_active_left(dll);
+    if (r == SUCCESS){
+        return true;
+    }
+    return(false);
 }
 
 bool parse_assignment(lexer_T *lexer, DLL *dll) {
@@ -270,6 +278,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll) {
         }
     }
     else {
+        DLL_move_active_left(dll);
         if (!parse_assignment_prime(lexer, dll)) {
             return_error;
         }
@@ -434,9 +443,12 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
     }
 
     else {
-        // DLL_move_active_left(dll);
+        DLL_move_active_left(dll);
         //  case assignment
         if (parse_assignment(lexer, dll)) {
+            if (!parse_body(lexer, dll)) {
+                return_error;
+            }
             return true;
         }
         else {

@@ -10,6 +10,8 @@
 
 declare(strict_types=1);
 
-// generate a function for testing a if statement
+while (1) {
+    return;
+}
 
 ?>
