@@ -27,7 +27,7 @@ bool parse_body(lexer_T *lexer, DLL *dll);
     }                                             \
     else {                                        \
         DLL_move_active_right(dll);               \
-        token = DLL_get_active(dll);              \
+        *token = DLL_get_active(dll);             \
     }
 
 bool accept(token *token, token_ID acceptedID) {
@@ -147,7 +147,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll) {
 
     next_tok;
     if (accept(token, TOKEN_ID_COMMA)) {
-        if(!parse_type(lexer, dll)) {
+        if (!parse_type(lexer, dll)) {
             return_error;
         }
         next_tok;
@@ -232,14 +232,13 @@ bool parse_assignment_prime(lexer_T *lexer, DLL *dll) {
     token *token = calloc(1, sizeof(token));
 
     // TODO add FUNCALL case
-
     error r = parse_expresion(lexer, dll, false);
     next_tok;
     DLL_move_active_left(dll);
-    if (r == SUCCESS){
+    if (r == SUCCESS) {
         return true;
     }
-    return(false);
+    return (false);
 }
 
 bool parse_assignment(lexer_T *lexer, DLL *dll) {

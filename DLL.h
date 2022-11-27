@@ -22,7 +22,7 @@ void DLL_push(DLL *dll, token *t);
 
 token *DLL_pop(DLL *dll);
 
-token *DLL_get_active(DLL *dll);
+token DLL_get_active(DLL *dll);
 
 void DLL_move_active_left(DLL *dll);
 

@@ -245,7 +245,15 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             break;
         case '<':
             stack_term->breakpoint = true;
-            NEXT_TOKEN;
+            // NEXT_TOKEN;
+            if (dll->activeElement == dll->lastElement) {
+                ERROR = lexer_next_token(lexer, token);
+                DLL_push(dll, token);
+            }
+            else {
+                DLL_move_active_right(dll);
+                *token = DLL_get_active(dll);
+            }
             NEW_ITEM(new_item, &dll->activeElement->previousElement->data, TERM);
             expr_stack_push(expr_stack, new_item);
             if (ERROR) {

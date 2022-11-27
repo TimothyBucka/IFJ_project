@@ -18,7 +18,7 @@
                         ERROR = lexer_next_token(lexer, token);\
                         DLL_push(dll, token);\
                     }\
-                    else{DLL_move_active_right(dll);token = DLL_get_active(dll);}
+                    else{DLL_move_active_right(dll);*token = DLL_get_active(dll);}
 
 typedef enum {
     TERM,

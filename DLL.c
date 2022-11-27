@@ -23,11 +23,11 @@ void DLL_push(DLL *dll, token *t) {
     dll->activeElement = dll->lastElement;
 }
 
-token *DLL_get_active(DLL *dll) {
-    if (dll->activeElement == NULL) {
-        return NULL;
+token DLL_get_active(DLL *dll) {
+    if (dll->activeElement != NULL) {
+        return dll->activeElement->data;
     }
-    return &dll->activeElement->data;
+    
 }
 
 void DLL_move_active_left(DLL *dll) {
