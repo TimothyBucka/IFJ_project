@@ -245,15 +245,8 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             break;
         case '<':
             stack_term->breakpoint = true;
-            // NEXT_TOKEN;
-            if (dll->activeElement == dll->lastElement) {
-                ERROR = lexer_next_token(lexer, token);
-                DLL_push(dll, token);
-            }
-            else {
-                DLL_move_active_right(dll);
-                *token = DLL_get_active(dll);
-            }
+            NEXT_TOKEN;
+            
             NEW_ITEM(new_item, &dll->activeElement->previousElement->data, TERM);
             expr_stack_push(expr_stack, new_item);
             if (ERROR) {
@@ -277,7 +270,8 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
                 }
                 expr_stack_free(expr_stack);
                 // printf(":D GOOOT expresoizn\n");
-                return true;
+                DLL_move_active_left(dll);                  //FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
+                return true;                                //TODO @Timo
             }
             break;
         case '\0':
@@ -308,5 +302,4 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
         }
     } while (1);
 
-    return true;
 }

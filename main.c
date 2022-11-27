@@ -232,13 +232,8 @@ bool parse_assignment_prime(lexer_T *lexer, DLL *dll) {
     token *token = calloc(1, sizeof(token));
 
     // TODO add FUNCALL case
-    error r = parse_expresion(lexer, dll, false);
-    next_tok;
-    DLL_move_active_left(dll);
-    if (r == SUCCESS) {
-        return true;
-    }
-    return (false);
+    bool r = parse_expresion(lexer, dll, false);
+    return r;
 }
 
 bool parse_assignment(lexer_T *lexer, DLL *dll) {
@@ -279,6 +274,10 @@ bool parse_assignment(lexer_T *lexer, DLL *dll) {
     else {
         DLL_move_active_left(dll);
         if (!parse_assignment_prime(lexer, dll)) {
+            return_error;
+        }
+        next_tok;
+        if (!expect(token, TOKEN_ID_SEMICOLLON)) {
             return_error;
         }
     }
@@ -413,6 +412,21 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
                 return_error;
             }
         }
+        else {
+            DLL_move_active_left(dll);
+            if (!parse_expresion(lexer, dll, false)) {
+                return_error;
+            }
+            next_tok;
+            if (!expect(token, TOKEN_ID_SEMICOLLON)) {
+                return_error;
+            }
+            else {
+                if (!parse_body(lexer, dll)) {
+                    return_error;
+                }
+            }
+        }
     }
 
     // TODO case Function call
@@ -437,6 +451,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             return_error;
         }
     }
+    
     else if (accept(token, TOKEN_ID_EOF)) {
         return true;
     }
@@ -451,7 +466,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             return true;
         }
         else {
-            DLL_move_active_left(dll);
+            //DLL_move_active_left(dll);
             return true;
         }
     }
