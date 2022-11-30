@@ -245,7 +245,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll) {
         return false;
     }
     next_tok;
-    if (!accept(token, TOKEN_ID_EQUALS)) {
+    if (!accept(token, TOKEN_ID_EQUALS) && !accept(token, TOKEN_ID_NOT_EQUALS) && !accept(token, TOKEN_ID_TRIPLE_EQUALS)) {
         DLL_move_active_left(dll);
         DLL_move_active_left(dll);
         return false;
@@ -465,10 +465,27 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             }
             return true;
         }
-        else {
-            //DLL_move_active_left(dll);
+        if(parse_expresion(lexer, dll, false)){
+            next_tok;
+            if(!expect(token, TOKEN_ID_SEMICOLLON)){return_error;}
+            if (!parse_body(lexer, dll)) {
+                return_error;
+            }
             return true;
         }
+        else{
+            if (ERROR != LEXICAL_ERR)
+            {
+                ERROR = SUCCESS;
+            }
+            else{
+                return false;
+            }
+        }
+        
+
+        return true;
+
     }
 
     return true;
