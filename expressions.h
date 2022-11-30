@@ -43,9 +43,17 @@ typedef enum {
     NONE        // No rule
 } rules;
 
+typedef enum {
+    NULL_VAL,
+    INT,
+    DOUBLE,
+    STRING
+} data_type;
+
 typedef struct expr_item {
     token *token;
     expr_item_type type;
+    data_type data_type; // non terminal only
     bool breakpoint;
     struct expr_item *next_item;
 } expr_item;
@@ -63,6 +71,8 @@ expr_item *expr_stack_pop(expr_stack *);
 void expr_stack_free(expr_stack *);
 
 char get_precedence(token *, token *);
+
+data_type get_data_type(token *);
 
 int count_breakpoint(expr_stack *);
 
