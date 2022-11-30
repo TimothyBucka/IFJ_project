@@ -8,6 +8,7 @@ expr_item *expr_item_new(token *token, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
     item->token = token;
     item->type = type;
+    item->data_type = NULL_VAL;
     item->breakpoint = false;
     item->next_item = NULL;
     return item;
@@ -87,6 +88,19 @@ int get_index_token(token *token) {
         return 7;
     default:
         return 0;
+    }
+}
+
+data_type get_data_type(token *token) {
+    switch (token->ID) {
+    case TOKEN_ID_INTEGER:
+        return INT;
+    case TOKEN_ID_DOUBLE:
+        return DOUBLE;
+    case TOKEN_ID_STRING:
+        return STRING;
+    default:
+        return NULL_VAL;
     }
 }
 
