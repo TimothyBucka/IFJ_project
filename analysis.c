@@ -445,15 +445,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             }
             return true;
         }
-        if(parse_expresion(lexer, dll, false)){
-            next_tok;
-            if(!expect(token, TOKEN_ID_SEMICOLLON)){return_error;}
-            if (!parse_body(lexer, dll)) {
-                return_error;
-            }
-            return true;
-        }
-        else{
+        else {
             if (ERROR != LEXICAL_ERR)
             {
                 ERROR = SUCCESS;
@@ -461,6 +453,18 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             else{
                 return false;
             }
+        }
+        if(parse_expresion(lexer, dll, false)){
+            next_tok;
+            if(!expect(token, TOKEN_ID_SEMICOLLON)){return_error;}
+            if (!parse_body(lexer, dll)) {
+                return_error;
+            }
+            
+            return true;
+        }
+        else{
+                return false;
         }
         
 
