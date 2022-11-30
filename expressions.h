@@ -6,6 +6,8 @@
 #include "symtable.h"
 #include "DLL.h"
 
+
+
 #define NEW_ITEM(new_item, token, type)    \
     new_item = expr_item_new(token, type); \
     if (!new_item) {                       \
@@ -17,8 +19,19 @@
                     {\
                         ERROR = lexer_next_token(lexer, token);\
                         DLL_push(dll, token);\
+                        COUNTER ++;\
                     }\
-                    else{DLL_move_active_right(dll);*token = DLL_get_active(dll);}
+                    else{DLL_move_active_right(dll);\
+                    *token = DLL_get_active(dll);\
+                    COUNTER ++;\
+                    }\
+
+#define UNDO_DLL_ACTIVE; for (size_t i = 0; i < COUNTER; i++)\
+{\
+    DLL_move_active_left(dll);\
+}\
+COUNTER = 0;\
+
 
 typedef enum {
     TERM,

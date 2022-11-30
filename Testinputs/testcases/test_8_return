@@ -1,0 +1,30 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+
+function bar() : void {
+    return;
+}
+
+function baz() : void {
+    return 5 === 4 + 1;
+}
+
+function foo() : void {
+    return 5 !== 4 + 1;
+}
+
+function fiz() : void {
+    return 4;
+}
+
+
+?>

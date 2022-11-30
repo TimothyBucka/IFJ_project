@@ -2,6 +2,8 @@
 
 extern error ERROR;
 
+size_t COUNTER = 0;
+
 expr_item *expr_item_new(token *token, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
     item->token = token;
@@ -78,7 +80,6 @@ int get_index_token(token *token) {
     case TOKEN_ID_LTE:
     case TOKEN_ID_GTE:
         return 6;
-    case TOKEN_ID_IDENTIFIER:
     case TOKEN_ID_VARIABLE:
     case TOKEN_ID_INTEGER:
     case TOKEN_ID_DOUBLE:
@@ -228,6 +229,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
     NEXT_TOKEN;
     if (ERROR) {
         expr_stack_free(expr_stack);
+        UNDO_DLL_ACTIVE;
         return false;
     }
 
@@ -240,6 +242,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             expr_stack_push(expr_stack, new_item);
             if (ERROR) {
                 expr_stack_free(expr_stack);
+                UNDO_DLL_ACTIVE;
                 return false;
             }
             break;
@@ -251,6 +254,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
             expr_stack_push(expr_stack, new_item);
             if (ERROR) {
                 expr_stack_free(expr_stack);
+                UNDO_DLL_ACTIVE;
                 return false;
             }
             break;
@@ -259,6 +263,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
                 ERROR = SYNTAX_ERR;
                 // printf("GAD expresoizn\n");
                 expr_stack_free(expr_stack);
+                UNDO_DLL_ACTIVE;
                 return false;
             }
             if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token) == 0) {
@@ -266,11 +271,13 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
                     ERROR = SYNTAX_ERR;
                     // printf("GAD expresoizn\n");
                     expr_stack_free(expr_stack);
+                    UNDO_DLL_ACTIVE;
                     return false;
                 }
                 expr_stack_free(expr_stack);
                 // printf(":D GOOOT expresoizn\n");
                 DLL_move_active_left(dll);                  //FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
+                COUNTER = 0;
                 return true;                                //TODO @Timo
             }
             break;
@@ -279,6 +286,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
                 NEXT_TOKEN;
                 if (ERROR) {
                     expr_stack_free(expr_stack);
+                    UNDO_DLL_ACTIVE;
                     return false;
                 }
                 if (get_index_token(token) == 0) { // not an expression
@@ -286,18 +294,22 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
                     DLL_move_active_left(dll);
                     DLL_move_active_left(dll);
                     // printf(":D GOOOT expresoizn\n");
+                    COUNTER = 0;
+
                     return true;
                 }
                 else {
                     ERROR = SYNTAX_ERR;
                     // printf("GAD expresoizn\n");
                     expr_stack_free(expr_stack);
+                    UNDO_DLL_ACTIVE;
                     return false;
                 }
             }
             expr_stack_free(expr_stack);
             ERROR = SYNTAX_ERR;
             // printf("GAD expresoizn\n");
+            UNDO_DLL_ACTIVE;
             return false;
         }
     } while (1);

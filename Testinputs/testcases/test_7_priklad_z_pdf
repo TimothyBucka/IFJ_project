@@ -10,12 +10,27 @@
 
 declare(strict_types=1);
 
+function foo(string $x) : ?float {
+    bar();
+}
+
+function bar() : void {
+    return;
+}
+
 function concat(string $a, string $b) : string {
     $abc = $a . $b;
     return $abc . " " . $b;
 }
-$a = "ahoj";
+et();
 $ret = concat($a, "svete");
 write($ret, $a);
+
+
+/*
+=           -> =
+===         -> ==
+!==         -> !=
+*/
 
 ?>

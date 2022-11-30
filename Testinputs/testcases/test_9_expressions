@@ -10,11 +10,10 @@
 
 declare(strict_types=1);
 
-if (1e2 !== 100) {
-    return;
-} 
-else{
-    return;
-}
+2+2;
+2===2;
+5!==4;
+$var !== 5;
+$fiz === 45;
 
 ?>
