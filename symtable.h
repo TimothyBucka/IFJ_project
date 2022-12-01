@@ -19,7 +19,7 @@ typedef struct
 typedef struct
 {
     type return_type;
-    variable *parameters;
+    variable *parameters;       //FIXME
 } function;
 
 typedef union {
@@ -28,7 +28,7 @@ typedef union {
 }function_or_variable;
 typedef struct {
     char *name;
-    function_or_variable f_or_v;
+    union function_or_variable f_or_v;
 
 } table_item_data;
 typedef struct table_item {
