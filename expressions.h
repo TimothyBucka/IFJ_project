@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "stack.h"
 #include "symtable.h"
+#include "semantics.h"
 #include "DLL.h"
 
 
@@ -15,22 +16,24 @@
         return INTERNAL_ERR;               \
     }
 
-#define NEXT_TOKEN  if(dll->activeElement == dll->lastElement)\
-                    {\
-                        ERROR = lexer_next_token(lexer, token);\
-                        DLL_push(dll, token);\
-                        COUNTER ++;\
-                    }\
-                    else{DLL_move_active_right(dll);\
-                    *token = DLL_get_active(dll);\
-                    COUNTER ++;\
-                    }\
+#define NEXT_TOKEN  \
+    if(dll->activeElement == dll->lastElement)\
+    {\
+        ERROR = lexer_next_token(lexer, token);\
+        DLL_push(dll, token);\
+        COUNTER ++;\
+    }\
+    else{DLL_move_active_right(dll);\
+    *token = DLL_get_active(dll);\
+    COUNTER ++;\
+    }\
 
-#define UNDO_DLL_ACTIVE; for (size_t i = 0; i < COUNTER; i++)\
-{\
+#define UNDO_DLL_ACTIVE \
+    for (size_t i = 0; i < COUNTER; i++)\
+    {\
     DLL_move_active_left(dll);\
-}\
-COUNTER = 0;\
+    }\
+    COUNTER = 0;\
 
 
 typedef enum {
@@ -39,29 +42,22 @@ typedef enum {
     DOLLAR
 } expr_item_type;
 
-typedef enum {
-    PAR_E_PAR,  // E -> (E)
-    E_PLUS_E,   // E -> E + E
-    E_MINUS_E,  // E -> E - E
-    E_TIMES_E,  // E -> E * E
-    E_DIVIDE_E, // E -> E / E
-    E_CONCAT_E, // E -> E . E
-    E_EQ_E,     // E -> E === E
-    E_NEQ_E,    // E -> E !== E
-    E_LT_E,     // E -> E < E
-    E_GT_E,     // E -> E > E
-    E_LEQ_E,    // E -> E <= E
-    E_GEQ_E,    // E -> E >= E
-    ID,         // E -> id
-    NONE        // No rule
-} rules;
-
-typedef enum {
-    NULL_VAL,
-    INT,
-    DOUBLE,
-    STRING
-} data_type;
+// typedef enum {
+//     PAR_E_PAR,  // E -> (E)
+//     E_PLUS_E,   // E -> E + E
+//     E_MINUS_E,  // E -> E - E
+//     E_TIMES_E,  // E -> E * E
+//     E_DIVIDE_E, // E -> E / E
+//     E_CONCAT_E, // E -> E . E
+//     E_EQ_E,     // E -> E === E
+//     E_NEQ_E,    // E -> E !== E
+//     E_LT_E,     // E -> E < E
+//     E_GT_E,     // E -> E > E
+//     E_LEQ_E,    // E -> E <= E
+//     E_GEQ_E,    // E -> E >= E
+//     ID,         // E -> id
+//     NONE        // No rule
+// } rules;
 
 typedef struct expr_item {
     token *token;

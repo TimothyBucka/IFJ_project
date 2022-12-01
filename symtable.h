@@ -20,6 +20,6 @@ token *hash_table_lookup(hash_table *table, char *key);
 
 void hash_table_insert(hash_table *table, token *item);
 
-void hast_table_remove(hash_table *table, char *key);
+void hash_table_remove(hash_table *table, char *key);
 
 #endif

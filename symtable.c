@@ -43,7 +43,7 @@ void hash_table_insert(hash_table *table, token *item) {
     *table[get_hash(item->VAL.string)] = new_item;
 }
 
-void hast_table_remove(hash_table *table, char *key) {
+void hash_table_remove(hash_table *table, char *key) {
     table_item *item = *table[get_hash(key)];
     while (item != NULL) {
 
