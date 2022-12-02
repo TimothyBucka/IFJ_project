@@ -479,7 +479,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
         else {
             if (dll->activeElement != NULL && expect(&dll->activeElement->data, TOKEN_ID_SEMICOLLON)) {
-                if (ERROR != LEXICAL_ERR) {
+                if (ERROR == SYNTAX_ERR) {
                     ERROR = SUCCESS;
                     return true;
                 } else {
