@@ -5,6 +5,7 @@
 #include "token.h"
 #include "DLL.h"
 #include "symtable.h"
+#include "semantics.h"
 
 
 #define return_error        \

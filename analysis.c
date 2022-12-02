@@ -219,7 +219,7 @@ bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token = calloc(1, sizeof(token));
 
     // TODO add FUNCALL case
-    bool r = parse_expresion(lexer, dll, tables, false);
+    bool r = parse_expression(lexer, dll, tables, false);
     return r;
 }
 
@@ -236,7 +236,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     table_item_data* data = malloc(sizeof(table_item_data));
     data->name = token->VAL.string;
     variable *var = malloc(sizeof(variable));
-    var->type = VOID;
+    var->type = NO_TYPE;
     data->f_or_v = var;
     hash_table_insert(tables.global, data)
 
@@ -335,7 +335,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
-        if (!parse_expresion(lexer, dll, tables, true)) {
+        if (!parse_expression(lexer, dll, tables, true)) {
             return_error;
         } //  expresion
         next_tok;
@@ -379,7 +379,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
-        if (!parse_expresion(lexer, dll, tables, true)) {
+        if (!parse_expression(lexer, dll, tables, true)) {
             return_error;
         }
         next_tok;
@@ -413,7 +413,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
         else {
             DLL_move_active_left(dll);
-            if (!parse_expresion(lexer, dll, tables, false)) {
+            if (!parse_expression(lexer, dll, tables, false)) {
                 return_error;
             }
             next_tok;
@@ -466,15 +466,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             }
             return true;
         }
-        else {
-            if (ERROR != LEXICAL_ERR) {
-                ERROR = SUCCESS;
-            }
-            else  {
-                return false;
-            }
-        }
-        if (parse_expresion(lexer, dll, tables, false)) {
+        if (parse_expression(lexer, dll, tables, false)) {
             next_tok;
             if (!expect(token, TOKEN_ID_SEMICOLLON)) {
                 return_error;
@@ -485,9 +477,14 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
             return true;
         }
-        // else{                        //TODO nefunguje pre pripad testcase 7
-        //     return false;            //ked sa doparsuje "bar();" nasledujuci token je "}" a treba rekurzivne zavolat body
-        // }                            //kedze musime dostat epsylon, a toto hodi false ked ma byt true ako epsylon a vratit token
+        else {
+            if (ERROR != LEXICAL_ERR) {
+                ERROR = SUCCESS;
+            }
+            else  {
+                return false;
+            }
+        }                           //kedze musime dostat epsylon, a toto hodi false ked ma byt true ako epsylon a vratit token
 
         return true;
     }

@@ -8,7 +8,7 @@ expr_item *expr_item_new(token *token, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
     item->token = token;
     item->type = type;
-    item->data_type = NONE;
+    item->data_type = NO_TYPE;
     item->breakpoint = false;
     item->next_item = NULL;
     return item;
@@ -100,7 +100,7 @@ data_type get_data_type(token *token) {
     case TOKEN_ID_STRING:
         return STRING;
     default:
-        return NULL_VAL;
+        return NO_TYPE;
     }
 }
 
@@ -167,13 +167,13 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             }
             else {
                 ERROR = EXPR_ERR;
-                return NONE;
+                return NO_TYPE;
             }
             break;
         case TOKEN_ID_DIVISION:
             if ((right != INT && right != DOUBLE) || (left != INT && left != DOUBLE)) {
                 ERROR = EXPR_ERR;
-                return NONE;
+                return NO_TYPE;
             }
             else {
                 return DOUBLE;
@@ -185,7 +185,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             }
             else {
                 ERROR = EXPR_ERR;
-                return NONE;
+                return NO_TYPE;
             }
             break;
         case TOKEN_ID_TRIPLE_EQUALS:
@@ -197,10 +197,10 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             return BOOL_TYPE;
             break;
         default:
-            return NONE;
+            return NO_TYPE;
         }
     }
-    return NONE;
+    return NO_TYPE;
 }
 
 bool apply_rule(expr_stack *expr_stack) {
