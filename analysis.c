@@ -440,7 +440,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
     else {
         DLL_move_active_left(dll);
         //  case assignment
-        if (parse_assignment(lexer, dll)) {
+         if (parse_assignment(lexer, dll)) {
             if (!parse_body(lexer, dll)) {
                 return_error;
             }
@@ -466,7 +466,16 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             return true;
         }
         else {
-            return false;
+            if (dll->activeElement != NULL && expect(&dll->activeElement->data, TOKEN_ID_SEMICOLLON)) {
+                if (ERROR != LEXICAL_ERR) {
+                    ERROR = SUCCESS;
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return_error;
+            }
         }
 
         return true;
