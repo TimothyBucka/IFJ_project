@@ -73,6 +73,7 @@ void lexer_skip_whitespace(lexer_T *lexer) {
 int isoctdigit(char c) { return c >= '0' && c <= '7'; }
 
 int is_keyword(char *src) {
+    
     if (!strcmp(src, "else")) {
         return KW_ELSE;
     }
@@ -118,7 +119,7 @@ int is_keyword(char *src) {
 void clean_string(char **str) {
     size_t str_len = strlen(*str);
 
-    char *new_str = chararray_init(str_len + 1);
+    char *new_str = chararray_init(str_len +1);
     if (new_str == NULL) {
         // TODO error
     }
@@ -193,13 +194,13 @@ void clean_string(char **str) {
         new_str[n_i++] = c;
     }
 
-    char *str_final = chararray_init(4*strlen(new_str) + 1);
+    char *str_final = chararray_init(4*strlen(new_str) +1);
     if (str_final == NULL) {
         // TODO error
     }
 
     for (size_t i = 0; i < strlen(new_str); i++) {
-        char num[5] = {(char)0};
+        char num[7] = {(char)0};
         char c_as_string[2];
 
         c_as_string[0] = new_str[i];
@@ -335,6 +336,8 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
         lexer->prologParsed = true;
     }
 
+
+
     char *value = chararray_init(0);
     unsigned int char_i; // used eg char_i=lexer->i to track number of loaded characters
 
@@ -350,12 +353,12 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_VARIABLE_START;
             }
             else if (isalpha(lexer->c) || lexer->c == '_') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_IDENTIFIER_OR_KEYWORD_E;
             }
             else if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_E;
             }
@@ -421,7 +424,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 return SUCCESS;
             }
             else if (lexer->c == '"') {
-                // chararray_append(value, lexer->c);
+                // chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_QUOTATION_CENTER_E;
                 break;
@@ -491,6 +494,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
             else if (lexer->c == EOF) {
                 Token->ID = TOKEN_ID_EOF;
+                Token->VAL.string = value;
                 return SUCCESS;
             }
 
@@ -503,7 +507,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_VARIABLE_START:
             if (isalpha(lexer->c) || lexer->c == '_') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_VARIABLE_E;
             }
@@ -516,7 +520,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_VARIABLE_E:
             if (isalnum(lexer->c) || lexer->c == '_') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             else {
@@ -530,7 +534,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_IDENTIFIER_OR_KEYWORD_E:
             if (isalnum(lexer->c) || lexer->c == '_') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             else {
@@ -552,6 +556,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                     lexer->state = STATE_START;
                     Token->ID = TOKEN_ID_IDENTIFIER;
                     Token->VAL.string = value;
+                    
                 }
                 return SUCCESS;
             }
@@ -559,16 +564,16 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_INTEGER_E:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             else if (lexer->c == '.') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_AND_SEPARATOR;
             }
             else if (tolower(lexer->c) == 'e') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_EXPONENT_START;
             }
@@ -583,7 +588,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_INTEGER_AND_SEPARATOR:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_DOUBLE_E;
                 break;
@@ -597,11 +602,11 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_DOUBLE_E:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             else if (tolower(lexer->c) == 'e') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_DOUBLE_EXPONENT_START;
             }
@@ -616,12 +621,12 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_INTEGER_EXPONENT_START:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_EXPONENT_E;
             }
             else if (lexer->c == '+' || lexer->c == '-') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_EXPONENT_SIGN;
             }
@@ -634,7 +639,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_INTEGER_EXPONENT_SIGN:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_INTEGER_EXPONENT_E;
             }
@@ -647,7 +652,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_INTEGER_EXPONENT_E:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             else {
@@ -661,12 +666,12 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_DOUBLE_EXPONENT_START:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_DOUBLE_EXPONENT_E;
             }
             else if (lexer->c == '+' || lexer->c == '-') {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_DOUBLE_EXPONENT_SIGN;
             }
@@ -679,7 +684,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_DOUBLE_EXPONENT_SIGN:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
                 lexer->state = STATE_DOUBLE_EXPONENT_E;
             }
@@ -692,7 +697,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
 
         case STATE_DOUBLE_EXPONENT_E:
             if (isdigit(lexer->c)) {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             else {
@@ -721,6 +726,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer_advance(lexer);
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_NOT_EQUALS;
+                Token->VAL.string = value;
                 return SUCCESS;
             }
             else {
@@ -739,6 +745,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 printf("Token is equals\n");
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_EQUALS;
+                Token->VAL.string = value;
                 return SUCCESS;
             }
             break;
@@ -749,6 +756,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer_advance(lexer);
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_TRIPLE_EQUALS;
+                Token->VAL.string = value;
                 return SUCCESS;
             }
             else {
@@ -769,6 +777,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_GT;
             }
+            Token->VAL.string = value;
             return SUCCESS;
 
         case STATE_ST_E:
@@ -783,6 +792,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer->state = STATE_START;
                 Token->ID = TOKEN_ID_LT;
             }
+            Token->VAL.string = value;
             return SUCCESS;
 
         case STATE_QUOTATION_CENTER_E:
@@ -797,18 +807,18 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             }
             else if (lexer->c == '\\') {
                 lexer->state = STATE_QUOTATION_ESCAPE_CHAR;
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             else {
-                chararray_append(value, lexer->c);
+                chararray_append(&value, lexer->c);
                 lexer_advance(lexer);
             }
             break;
 
         case STATE_QUOTATION_ESCAPE_CHAR:
             lexer->state = STATE_QUOTATION_CENTER_E;
-            chararray_append(value, lexer->c);
+            chararray_append(&value, lexer->c);
             lexer_advance(lexer);
             break;
 
@@ -831,7 +841,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
                 lexer_advance(lexer);
             }
             else {
-                chararray_append(value, '?');
+                chararray_append(&value, '?');
                 lexer->state = STATE_IDENTIFIER_OR_KEYWORD_E;
             }
             break;

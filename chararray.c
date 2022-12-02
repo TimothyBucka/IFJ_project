@@ -3,35 +3,42 @@
 #include <string.h>
 
 char *chararray_init(unsigned int size) {
-    char *value = calloc(size, sizeof(char));
+    char *value = (char *)calloc(size + 1, sizeof(char));
 
-    /*
-
-    TODO add calloc check
-
-    */
+    value[0] = '\0';
 
     return value;
 }
 
-void chararray_append(char *chararray, char c) {
+void chararray_append(char **chararray, char c) {
 
-    size_t len = strlen(chararray);
-    char *temp = realloc(chararray, len + 2); // 1 for the new char, 1 for the null terminator
-    if (temp != NULL) {
-        chararray = temp;
+    // size_t len = strlen(chararray) + 1; // including \0
+
+    // char *temp = realloc(chararray, sizeof(char) * (len + 1)); // 1 for the new char
+    // if (temp != NULL) {
+    //     chararray = temp;
+    // }
+    // else {
+    //     printf("Big memory problem.\n");
+    // }
+
+    char *new_str;
+    char* str2 = malloc(sizeof(char) * 2);
+    str2[0] = c;
+    str2[1] = '\0';
+    if ((new_str = malloc(strlen(*chararray) + strlen(str2) + 1)) != NULL) {
+        new_str[0] = '\0'; // ensures the memory is an empty string
+        strcat(new_str, *chararray);
+        strcat(new_str, str2);
     }
-    else {
-        // printf("Big memory problem.\n");
-    }
 
-    /*
 
-    TODO add realloc check
+    // chararray[len - 1] = c;
+    // chararray[len] = '\0';
 
-    */
-    chararray[len] = c;
-    chararray[len + 1] = '\0';
+    //free(chararray);
+
+    *chararray = new_str;
 }
 
 void chararray_free(char *chararray) { free(chararray); }

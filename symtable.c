@@ -16,7 +16,7 @@ int get_hash(char *key) {
 
 
 hash_table init_hash_table() {
-    hash_table table = calloc(1,sizeof(table_item_t*));
+    hash_table table = calloc(TABLESIZE,sizeof(table_item_t*));
     for (int i = 0; i < TABLESIZE; i++) {
         table[i] = calloc(1,sizeof(table_item_t));
     }

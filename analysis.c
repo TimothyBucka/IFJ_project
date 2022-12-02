@@ -31,11 +31,13 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     debug_print_table(global);
 
+    DLL_free(dll);
+
     return var;
 }
 
 bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
 
     next_tok;
     if (accept(token, TOKEN_ID_COMMA)) {
@@ -74,7 +76,7 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
 
     next_tok;
 
@@ -108,7 +110,7 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
 
     next_tok;
     if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_VOID) {
@@ -130,7 +132,7 @@ bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
 
     next_tok;
     if (accept(token, TOKEN_ID_COMMA)) {
@@ -172,7 +174,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
     if (!parse_type(lexer, dll, tables)) {
         next_tok;
         if (!expect(token, TOKEN_ID_RBRACKET)) {
@@ -216,7 +218,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
 
     // TODO add FUNCALL case
     bool r = parse_expression(lexer, dll, tables, false);
@@ -224,7 +226,7 @@ bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
 
     next_tok;
     if (!accept(token, TOKEN_ID_VARIABLE)) {
@@ -233,14 +235,14 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     // //TODO add variable info to symtable
-    table_item_data* data = malloc(sizeof(table_item_data));
+    table_item_data *data = malloc(sizeof(table_item_data));
     data->name = token->VAL.string;
     variable *var = malloc(sizeof(variable));
     var->type = NO_TYPE;
     data->f_or_v = var;
     hash_table_insert(tables.global, data)
 
-    next_tok;
+        next_tok;
     if (!accept(token, TOKEN_ID_EQUALS) && !accept(token, TOKEN_ID_NOT_EQUALS) && !accept(token, TOKEN_ID_TRIPLE_EQUALS)) {
         DLL_move_active_left(dll);
         DLL_move_active_left(dll);
@@ -282,7 +284,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
 
     next_tok;
 
@@ -482,10 +484,12 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
                 if (ERROR == SYNTAX_ERR) {
                     ERROR = SUCCESS;
                     return true;
-                } else {
+                }
+                else {
                     return false;
                 }
-            } else {
+            }
+            else {
                 return_error;
             }
         }
