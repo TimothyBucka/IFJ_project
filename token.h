@@ -63,16 +63,17 @@ typedef enum {
 } keyword;
 
 typedef union {
-    int integer;
-    double decimal;
-    char *string;
-    keyword keyword;
+    int integer;            //0
+    double decimal;         //1
+    char *string;           //2
+    keyword keyword;        //3
 } token_VAL;
 
 typedef struct
 {
     token_ID ID;
     token_VAL VAL;
+    
 } token;
 
 // typedef enum {

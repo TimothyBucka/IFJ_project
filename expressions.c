@@ -302,7 +302,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
 
 bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack) {
     // printf("Parsing expression...\n");
-    token *token = calloc(1, sizeof(token));
+    token *token = calloc(1, sizeof(*token));
     expr_item *new_item;
     expr_stack *expr_stack = expr_stack_new();
     if (!expr_stack) {
@@ -353,11 +353,11 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
                 UNDO_DLL_ACTIVE;
                 return false;
             }
-            if (ERROR == EXPR_ERR) {
-                expr_stack_free(expr_stack);
-                UNDO_DLL_ACTIVE;
-                return false;
-            }
+            // if (ERROR == EXPR_ERR) {
+            //     expr_stack_free(expr_stack);
+            //     UNDO_DLL_ACTIVE;
+            //     return false;
+            // }
             if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token) == 0) {
                 if (exp_brack) {
                     ERROR = SYNTAX_ERR;

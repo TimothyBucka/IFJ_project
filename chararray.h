@@ -3,7 +3,7 @@
 
 char* chararray_init ();
 
-void chararray_append (char* chararray, char c);
+void chararray_append (char** chararray, char c);
 
 void chararray_free (char* chararray);
 

@@ -1,4 +1,5 @@
 #include "DLL.h"
+#include <stdio.h>
 
 DLL *createDLL() {
     DLL *newDLL = malloc(sizeof(DLL));
@@ -10,6 +11,7 @@ DLL *createDLL() {
 
 void DLL_push(DLL *dll, token *t) {
     DLLElementPtr new_element = malloc(sizeof(*new_element));
+    printf("token %ld,    new %ld", sizeof(*t), sizeof(new_element->data));
     new_element->data = *t;
     new_element->previousElement = dll->lastElement;
     new_element->nextElement = NULL;
@@ -43,4 +45,18 @@ void DLL_move_active_right(DLL *dll) {
         return;
     }
     dll->activeElement = dll->activeElement->nextElement;
+}
+
+void DLL_free(DLL *dll) {
+    DLLElementPtr current = dll->firstElement;
+    DLLElementPtr next;
+    while (current != NULL) {
+        next = current->nextElement;
+        if (current->data.VAL.string!= NULL && current->data.ID !=TOKEN_ID_KEYWORD) {
+            free(current->data.VAL.string);
+        }
+        free(current);
+        current = next;
+    }
+    free(dll);
 }
