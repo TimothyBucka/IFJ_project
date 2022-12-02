@@ -28,4 +28,6 @@ void DLL_move_active_left(DLL *dll);
 
 void DLL_move_active_right(DLL *dll);
 
+void DLL_free(DLL *dll);
+
 #endif

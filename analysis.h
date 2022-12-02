@@ -19,20 +19,22 @@
 #define next_tok                                  \
     ;                                             \
     if (dll->activeElement == dll->lastElement) { \
-        ERROR = lexer_next_token(lexer, token);   \
-        DLL_push(dll, token);                     \
+        token_ptr = calloc(1, sizeof(*token_ptr));        \
+        ERROR = lexer_next_token(lexer, token_ptr);   \
+        DLL_push(dll, token_ptr);                     \
         if (ERROR != SUCCESS) {                   \
             return false;                         \
         }                                         \
     }                                             \
     else {                                        \
         DLL_move_active_right(dll);               \
-        *token = DLL_get_active(dll);             \
+        token tmp = DLL_get_active(dll);           \
+        token_ptr = &tmp;              \
     }
 
-bool accept(token *token, token_ID acceptedID);
+bool accept(token *token_ptr, token_ID acceptedID);
 
-bool expect(token *token, token_ID acceptedID);
+bool expect(token *token_ptr, token_ID acceptedID);
 
 bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables);
 

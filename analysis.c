@@ -3,20 +3,20 @@
 
 extern error ERROR;
 
-bool accept(token *token, token_ID acceptedID) {
-    if (acceptedID == token->ID) {
+bool accept(token *token_ptr, token_ID acceptedID) {
+    if (acceptedID == token_ptr->ID) {
         return true;
     }
     return false;
 }
 
-bool expect(token *token, token_ID acceptedID) {
-    if (acceptedID == token->ID) {
+bool expect(token *token_ptr, token_ID acceptedID) {
+    if (acceptedID == token_ptr->ID) {
         return true;
     }
-    // printf("Unexpected token parsed in syntax analisys\n");
+    // printf("Unexpected token_ptr parsed in syntax analisys\n");
     // printf("Expected %d", acceptedID);
-    // printf("got %d\n", token->ID);
+    // printf("got %d\n", token_ptr->ID);
     return false;
 }
 
@@ -31,33 +31,33 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     debug_print_table(global);
 
-    DLL_free(dll);
+
 
     return var;
 }
 
 bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
 
     next_tok;
-    if (accept(token, TOKEN_ID_COMMA)) {
+    if (accept(token_ptr, TOKEN_ID_COMMA)) {
         next_tok;
-        if (expect(token, TOKEN_ID_VARIABLE)) {
+        if (expect(token_ptr, TOKEN_ID_VARIABLE)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return false;
             }
         }
-        else if (expect(token, TOKEN_ID_INTEGER)) {
+        else if (expect(token_ptr, TOKEN_ID_INTEGER)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return false;
             }
         }
-        else if (expect(token, TOKEN_ID_STRING)) {
+        else if (expect(token_ptr, TOKEN_ID_STRING)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return false;
             }
         }
-        else if (expect(token, TOKEN_ID_DOUBLE)) {
+        else if (expect(token_ptr, TOKEN_ID_DOUBLE)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return false;
             }
@@ -76,27 +76,27 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
 
     next_tok;
 
     // case Function
-    if (accept(token, TOKEN_ID_VARIABLE)) {
+    if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
         if (!parse_arguments_prime(lexer, dll, tables)) {
             return false;
         }
     }
-    else if (accept(token, TOKEN_ID_INTEGER)) {
+    else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
         if (!parse_arguments_prime(lexer, dll, tables)) {
             return false;
         }
     }
-    else if (accept(token, TOKEN_ID_STRING)) {
+    else if (accept(token_ptr, TOKEN_ID_STRING)) {
         if (!parse_arguments_prime(lexer, dll, tables)) {
             return false;
         }
     }
-    else if (accept(token, TOKEN_ID_DOUBLE)) {
+    else if (accept(token_ptr, TOKEN_ID_DOUBLE)) {
         if (!parse_arguments_prime(lexer, dll, tables)) {
             return false;
         }
@@ -110,19 +110,19 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
 
     next_tok;
-    if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_VOID) {
+    if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_VOID) {
         return true;
     }
-    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_INT) || (token->VAL.keyword == KW_INT_NULL))) {
+    else if (accept(token_ptr, TOKEN_ID_KEYWORD) && ((token_ptr->VAL.keyword == KW_INT) || (token_ptr->VAL.keyword == KW_INT_NULL))) {
         return true;
     }
-    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_FLOAT) || (token->VAL.keyword == KW_FLOAT_NULL))) {
+    else if (accept(token_ptr, TOKEN_ID_KEYWORD) && ((token_ptr->VAL.keyword == KW_FLOAT) || (token_ptr->VAL.keyword == KW_FLOAT_NULL))) {
         return true;
     }
-    else if (accept(token, TOKEN_ID_KEYWORD) && ((token->VAL.keyword == KW_STRING) || (token->VAL.keyword == KW_STRING_NULL))) {
+    else if (accept(token_ptr, TOKEN_ID_KEYWORD) && ((token_ptr->VAL.keyword == KW_STRING) || (token_ptr->VAL.keyword == KW_STRING_NULL))) {
         return true;
     }
     else {
@@ -132,30 +132,30 @@ bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
 
     next_tok;
-    if (accept(token, TOKEN_ID_COMMA)) {
+    if (accept(token_ptr, TOKEN_ID_COMMA)) {
         if (!parse_type(lexer, dll, tables)) {
             return_error;
         }
         next_tok;
-        if (expect(token, TOKEN_ID_VARIABLE)) {
+        if (expect(token_ptr, TOKEN_ID_VARIABLE)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return_error;
             }
         }
-        else if (expect(token, TOKEN_ID_INTEGER)) {
+        else if (expect(token_ptr, TOKEN_ID_INTEGER)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return_error;
             }
         }
-        else if (expect(token, TOKEN_ID_STRING)) {
+        else if (expect(token_ptr, TOKEN_ID_STRING)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return_error;
             }
         }
-        else if (expect(token, TOKEN_ID_DOUBLE)) {
+        else if (expect(token_ptr, TOKEN_ID_DOUBLE)) {
             if (!parse_arguments_prime(lexer, dll, tables)) {
                 return_error;
             }
@@ -174,10 +174,10 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
     if (!parse_type(lexer, dll, tables)) {
         next_tok;
-        if (!expect(token, TOKEN_ID_RBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
 
             return_error;
         }
@@ -189,22 +189,22 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables) {
     next_tok;
 
     // case Function
-    if (accept(token, TOKEN_ID_VARIABLE)) {
+    if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
         if (!parse_parameters_prime(lexer, dll, tables)) {
             return_error;
         }
     }
-    else if (accept(token, TOKEN_ID_INTEGER)) {
+    else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
         if (!parse_parameters_prime(lexer, dll, tables)) {
             return_error;
         }
     }
-    else if (accept(token, TOKEN_ID_STRING)) {
+    else if (accept(token_ptr, TOKEN_ID_STRING)) {
         if (!parse_parameters_prime(lexer, dll, tables)) {
             return_error;
         }
     }
-    else if (accept(token, TOKEN_ID_DOUBLE)) {
+    else if (accept(token_ptr, TOKEN_ID_DOUBLE)) {
         if (!parse_parameters_prime(lexer, dll, tables)) {
             return_error;
         }
@@ -218,7 +218,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
 
     // TODO add FUNCALL case
     bool r = parse_expression(lexer, dll, tables, false);
@@ -226,43 +226,43 @@ bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
 
     next_tok;
-    if (!accept(token, TOKEN_ID_VARIABLE)) {
+    if (!accept(token_ptr, TOKEN_ID_VARIABLE)) {
         DLL_move_active_left(dll);
         return false;
     }
 
     // //TODO add variable info to symtable
     table_item_data *data = malloc(sizeof(table_item_data));
-    data->name = token->VAL.string;
+    data->name = token_ptr->VAL.string;
     variable *var = malloc(sizeof(variable));
     var->type = NO_TYPE;
     data->f_or_v = var;
     hash_table_insert(tables.global, data)
 
         next_tok;
-    if (!accept(token, TOKEN_ID_EQUALS) && !accept(token, TOKEN_ID_NOT_EQUALS) && !accept(token, TOKEN_ID_TRIPLE_EQUALS)) {
+    if (!accept(token_ptr, TOKEN_ID_EQUALS) && !accept(token_ptr, TOKEN_ID_NOT_EQUALS) && !accept(token_ptr, TOKEN_ID_TRIPLE_EQUALS)) {
         DLL_move_active_left(dll);
         DLL_move_active_left(dll);
         return false;
     }
     next_tok;
-    if (accept(token, TOKEN_ID_IDENTIFIER)) {
+    if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
         next_tok;
-        if (!expect(token, TOKEN_ID_LBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error;
         }
         if (!parse_arguments(lexer, dll, tables)) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_RBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_SEMICOLLON)) {
+        if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error;
         }
         if (!parse_body(lexer, dll, tables)) {
@@ -275,7 +275,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_SEMICOLLON)) {
+        if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error;
         }
     }
@@ -284,43 +284,43 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
 
     next_tok;
 
     // case Function
-    if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_FUNCTION) { //  function
+    if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_FUNCTION) { //  function
         next_tok;
-        if (!expect(token, TOKEN_ID_IDENTIFIER)) {
+        if (!expect(token_ptr, TOKEN_ID_IDENTIFIER)) {
             return_error;
         } //  func_id
         next_tok;
-        if (!expect(token, TOKEN_ID_LBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
         if (!parse_parameters(lexer, dll, tables)) {
             return_error;
         } //  parameters
         next_tok;
-        if (!expect(token, TOKEN_ID_RBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             return_error;
         } //  )
         next_tok;
-        if (!expect(token, TOKEN_ID_COLON)) {
+        if (!expect(token_ptr, TOKEN_ID_COLON)) {
             return_error;
         } //  :
         if (!parse_type(lexer, dll, tables)) {
             return_error;
         } //  type
         next_tok;
-        if (!expect(token, TOKEN_ID_LCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error;
         } //  {
         if (!parse_body(lexer, dll, tables)) {
             return_error;
         } //  body
         next_tok;
-        if (!expect(token, TOKEN_ID_RCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
             return_error;
         } //  }
 
@@ -332,42 +332,42 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     // case If
-    else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_IF) { //  if
+    else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_IF) { //  if
         next_tok;
-        if (!expect(token, TOKEN_ID_LBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
         if (!parse_expression(lexer, dll, tables, true)) {
             return_error;
         } //  expresion
         next_tok;
-        if (!expect(token, TOKEN_ID_RBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             return_error;
         } //  )
         next_tok;
-        if (!expect(token, TOKEN_ID_LCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error;
         } //  {
         if (!parse_body(lexer, dll, tables)) {
             return_error;
         } //  body
         next_tok;
-        if (!expect(token, TOKEN_ID_RCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
             return_error;
         } //  }
         next_tok;
-        if (!accept(token, TOKEN_ID_KEYWORD) || token->VAL.keyword != KW_ELSE) {
+        if (!accept(token_ptr, TOKEN_ID_KEYWORD) || token_ptr->VAL.keyword != KW_ELSE) {
             return_error;
         } //  else
         next_tok;
-        if (!expect(token, TOKEN_ID_LCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error;
         } //  {
         if (!parse_body(lexer, dll, tables)) {
             return_error;
         } //  body
         next_tok;
-        if (!expect(token, TOKEN_ID_RCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
             return_error;
         } //  }
         if (!parse_body(lexer, dll, tables)) {
@@ -376,27 +376,27 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     // case While
-    else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_WHILE) { //  while
+    else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_WHILE) { //  while
         next_tok;
-        if (!expect(token, TOKEN_ID_LBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
         if (!parse_expression(lexer, dll, tables, true)) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_RBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_LCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error;
         }
         if (!parse_body(lexer, dll, tables)) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_RCURLYBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
             return_error;
         }
         if (!parse_body(lexer, dll, tables)) {
@@ -405,10 +405,10 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     // case Return
-    else if (accept(token, TOKEN_ID_KEYWORD) && token->VAL.keyword == KW_RETURN) {
+    else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_RETURN) {
         // TODO add return
         next_tok;
-        if (expect(token, TOKEN_ID_SEMICOLLON)) {
+        if (expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             if (!parse_body(lexer, dll, tables)) {
                 return_error;
             }
@@ -419,7 +419,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
                 return_error;
             }
             next_tok;
-            if (!expect(token, TOKEN_ID_SEMICOLLON)) {
+            if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
                 return_error;
             }
             else {
@@ -430,21 +430,21 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
     }
 
-    else if (accept(token, TOKEN_ID_IDENTIFIER)) {
+    else if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
         // TODO add return
         next_tok;
-        if (!expect(token, TOKEN_ID_LBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error;
         }
         if (!parse_arguments(lexer, dll, tables)) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_RBRACKET)) {
+        if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             return_error;
         }
         next_tok;
-        if (!expect(token, TOKEN_ID_SEMICOLLON)) {
+        if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error;
         }
 
@@ -455,7 +455,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
     }
 
-    else if (accept(token, TOKEN_ID_EOF)) {
+    else if (accept(token_ptr, TOKEN_ID_EOF)) {
         return true;
     }
 
@@ -470,7 +470,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
         if (parse_expression(lexer, dll, tables, false)) {
             next_tok;
-            if (!expect(token, TOKEN_ID_SEMICOLLON)) {
+            if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
                 return_error;
             }
             if (!parse_body(lexer, dll, tables)) {

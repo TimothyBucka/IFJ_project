@@ -37,8 +37,9 @@ void chararray_append(char **chararray, char c) {
     // chararray[len] = '\0';
 
     //free(chararray);
-
+    free(*chararray);
     *chararray = new_str;
+    free(str2);
 }
 
 void chararray_free(char *chararray) { free(chararray); }

@@ -21,6 +21,8 @@ int main() {
         // //printf("error : %d", ERROR);
         // //printf("FAILED TO PARSE\n");
     }
+    
+    DLL_free(dll);
 
     return ERROR;
 }
