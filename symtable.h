@@ -1,6 +1,7 @@
 #ifndef SYMTABLE_H
 #define SYMTABLE_H
 
+#include "semantics.h"
 #include "token.h"
 
 #define TABLESIZE 13
@@ -27,6 +28,7 @@ typedef union {
     variable variable;
     function function;
 }function_or_variable;
+
 typedef struct {
     char *name;
     union function_or_variable* f_or_v;

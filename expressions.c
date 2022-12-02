@@ -8,7 +8,7 @@ expr_item *expr_item_new(token *token, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
     item->token = token;
     item->type = type;
-    item->data_type = NULL_VAL;
+    item->data_type = NONE;
     item->breakpoint = false;
     item->next_item = NULL;
     return item;
@@ -94,9 +94,9 @@ int get_index_token(token *token) {
 data_type get_data_type(token *token) {
     switch (token->ID) {
     case TOKEN_ID_INTEGER:
-        return INTEGER;
+        return INT;
     case TOKEN_ID_DOUBLE:
-        return DECIMAL;
+        return DOUBLE;
     case TOKEN_ID_STRING:
         return STRING;
     default:
@@ -133,6 +133,76 @@ int count_breakpoint(expr_stack *expr_stack) {
     return count;
 }
 
+data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left) {
+    if (item_right->type == TERM) {
+        if (item_right->token->ID == TOKEN_ID_VARIABLE) {
+            return INT; // TODO search symtable if not found return NONE -- error 5
+        }
+        else if (item_right->token->ID == TOKEN_ID_INTEGER) {
+            return INT;
+        }
+        else if (item_right->token->ID == TOKEN_ID_DOUBLE) {
+            return DOUBLE;
+        }
+        else if (item_right->token->ID == TOKEN_ID_STRING) {
+            return STRING;
+        }
+    }
+    else if (item_middle->type == NONTERM) {
+        return item_middle->data_type;
+    }
+    else {
+        data_type right = item_right->data_type;
+        data_type left = item_left->data_type;
+
+        switch (item_middle->token->ID) {
+        case TOKEN_ID_PLUS:
+        case TOKEN_ID_MINUS:
+        case TOKEN_ID_MULTIPLICATION:
+            if (right == INT && left == INT) {
+                return INT;
+            }
+            else if (right == DOUBLE || left == DOUBLE) {
+                return DOUBLE;
+            }
+            else {
+                ERROR = EXPR_ERR;
+                return NONE;
+            }
+            break;
+        case TOKEN_ID_DIVISION:
+            if ((right != INT && right != DOUBLE) || (left != INT && left != DOUBLE)) {
+                ERROR = EXPR_ERR;
+                return NONE;
+            }
+            else {
+                return DOUBLE;
+            }
+            break;
+        case TOKEN_ID_CONCAT:
+            if (right == STRING && left == STRING) {
+                return STRING;
+            }
+            else {
+                ERROR = EXPR_ERR;
+                return NONE;
+            }
+            break;
+        case TOKEN_ID_TRIPLE_EQUALS:
+        case TOKEN_ID_NOT_EQUALS:
+        case TOKEN_ID_LT:
+        case TOKEN_ID_GT:
+        case TOKEN_ID_LTE:
+        case TOKEN_ID_GTE:
+            return BOOL_TYPE;
+            break;
+        default:
+            return NONE;
+        }
+    }
+    return NONE;
+}
+
 bool apply_rule(expr_stack *expr_stack) {
     int number_of_items = count_breakpoint(expr_stack);
 
@@ -156,7 +226,7 @@ bool apply_rule(expr_stack *expr_stack) {
         item_middle = expr_stack_pop(expr_stack);
         item_left = expr_stack_pop(expr_stack);
 
-        if (item_right->type == NONTERM && item_middle->type == TERM && item_left->type == NONTERM) {
+        if (item_left->type == NONTERM && item_middle->type == TERM && item_right->type == NONTERM) {
             if (item_middle->token->ID == TOKEN_ID_PLUS) { // E -> E + E
                 ret_val = true;
             }
@@ -207,9 +277,12 @@ bool apply_rule(expr_stack *expr_stack) {
         return false;
     }
 
-    item_right->type = NONTERM;
-    item_right->token = NULL;
-    expr_stack_push(expr_stack, item_right);
+    if (ret_val) {
+        item_right->data_type = get_data_type_from_item(item_right, item_middle, item_left);
+        item_right->type = NONTERM;
+        item_right->token = NULL;
+        expr_stack_push(expr_stack, item_right);
+    }
 
     if (item_middle) {
         free(item_middle);
@@ -227,7 +300,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
     return item;
 }
 
-bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack) {
+bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack) {
     // printf("Parsing expression...\n");
     token *token = calloc(1, sizeof(token));
     expr_item *new_item;
@@ -263,7 +336,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack)
         case '<':
             stack_term->breakpoint = true;
             NEXT_TOKEN;
-            
+
             NEW_ITEM(new_item, &dll->activeElement->previousElement->data, TERM);
             expr_stack_push(expr_stack, new_item);
             if (ERROR) {
@@ -275,7 +348,12 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack)
         case '>':
             if (!apply_rule(expr_stack)) {
                 ERROR = SYNTAX_ERR;
-                // printf("GAD expresoizn\n");
+                // printf("BAD expresoizn\n");
+                expr_stack_free(expr_stack);
+                UNDO_DLL_ACTIVE;
+                return false;
+            }
+            if (ERROR == EXPR_ERR) {
                 expr_stack_free(expr_stack);
                 UNDO_DLL_ACTIVE;
                 return false;
@@ -283,16 +361,17 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack)
             if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token) == 0) {
                 if (exp_brack) {
                     ERROR = SYNTAX_ERR;
-                    // printf("GAD expresoizn\n");
+                    // printf("BAD expresoizn\n");
                     expr_stack_free(expr_stack);
                     UNDO_DLL_ACTIVE;
                     return false;
                 }
+                printf("Type of expression: %d\n", expr_stack->top_item->data_type);
                 expr_stack_free(expr_stack);
                 // printf(":D GOOOT expresoizn\n");
-                DLL_move_active_left(dll);                  //FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
+                DLL_move_active_left(dll); // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
                 COUNTER = 0;
-                return true;                                //TODO @Timo
+                return true; // TODO @Timo
             }
             break;
         case '\0':
@@ -304,6 +383,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack)
                     return false;
                 }
                 if (get_index_token(token) == 0) { // not an expression
+                    printf("Type of expression: %d\n", expr_stack->top_item->data_type);
                     expr_stack_free(expr_stack);
                     DLL_move_active_left(dll);
                     DLL_move_active_left(dll);
@@ -314,7 +394,7 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack)
                 }
                 else {
                     ERROR = SYNTAX_ERR;
-                    // printf("GAD expresoizn\n");
+                    // printf("BAD expresoizn\n");
                     expr_stack_free(expr_stack);
                     UNDO_DLL_ACTIVE;
                     return false;
@@ -322,10 +402,9 @@ bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack)
             }
             expr_stack_free(expr_stack);
             ERROR = SYNTAX_ERR;
-            // printf("GAD expresoizn\n");
+            // printf("BAD expresoizn\n");
             UNDO_DLL_ACTIVE;
             return false;
         }
     } while (1);
-
 }

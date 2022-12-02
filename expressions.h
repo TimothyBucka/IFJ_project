@@ -1,13 +1,12 @@
 #ifndef EXPRESSIONS_H
 #define EXPRESSIONS_H
 
+#include "DLL.h"
 #include "lexer.h"
+#include "semantics.h"
 #include "stack.h"
 #include "symtable.h"
-#include "DLL.h"
 #include "token.h"
-
-
 
 #define NEW_ITEM(new_item, token, type)    \
     new_item = expr_item_new(token, type); \
@@ -16,23 +15,23 @@
         return INTERNAL_ERR;               \
     }
 
-#define NEXT_TOKEN  if(dll->activeElement == dll->lastElement)\
-                    {\
-                        ERROR = lexer_next_token(lexer, token);\
-                        DLL_push(dll, token);\
-                        COUNTER ++;\
-                    }\
-                    else{DLL_move_active_right(dll);\
-                    *token = DLL_get_active(dll);\
-                    COUNTER ++;\
-                    }\
+#define NEXT_TOKEN                                \
+    if (dll->activeElement == dll->lastElement) { \
+        ERROR = lexer_next_token(lexer, token);   \
+        DLL_push(dll, token);                     \
+        COUNTER++;                                \
+    }                                             \
+    else {                                        \
+        DLL_move_active_right(dll);               \
+        *token = DLL_get_active(dll);             \
+        COUNTER++;                                \
+    }
 
-#define UNDO_DLL_ACTIVE; for (size_t i = 0; i < COUNTER; i++)\
-{\
-    DLL_move_active_left(dll);\
-}\
-COUNTER = 0;\
-
+#define UNDO_DLL_ACTIVE                    \
+    for (size_t i = 0; i < COUNTER; i++) { \
+        DLL_move_active_left(dll);         \
+    }                                      \
+    COUNTER = 0;
 
 typedef enum {
     TERM,
@@ -80,20 +79,20 @@ void expr_stack_free(expr_stack *);
 
 char get_precedence(token *, token *);
 
-data_type get_data_type(token *);
-
 int count_breakpoint(expr_stack *);
+
+data_type get_data_type_from_item(expr_item *, expr_item *, expr_item *);
 
 bool apply_rule(expr_stack *);
 
 expr_item *get_term_or_dollar(expr_stack *);
 
-bool parse_expresion(lexer_T *, DLL *,symtables, bool); // TODO symtable argument
+bool parse_expression(lexer_T *, DLL *,symtables, bool); // TODO symtable argument
 
 // gloabal table
 static const char prec_table[8][8] = {
-//    0     1     2    3    4    5    6    7
-//    $     (     )    +    *    .    r    i
+    //    0     1     2    3    4    5    6    7
+    //    $     (     )    +    *    .    r    i
     {'\0', '<', '\0', '<', '<', '<', '<', '<'}, // $ - 0
     {'\0', '<', '=', '<', '<', '<', '<', '<'},  // ( - 1
     {'>', '\0', '>', '>', '>', '>', '>', '\0'}, // ) - 2

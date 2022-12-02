@@ -1,4 +1,5 @@
 #include "analysis.h"
+#include "expressions.h"
 
 extern error ERROR;
 
@@ -469,7 +470,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             if (ERROR != LEXICAL_ERR) {
                 ERROR = SUCCESS;
             }
-            else {
+            else  {
                 return false;
             }
         }

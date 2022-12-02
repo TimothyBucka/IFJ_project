@@ -192,8 +192,31 @@ void clean_string(char **str) {
         }
         new_str[n_i++] = c;
     }
-    free(*str);
-    *str = new_str;
+
+    char *str_final = chararray_init(4*strlen(new_str) + 1);
+    if (str_final == NULL) {
+        // TODO error
+    }
+
+    for (size_t i = 0; i < strlen(new_str); i++) {
+        char num[5] = {(char)0};
+        char c_as_string[2];
+
+        c_as_string[0] = new_str[i];
+        c_as_string[1] = '\0';
+
+        if ((new_str[i] >= 0 && new_str[i] <= 32) || new_str[i] == 35 || new_str[i] == 92) {
+            sprintf(num, "\\0%d", new_str[i]);
+            strcat(str_final, num);
+        } else {
+            strcat(str_final, c_as_string);
+        }
+    }
+
+    chararray_free(new_str);
+    chararray_free(*str);
+
+    *str = str_final;
 }
 
 void str_to_double(char *string) {
