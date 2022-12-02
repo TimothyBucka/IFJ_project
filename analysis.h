@@ -4,6 +4,7 @@
 #include "lexer.h"
 #include "token.h"
 #include "DLL.h"
+#include "symtable.h"
 
 
 #define return_error        \
@@ -32,25 +33,27 @@ bool accept(token *token, token_ID acceptedID);
 
 bool expect(token *token, token_ID acceptedID);
 
-bool parse_arguments_prime(lexer_T *lexer, DLL *dll);
+bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_arguments(lexer_T *lexer, DLL *dll);
+bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_function_call(lexer_T *lexer, DLL *dll);
+bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_function_call_prime(lexer_T *lexer, DLL *dll);
+bool parse_function_call_prime(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_type(lexer_T *lexer, DLL *dll);
+bool parse_type(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_parameters_prime(lexer_T *lexer, DLL *dll);
+bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_parameters(lexer_T *lexer, DLL *dll);
+bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_assignment_prime(lexer_T *lexer, DLL *dll);
+bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_assignment(lexer_T *lexer, DLL *dll);
+bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_body(lexer_T *lexer, DLL *dll) ;
+bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) ;
+
+bool run_analysis(lexer_T *lexer, DLL *dll);
 
 
 #endif

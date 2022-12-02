@@ -57,12 +57,6 @@ typedef enum {
     NONE        // No rule
 } rules;
 
-typedef enum {
-    NULL_VAL,
-    INT,
-    DOUBLE,
-    STRING
-} data_type;
 
 typedef struct expr_item {
     token *token;
@@ -94,7 +88,7 @@ bool apply_rule(expr_stack *);
 
 expr_item *get_term_or_dollar(expr_stack *);
 
-bool parse_expresion(lexer_T *, DLL *, bool); // TODO symtable argument
+bool parse_expresion(lexer_T *, DLL *,symtables, bool); // TODO symtable argument
 
 // gloabal table
 static const char prec_table[8][8] = {

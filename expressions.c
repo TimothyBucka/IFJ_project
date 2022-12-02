@@ -94,9 +94,9 @@ int get_index_token(token *token) {
 data_type get_data_type(token *token) {
     switch (token->ID) {
     case TOKEN_ID_INTEGER:
-        return INT;
+        return INTEGER;
     case TOKEN_ID_DOUBLE:
-        return DOUBLE;
+        return DECIMAL;
     case TOKEN_ID_STRING:
         return STRING;
     default:
@@ -227,7 +227,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
     return item;
 }
 
-bool parse_expresion(lexer_T *lexer, DLL *dll, bool exp_brack) {
+bool parse_expresion(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack) {
     // printf("Parsing expression...\n");
     token *token = calloc(1, sizeof(token));
     expr_item *new_item;
