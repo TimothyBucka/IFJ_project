@@ -1,6 +1,7 @@
 #include "symtable.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h> // TODO remove after testing
 
 int get_hash(char *key) {
     int h = 0, high;

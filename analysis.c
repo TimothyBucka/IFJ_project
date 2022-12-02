@@ -1,4 +1,5 @@
 #include "analysis.h"
+#include "expressions.h"
 
 extern error ERROR;
 
@@ -204,7 +205,7 @@ bool parse_assignment_prime(lexer_T *lexer, DLL *dll) {
     token *token = calloc(1, sizeof(token));
 
     // TODO add FUNCALL case
-    bool r = parse_expresion(lexer, dll, false);
+    bool r = parse_expression(lexer, dll, false);
     return r;
 }
 
@@ -217,7 +218,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll) {
         return false;
     }
 
-    //TODO add variable info to symtable
+    // TODO add variable info to symtable
 
     next_tok;
     if (!accept(token, TOKEN_ID_EQUALS) && !accept(token, TOKEN_ID_NOT_EQUALS) && !accept(token, TOKEN_ID_TRIPLE_EQUALS)) {
@@ -301,7 +302,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             return_error;
         } //  }
 
-        //TODO add function info to symtable
+        // TODO add function info to symtable
 
         if (!parse_body(lexer, dll)) {
             return_error;
@@ -314,7 +315,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
         if (!expect(token, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
-        if (!parse_expresion(lexer, dll, true)) {
+        if (!parse_expression(lexer, dll, true)) {
             return_error;
         } //  expresion
         next_tok;
@@ -358,7 +359,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
         if (!expect(token, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
-        if (!parse_expresion(lexer, dll, true)) {
+        if (!parse_expression(lexer, dll, true)) {
             return_error;
         }
         next_tok;
@@ -392,7 +393,7 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
         }
         else {
             DLL_move_active_left(dll);
-            if (!parse_expresion(lexer, dll, false)) {
+            if (!parse_expression(lexer, dll, false)) {
                 return_error;
             }
             next_tok;
@@ -425,13 +426,13 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             return_error;
         }
 
-        //TODO add function info to symtable
+        // TODO add function info to symtable
 
         if (!parse_body(lexer, dll)) {
             return_error;
         }
     }
-    
+
     else if (accept(token, TOKEN_ID_EOF)) {
         return true;
     }
@@ -446,30 +447,29 @@ bool parse_body(lexer_T *lexer, DLL *dll) {
             return true;
         }
         else {
-            if (ERROR != LEXICAL_ERR)
-            {
+            if (ERROR != LEXICAL_ERR) {
                 ERROR = SUCCESS;
             }
-            else{
+            else {
                 return false;
             }
         }
-        if(parse_expresion(lexer, dll, false)){
+        if (parse_expression(lexer, dll, false)) {
             next_tok;
-            if(!expect(token, TOKEN_ID_SEMICOLLON)){return_error;}
+            if (!expect(token, TOKEN_ID_SEMICOLLON)) {
+                return_error;
+            }
             if (!parse_body(lexer, dll)) {
                 return_error;
             }
-            
+
             return true;
         }
-        else{
-                return false;
+        else {
+            return false;
         }
-        
 
         return true;
-
     }
 
     return true;
