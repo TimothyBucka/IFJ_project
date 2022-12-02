@@ -14,7 +14,7 @@ int main() {
     lexer_T *lexer = lexer_init();
 
     DLL *dll = createDLL();
-    if (parse_body(lexer, dll)) {
+    if (run_analysis(lexer, dll)) {
         // //printf("PARSED\n");
     }
     else {

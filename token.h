@@ -75,4 +75,16 @@ typedef struct
     token_VAL VAL;
 } token;
 
+// typedef enum {
+//     STRING,
+//     DECIMAL,
+//     INTEGER,
+//     VOID,
+//     STRING_NULL,
+//     DECIMAL_NULL,
+//     INTEGER_NULL,
+//     NULL_VAL,
+//     UNDEFINED
+// } data_type;
+
 #endif

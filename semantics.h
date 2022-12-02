@@ -2,7 +2,7 @@
 # define SEMANTICS_H
 
 typedef enum {
-    NONE,        // 0
+    NO_TYPE,        // 0
     NULL_TYPE,    // 1
     INT,         // 2
     INT_NULL,    // 3
@@ -11,6 +11,7 @@ typedef enum {
     STRING,      // 6
     STRING_NULL, // 7
     BOOL_TYPE    // 8
+    
 } data_type;
 
 # endif

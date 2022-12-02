@@ -8,7 +8,7 @@ expr_item *expr_item_new(token *token, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
     item->token = token;
     item->type = type;
-    item->data_type = NONE;
+    item->data_type = NO_TYPE;
     item->breakpoint = false;
     item->next_item = NULL;
     return item;
@@ -91,6 +91,19 @@ int get_index_token(token *token) {
     }
 }
 
+data_type get_data_type(token *token) {
+    switch (token->ID) {
+    case TOKEN_ID_INTEGER:
+        return INT;
+    case TOKEN_ID_DOUBLE:
+        return DOUBLE;
+    case TOKEN_ID_STRING:
+        return STRING;
+    default:
+        return NO_TYPE;
+    }
+}
+
 char get_precedence(token *token_on_stack, token *token) {
     int index[2] = {0, 0};
 
@@ -154,13 +167,13 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             }
             else {
                 ERROR = EXPR_ERR;
-                return NONE;
+                return NO_TYPE;
             }
             break;
         case TOKEN_ID_DIVISION:
             if ((right != INT && right != DOUBLE) || (left != INT && left != DOUBLE)) {
                 ERROR = EXPR_ERR;
-                return NONE;
+                return NO_TYPE;
             }
             else {
                 return DOUBLE;
@@ -172,7 +185,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             }
             else {
                 ERROR = EXPR_ERR;
-                return NONE;
+                return NO_TYPE;
             }
             break;
         case TOKEN_ID_TRIPLE_EQUALS:
@@ -184,10 +197,10 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             return BOOL_TYPE;
             break;
         default:
-            return NONE;
+            return NO_TYPE;
         }
     }
-    return NONE;
+    return NO_TYPE;
 }
 
 bool apply_rule(expr_stack *expr_stack) {
@@ -287,7 +300,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
     return item;
 }
 
-bool parse_expression(lexer_T *lexer, DLL *dll, bool exp_brack) {
+bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack) {
     // printf("Parsing expression...\n");
     token *token = calloc(1, sizeof(token));
     expr_item *new_item;

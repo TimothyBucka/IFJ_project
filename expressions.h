@@ -39,22 +39,23 @@ typedef enum {
     DOLLAR
 } expr_item_type;
 
-// typedef enum {
-//     PAR_E_PAR,  // E -> (E)
-//     E_PLUS_E,   // E -> E + E
-//     E_MINUS_E,  // E -> E - E
-//     E_TIMES_E,  // E -> E * E
-//     E_DIVIDE_E, // E -> E / E
-//     E_CONCAT_E, // E -> E . E
-//     E_EQ_E,     // E -> E === E
-//     E_NEQ_E,    // E -> E !== E
-//     E_LT_E,     // E -> E < E
-//     E_GT_E,     // E -> E > E
-//     E_LEQ_E,    // E -> E <= E
-//     E_GEQ_E,    // E -> E >= E
-//     ID,         // E -> id
-//     NONE        // No rule
-// } rules; 
+typedef enum {
+    PAR_E_PAR,  // E -> (E)
+    E_PLUS_E,   // E -> E + E
+    E_MINUS_E,  // E -> E - E
+    E_TIMES_E,  // E -> E * E
+    E_DIVIDE_E, // E -> E / E
+    E_CONCAT_E, // E -> E . E
+    E_EQ_E,     // E -> E === E
+    E_NEQ_E,    // E -> E !== E
+    E_LT_E,     // E -> E < E
+    E_GT_E,     // E -> E > E
+    E_LEQ_E,    // E -> E <= E
+    E_GEQ_E,    // E -> E >= E
+    ID,         // E -> id
+    NONE        // No rule
+} rules;
+
 
 typedef struct expr_item {
     token *token;
@@ -86,7 +87,7 @@ bool apply_rule(expr_stack *);
 
 expr_item *get_term_or_dollar(expr_stack *);
 
-bool parse_expression(lexer_T *, DLL *, bool); // TODO symtable argument
+bool parse_expression(lexer_T *, DLL *,symtables, bool); // TODO symtable argument
 
 // gloabal table
 static const char prec_table[8][8] = {

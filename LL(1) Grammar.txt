@@ -17,14 +17,6 @@ BODY : /*eps*/
 | EXPRESSION ";" BODY                               //  TODO
 
 
-LOCAL_SCOPE : /*eps*/
-| "function" func_id "(" PARAMETERS ")" ":" TYPE "{" LOCAL_SCOPE "}" LOCAL_SCOPE
-| "if" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" "else" "{" LOCAL_SCOPE "}" LOCAL_SCOPE
-| "while" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" LOCAL_SCOPE
-| ASSIGNMENT ";" LOCAL_SCOPE
-| FUNCTION_CALL ";" LOCAL_SCOPE
-| "return" RETURN ";" LOCAL_SCOPE;
-
 ASSIGNMENT : var_id "=" ASSIGNMENT_PRIME;
 
 ASSIGNMENT_PRIME : EXPRESSION
