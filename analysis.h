@@ -50,11 +50,11 @@ bool parse_function_call_prime(lexer_T *lexer, DLL *dll, symtables tables);
 
 bool parse_type(lexer_T *lexer, DLL *dll, symtables tables);
 
-bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables);
+bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function* func);
 
-bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables);
+bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function* func);
 
-bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables);
+bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables, data_type* type);
 
 bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables);
 

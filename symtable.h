@@ -23,6 +23,7 @@ typedef struct
 {
     data_type return_type;
     parameter *parameters;
+    int num_of_params;
 } function;
 
 typedef union {

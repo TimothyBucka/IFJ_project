@@ -97,11 +97,11 @@ int count_breakpoint(expr_stack *);
 
 data_type get_data_type_from_item(expr_item *, expr_item *, expr_item *);
 
-bool apply_rule(expr_stack *);
+bool apply_rule(expr_stack *, symtables);
 
 expr_item *get_term_or_dollar(expr_stack *);
 
-bool parse_expression(lexer_T *, DLL *,symtables, bool); // TODO symtable argument
+bool parse_expression(lexer_T *, DLL *,symtables, data_type *, bool);
 
 // gloabal table
 static const char prec_table[8][8] = {

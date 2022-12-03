@@ -613,7 +613,7 @@ error lexer_next_token(lexer_T *lexer, token *Token) {
             else {
                 printf("Token is double\n");
                 lexer->state = STATE_START;
-                Token->ID = TOKEN_ID_DOUBLE;
+                Token->ID = TOKEN_ID_FLOAT;
                 Token->VAL.string = value;
                 return SUCCESS;
             }
