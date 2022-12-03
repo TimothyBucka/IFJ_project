@@ -8,7 +8,7 @@ expr_item *expr_item_new(token *token_ptr, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
     item->token_ptr = token_ptr;
     item->type = type;
-    item->data_type = NO_TYPE;
+    item->data_type = UNDEFINED;
     item->breakpoint = false;
     item->next_item = NULL;
     return item;
@@ -83,7 +83,7 @@ int get_index_token(token *token_ptr) {
         return 6;
     case TOKEN_ID_VARIABLE:
     case TOKEN_ID_INTEGER:
-    case TOKEN_ID_DOUBLE:
+    case TOKEN_ID_FLOAT:
     case TOKEN_ID_STRING:
         return 7;
     default:
@@ -95,12 +95,12 @@ data_type get_data_type(token *token_ptr) {
     switch (token_ptr->ID) {
     case TOKEN_ID_INTEGER:
         return INT;
-    case TOKEN_ID_DOUBLE:
-        return DOUBLE;
+    case TOKEN_ID_FLOAT:
+        return FLOAT;
     case TOKEN_ID_STRING:
         return STRING;
     default:
-        return NO_TYPE;
+        return UNDEFINED;
     }
 }
 
@@ -133,16 +133,31 @@ int count_breakpoint(expr_stack *expr_stack) {
     return count;
 }
 
-data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left) {
+data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left, symtables tables) {
     if (item_right->type == TERM) {
         if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
+            table_item_data *item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
+            if (!item) {
+                ERROR = UNDEFINED_VAR_ERR;
+                return UNDEFINED;
+            }
+            else {
+                if (item->is_var) {
+                    return item->f_or_v.variable->type;
+                }
+                else {
+                    ERROR = SEM_OTHER_ERR;
+                    return UNDEFINED;
+                }
+                
+            }
             return INT; // TODO search symtable if not found return NONE -- error 5
         }
         else if (item_right->token_ptr->ID == TOKEN_ID_INTEGER) {
             return INT;
         }
-        else if (item_right->token_ptr->ID == TOKEN_ID_DOUBLE) {
-            return DOUBLE;
+        else if (item_right->token_ptr->ID == TOKEN_ID_FLOAT) {
+            return FLOAT;
         }
         else if (item_right->token_ptr->ID == TOKEN_ID_STRING) {
             return STRING;
@@ -162,21 +177,21 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             if (right == INT && left == INT) {
                 return INT;
             }
-            else if (right == DOUBLE || left == DOUBLE) {
-                return DOUBLE;
+            else if (right == FLOAT || left == FLOAT) {
+                return FLOAT;
             }
             else {
                 ERROR = EXPR_ERR;
-                return NO_TYPE;
+                return UNDEFINED;
             }
             break;
         case TOKEN_ID_DIVISION:
-            if ((right != INT && right != DOUBLE) || (left != INT && left != DOUBLE)) {
+            if ((right != INT && right != FLOAT) || (left != INT && left != FLOAT)) {
                 ERROR = EXPR_ERR;
-                return NO_TYPE;
+                return UNDEFINED;
             }
             else {
-                return DOUBLE;
+                return FLOAT;
             }
             break;
         case TOKEN_ID_CONCAT:
@@ -185,7 +200,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             }
             else {
                 ERROR = EXPR_ERR;
-                return NO_TYPE;
+                return UNDEFINED;
             }
             break;
         case TOKEN_ID_TRIPLE_EQUALS:
@@ -197,13 +212,13 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             return BOOL_TYPE;
             break;
         default:
-            return NO_TYPE;
+            return UNDEFINED;
         }
     }
-    return NO_TYPE;
+    return UNDEFINED;
 }
 
-bool apply_rule(expr_stack *expr_stack) {
+bool apply_rule(expr_stack *expr_stack, symtables tables) {
     int number_of_items = count_breakpoint(expr_stack);
 
     bool ret_val = false;
@@ -278,7 +293,7 @@ bool apply_rule(expr_stack *expr_stack) {
     }
 
     if (ret_val) {
-        item_right->data_type = get_data_type_from_item(item_right, item_middle, item_left);
+        item_right->data_type = get_data_type_from_item(item_right, item_middle, item_left, tables);
         item_right->type = NONTERM;
         item_right->token_ptr = NULL;
         expr_stack_push(expr_stack, item_right);
@@ -300,7 +315,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
     return item;
 }
 
-bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack) {
+bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *final_type, bool exp_brack) {
     // printf("Parsing expression...\n");
     token *token_ptr;
     expr_item *new_item;
@@ -346,18 +361,18 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
             }
             break;
         case '>':
-            if (!apply_rule(expr_stack)) {
+            if (!apply_rule(expr_stack, tables)) {
                 ERROR = SYNTAX_ERR;
                 // printf("BAD expresoizn\n");
                 expr_stack_free(expr_stack);
                 UNDO_DLL_ACTIVE;
                 return false;
             }
-            // if (ERROR == EXPR_ERR) {
-            //     expr_stack_free(expr_stack);
-            //     UNDO_DLL_ACTIVE;
-            //     return false;
-            // }
+            if (ERROR > 2) { // semantic erro
+                expr_stack_free(expr_stack);
+                UNDO_DLL_ACTIVE;
+                return false;
+            }
             if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token_ptr) == 0) {
                 if (exp_brack) {
                     ERROR = SYNTAX_ERR;
@@ -366,10 +381,10 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
                     UNDO_DLL_ACTIVE;
                     return false;
                 }
-                printf("Type of expression: %d\n", expr_stack->top_item->data_type);
+                *final_type = expr_stack->top_item->data_type;
                 expr_stack_free(expr_stack);
                 // printf(":D GOOOT expresoizn\n");
-                return_tok; // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
+                DLL_move_active_left(dll); // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
                 COUNTER = 0;
                 return true; // TODO @Timo
             }
@@ -383,10 +398,10 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
                     return false;
                 }
                 if (get_index_token(token_ptr) == 0) { // not an expression
-                    printf("Type of expression: %d\n", expr_stack->top_item->data_type);
+                    *final_type = expr_stack->top_item->data_type;
                     expr_stack_free(expr_stack);
-                    return_tok;
-                    return_tok;
+                    DLL_move_active_left(dll);
+                    DLL_move_active_left(dll);
                     // printf(":D GOOOT expresoizn\n");
                     COUNTER = 0;
 

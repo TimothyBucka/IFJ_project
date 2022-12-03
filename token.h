@@ -5,7 +5,7 @@ typedef enum {
     TOKEN_ID_IDENTIFIER, // functions
     TOKEN_ID_VARIABLE,   // variables
     TOKEN_ID_INTEGER,
-    TOKEN_ID_DOUBLE,
+    TOKEN_ID_FLOAT,
     TOKEN_ID_STRING,
     TOKEN_ID_KEYWORD,
 

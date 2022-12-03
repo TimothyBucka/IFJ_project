@@ -15,19 +15,6 @@
         return INTERNAL_ERR;               \
     }
 
-// #define NEXT_TOKEN                                \
-//     if (dll->activeElement == dll->lastElement) { \
-//         ERROR = lexer_next_token(lexer, token);   \
-//         DLL_push(dll, token);                     \
-//         COUNTER++;                                \
-//     }                                             \
-//     else {                                        \
-//         DLL_move_active_right(dll);               \
-//         *token = DLL_get_active(dll);             \
-//         COUNTER++;                                \
-//     }
-
-
 
 
 #define NEXT_TOKEN                                  \
@@ -36,6 +23,7 @@
         token_ptr = calloc(1, sizeof(*token_ptr));        \
         ERROR = lexer_next_token(lexer, token_ptr);   \
         DLL_push(dll, token_ptr);                     \
+        COUNTER++;                                         \
         if (ERROR != SUCCESS) {                   \
             return false;                         \
         }                                         \
@@ -43,21 +31,19 @@
     else {                                        \
         DLL_move_active_right(dll);               \
         token_ptr = DLL_get_active(dll);              \
+        COUNTER++; \
     }
 
 #define return_tok\
     ;\
-    if (dll->activeElement == dll->lastElement) {\
-        free(token_ptr);\
-    }\
-    DLL_move_active_left(dll);\
+    DLL_move_active_left(dll);
 
 
 
 
 #define UNDO_DLL_ACTIVE                    \
     for (size_t i = 0; i < COUNTER; i++) { \
-        return_tok;         \
+        DLL_move_active_left(dll);         \
     }                                      \
     COUNTER = 0;
 
@@ -109,13 +95,13 @@ char get_precedence(token *, token *);
 
 int count_breakpoint(expr_stack *);
 
-data_type get_data_type_from_item(expr_item *, expr_item *, expr_item *);
+data_type get_data_type_from_item(expr_item *, expr_item *, expr_item *, symtables);
 
-bool apply_rule(expr_stack *);
+bool apply_rule(expr_stack *, symtables);
 
 expr_item *get_term_or_dollar(expr_stack *);
 
-bool parse_expression(lexer_T *, DLL *,symtables, bool); // TODO symtable argument
+bool parse_expression(lexer_T *, DLL *,symtables, data_type *, bool);
 
 // gloabal table
 static const char prec_table[8][8] = {

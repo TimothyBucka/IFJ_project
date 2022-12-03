@@ -29,7 +29,6 @@ token *DLL_get_active(DLL *dll) {
     if (dll->activeElement != NULL) {
         return &dll->activeElement->data;
     }
-    
 }
 
 void DLL_move_active_left(DLL *dll) {
