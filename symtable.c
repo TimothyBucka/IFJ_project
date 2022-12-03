@@ -27,7 +27,7 @@ table_item_data *hash_table_lookup(hash_table table, char *key) {
     table_item_t *item = table[get_hash(key)];
     if (item != NULL) {
         while (item != NULL) {
-            if (item->value.name == key ) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
+            if (!strcmp(item->value.name,key)) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
             {                                  // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
                 return &item->value;
             }
@@ -46,7 +46,7 @@ bool hash_table_has_item(hash_table table, char *key){
         table_item_t *item = table[get_hash(key)];
     if (item != NULL) {
         while (item != NULL) {
-            if (item->value.name == key ) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
+            if (!strcmp(item->value.name, key)) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
             {                                  // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
                 return true;
             }
@@ -73,7 +73,7 @@ void hash_table_remove(hash_table table, char *key) {
     table_item_t *item = table[get_hash(key)];
     while (item != NULL) {
 
-        if (item->value.name == key) {
+        if (!strcmp(item->value.name, key)) {
             table[get_hash(key)] = item->next_item;
             free(item);
             return;
@@ -98,7 +98,10 @@ void hash_table_free(hash_table table){
             table[i] = (*table[i]).next_item;
             if (item->value.is_var) 
             {
-                free(item->value.f_or_v);
+                free(item->value.f_or_v.variable);
+            } else {
+                //free(item->value.f_or_v.function->parameters);
+                free(item->value.f_or_v.function);
             }
             free(item);
             item = &(*table[i]);

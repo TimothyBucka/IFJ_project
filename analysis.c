@@ -35,9 +35,6 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     hash_table_free(tables.local);
 
-
-
-
     return var;
 }
 
@@ -136,7 +133,7 @@ bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 }
 
-bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function* func) {
+bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function *func) {
     token *token_ptr;
 
     next_tok;
@@ -146,7 +143,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
         }
         next_tok;
         if (expect(token_ptr, TOKEN_ID_VARIABLE)) {
-            func->parameters = realloc(func->parameters, (func->num_of_params+1)*sizeof(parameter));
+            func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter));
             parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
             func->parameters[func->num_of_params] = param;
             if (!parse_parameters_prime(lexer, dll, tables, func)) {
@@ -165,7 +162,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
     return true;
 }
 
-bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function* func) {
+bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func) {
     token *token_ptr;
     if (!parse_type(lexer, dll, tables)) {
         next_tok;
@@ -182,10 +179,10 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function* func
 
     // case Function
     if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
-        func->parameters = realloc(func->parameters, (func->num_of_params+1)*sizeof(parameter));
+        func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter));
         parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
         func->parameters[func->num_of_params] = param;
-        
+
         if (!parse_parameters_prime(lexer, dll, tables, func)) {
             return_error;
         }
@@ -198,11 +195,11 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function* func
     return true;
 }
 
-bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables, data_type* type  ) {
+bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables, data_type *type) {
     token *token_ptr;
 
     // TODO add FUNCALL case
-    bool r = parse_expression(lexer, dll, tables,type, false);
+    bool r = parse_expression(lexer, dll, tables, type, false);
     return r;
 }
 
@@ -214,19 +211,17 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         return_tok;
         return false;
     }
-    
+
     table_item_data *data = malloc(sizeof(table_item_data));
     data_type assi_type;
     // //TODO add variable info to symtable
-    if (!hash_table_has_item(tables.global, token_ptr->VAL.string))
-    {
-            
+    if (!hash_table_has_item(tables.global, token_ptr->VAL.string)) {
+
         data->name = token_ptr->VAL.string;
         variable *var = malloc(sizeof(variable));
         var->type = UNDEFINED;
-        data->f_or_v = var;
-        data->is_var=true;
-
+        data->f_or_v.variable = var;
+        data->is_var = true;
     }
 
     next_tok;
@@ -261,19 +256,23 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!parse_assignment_prime(lexer, dll, tables, &assi_type)) {
             return_error;
         }
+        data->f_or_v.variable->type = assi_type;
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error;
         }
     }
-    if (!hash_table_has_item(tables.global, token_ptr->VAL.string)){
-    hash_table_insert(tables.global, data);
+
+    if (!hash_table_has_item(tables.global, data->name)) {
+        hash_table_insert(tables.global, data);
     }
-    
+
     return true;
 }
 
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
+    data_type final_type;
+
     token *token_ptr;
 
     next_tok;
@@ -322,15 +321,14 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         // TODO add function info to symtable
         // if (!hash_table_has_item(tables.global, token_ptr->VAL.string))
         // {
-                
 
-            keyword kw = dll->lastElement->previousElement->previousElement->previousElement->data.VAL.keyword;
-            func->return_type = kw_to_data_type(kw);
-            
-            data->is_var=false;
-            data->f_or_v = func;
-            printf("TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST\n");
-            hash_table_insert(tables.global, data);
+        keyword kw = dll->lastElement->previousElement->previousElement->previousElement->data.VAL.keyword;
+        func->return_type = kw_to_data_type(kw);
+
+        data->is_var = false;
+        data->f_or_v.function = func;
+        printf("TEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST\n");
+        hash_table_insert(tables.global, data);
         // }
         if (!parse_body(lexer, dll, tables)) {
             return_error;
@@ -343,7 +341,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
-        if (!parse_expression(lexer, dll, tables, true)) {
+        if (!parse_expression(lexer, dll, tables, &final_type, true)) {
             return_error;
         } //  expresion
         next_tok;
@@ -387,7 +385,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error;
         } //  (
-        if (!parse_expression(lexer, dll, tables, true)) {
+        if (!parse_expression(lexer, dll, tables, &final_type, true)) {
             return_error;
         }
         next_tok;
@@ -421,7 +419,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
         else {
             return_tok;
-            if (!parse_expression(lexer, dll, tables, false)) {
+            if (!parse_expression(lexer, dll, tables, &final_type, false)) {
                 return_error;
             }
             next_tok;
@@ -474,7 +472,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             }
             return true;
         }
-        if (parse_expression(lexer, dll, tables, false)) {
+        if (parse_expression(lexer, dll, tables, &final_type, false)) {
             next_tok;
             if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
                 return_error;

@@ -143,7 +143,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             }
             else {
                 if (item->is_var) {
-                    return item->f_or_v->variable.type;
+                    return item->f_or_v.variable->type;
                 }
                 else {
                     ERROR = SEM_OTHER_ERR;

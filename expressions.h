@@ -95,7 +95,7 @@ char get_precedence(token *, token *);
 
 int count_breakpoint(expr_stack *);
 
-data_type get_data_type_from_item(expr_item *, expr_item *, expr_item *);
+data_type get_data_type_from_item(expr_item *, expr_item *, expr_item *, symtables);
 
 bool apply_rule(expr_stack *, symtables);
 
