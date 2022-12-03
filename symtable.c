@@ -18,7 +18,7 @@ int get_hash(char *key) {
 hash_table init_hash_table() {
     hash_table table = calloc(TABLESIZE,sizeof(table_item_t*));
     for (int i = 0; i < TABLESIZE; i++) {
-        table[i] = calloc(1,sizeof(table_item_t));
+        table[i] = NULL;
     }
     return table;
 }
@@ -27,7 +27,7 @@ table_item_data *hash_table_lookup(hash_table table, char *key) {
     table_item_t *item = table[get_hash(key)];
     if (item != NULL) {
         while (item != NULL) {
-            if (item->value.name== key ) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
+            if (item->value.name == key ) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
             {                                  // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
                 return &item->value;
             }
@@ -42,6 +42,25 @@ table_item_data *hash_table_lookup(hash_table table, char *key) {
     }
 }
 
+bool hash_table_has_item(hash_table table, char *key){
+        table_item_t *item = table[get_hash(key)];
+    if (item != NULL) {
+        while (item != NULL) {
+            if (item->value.name == key ) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
+            {                                  // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
+                return true;
+            }
+            else {
+                item = item->next_item;
+            }
+        }
+        return false;
+    }
+    else {
+        return false;
+    }
+}
+
 
 void hash_table_insert(hash_table table, table_item_data *item) {
     table_item_t *new_item = calloc(1,sizeof(table_item_t));
@@ -50,7 +69,7 @@ void hash_table_insert(hash_table table, table_item_data *item) {
     table[get_hash(item->name)] = new_item;
 }
 
-void hast_table_remove(hash_table table, char *key) {
+void hash_table_remove(hash_table table, char *key) {
     table_item_t *item = table[get_hash(key)];
     while (item != NULL) {
 
@@ -71,14 +90,33 @@ void hast_table_remove(hash_table table, char *key) {
     }
 }
 
+void hash_table_free(hash_table table){
+    for (int i = 0; i < TABLESIZE; i++) {
+        
+        while (table[i] != NULL ) {
+            table_item_t *item = table[i];
+            table[i] = (*table[i]).next_item;
+            if (item->value.is_var) 
+            {
+                free(item->value.f_or_v);
+            }
+            free(item);
+            item = &(*table[i]);
+        }
+    }
+    free(table);
+}
+
 void debug_print_table(hash_table table){
+    printf("\n\n--------------------------------------\n");
     for (int i = 0; i < TABLESIZE; i++) {
         printf("%d: ", i);
         table_item_t *item = table[i];
-        while (item != NULL) {
-            printf("[name:%s, type:%s] ", item->value.name, item->value.f_or_v);
+        while (item != NULL && item->value.name != NULL) {
+            printf("[name:%s, type:%s] ", item->value.name, item->value.is_var==true ? "var" : "func" );
             item = item->next_item;
         }
         printf("\n");
     }
+    printf("--------------------------------------\n");
 }

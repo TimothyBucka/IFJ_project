@@ -4,9 +4,9 @@ extern error ERROR;
 
 size_t COUNTER = 0;
 
-expr_item *expr_item_new(token *token, expr_item_type type) {
+expr_item *expr_item_new(token *token_ptr, expr_item_type type) {
     expr_item *item = malloc(sizeof(*item));
-    item->token = token;
+    item->token_ptr = token_ptr;
     item->type = type;
     item->data_type = NO_TYPE;
     item->breakpoint = false;
@@ -56,12 +56,12 @@ void expr_stack_free(expr_stack *stack) {
     free(stack);
 }
 
-int get_index_token(token *token) {
-    if (!token) { // dollar
+int get_index_token(token *token_ptr) {
+    if (!token_ptr) { // dollar
         return 0;
     }
 
-    switch (token->ID) {
+    switch (token_ptr->ID) {
     case TOKEN_ID_LBRACKET:
         return 1;
     case TOKEN_ID_RBRACKET:
@@ -91,8 +91,8 @@ int get_index_token(token *token) {
     }
 }
 
-data_type get_data_type(token *token) {
-    switch (token->ID) {
+data_type get_data_type(token *token_ptr) {
+    switch (token_ptr->ID) {
     case TOKEN_ID_INTEGER:
         return INT;
     case TOKEN_ID_DOUBLE:
@@ -104,11 +104,11 @@ data_type get_data_type(token *token) {
     }
 }
 
-char get_precedence(token *token_on_stack, token *token) {
+char get_precedence(token *token_on_stack, token *token_ptr) {
     int index[2] = {0, 0};
 
     index[0] = get_index_token(token_on_stack);
-    index[1] = get_index_token(token);
+    index[1] = get_index_token(token_ptr);
 
     if (index[0] == -1 || index[1] == -1) {
         return '\0';
@@ -135,16 +135,16 @@ int count_breakpoint(expr_stack *expr_stack) {
 
 data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left) {
     if (item_right->type == TERM) {
-        if (item_right->token->ID == TOKEN_ID_VARIABLE) {
+        if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
             return INT; // TODO search symtable if not found return NONE -- error 5
         }
-        else if (item_right->token->ID == TOKEN_ID_INTEGER) {
+        else if (item_right->token_ptr->ID == TOKEN_ID_INTEGER) {
             return INT;
         }
-        else if (item_right->token->ID == TOKEN_ID_DOUBLE) {
+        else if (item_right->token_ptr->ID == TOKEN_ID_DOUBLE) {
             return DOUBLE;
         }
-        else if (item_right->token->ID == TOKEN_ID_STRING) {
+        else if (item_right->token_ptr->ID == TOKEN_ID_STRING) {
             return STRING;
         }
     }
@@ -155,7 +155,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
         data_type right = item_right->data_type;
         data_type left = item_left->data_type;
 
-        switch (item_middle->token->ID) {
+        switch (item_middle->token_ptr->ID) {
         case TOKEN_ID_PLUS:
         case TOKEN_ID_MINUS:
         case TOKEN_ID_MULTIPLICATION:
@@ -214,7 +214,7 @@ bool apply_rule(expr_stack *expr_stack) {
 
     if (number_of_items == 1) {
         item_right = expr_stack_pop(expr_stack);
-        if (item_right->type == TERM && get_index_token(item_right->token) == 7) { // E -> id
+        if (item_right->type == TERM && get_index_token(item_right->token_ptr) == 7) { // E -> id
             ret_val = true;
         }
         else {
@@ -227,45 +227,45 @@ bool apply_rule(expr_stack *expr_stack) {
         item_left = expr_stack_pop(expr_stack);
 
         if (item_left->type == NONTERM && item_middle->type == TERM && item_right->type == NONTERM) {
-            if (item_middle->token->ID == TOKEN_ID_PLUS) { // E -> E + E
+            if (item_middle->token_ptr->ID == TOKEN_ID_PLUS) { // E -> E + E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_MINUS) { // E -> E - E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_MINUS) { // E -> E - E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_MULTIPLICATION) { // E -> E * E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_MULTIPLICATION) { // E -> E * E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_DIVISION) { // E -> E / E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_DIVISION) { // E -> E / E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_CONCAT) { // E -> E . E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_CONCAT) { // E -> E . E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_TRIPLE_EQUALS) { // E -> E == E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_TRIPLE_EQUALS) { // E -> E == E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_NOT_EQUALS) { // E -> E !== E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_NOT_EQUALS) { // E -> E !== E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_LT) { // E -> E < E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_LT) { // E -> E < E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_GT) { // E -> E > E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_GT) { // E -> E > E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_LTE) { // E -> E <= E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_LTE) { // E -> E <= E
                 ret_val = true;
             }
-            else if (item_middle->token->ID == TOKEN_ID_GTE) { // E -> E >= E
+            else if (item_middle->token_ptr->ID == TOKEN_ID_GTE) { // E -> E >= E
                 ret_val = true;
             }
             else {
                 ret_val = false;
             }
         }
-        else if ((item_right->type == TERM && get_index_token(item_right->token) == 2) &&
-                 (item_left->type == TERM && get_index_token(item_left->token) == 1) &&
+        else if ((item_right->type == TERM && get_index_token(item_right->token_ptr) == 2) &&
+                 (item_left->type == TERM && get_index_token(item_left->token_ptr) == 1) &&
                  (item_middle->type == NONTERM)) { // E -> (E)
             ret_val = true;
         }
@@ -280,7 +280,7 @@ bool apply_rule(expr_stack *expr_stack) {
     if (ret_val) {
         item_right->data_type = get_data_type_from_item(item_right, item_middle, item_left);
         item_right->type = NONTERM;
-        item_right->token = NULL;
+        item_right->token_ptr = NULL;
         expr_stack_push(expr_stack, item_right);
     }
 
@@ -302,7 +302,7 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
 
 bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack) {
     // printf("Parsing expression...\n");
-    token *token = calloc(1, sizeof(*token));
+    token *token_ptr;
     expr_item *new_item;
     expr_stack *expr_stack = expr_stack_new();
     if (!expr_stack) {
@@ -322,7 +322,7 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
 
     do {
         expr_item *stack_term = get_term_or_dollar(expr_stack);
-        switch (get_precedence(stack_term->token, token)) {
+        switch (get_precedence(stack_term->token_ptr, token_ptr)) {
         case '=':
             NEXT_TOKEN;
             NEW_ITEM(new_item, &dll->activeElement->previousElement->data, TERM);
@@ -358,7 +358,7 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
             //     UNDO_DLL_ACTIVE;
             //     return false;
             // }
-            if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token) == 0) {
+            if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token_ptr) == 0) {
                 if (exp_brack) {
                     ERROR = SYNTAX_ERR;
                     // printf("BAD expresoizn\n");
@@ -369,24 +369,24 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
                 printf("Type of expression: %d\n", expr_stack->top_item->data_type);
                 expr_stack_free(expr_stack);
                 // printf(":D GOOOT expresoizn\n");
-                DLL_move_active_left(dll); // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
+                return_tok; // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
                 COUNTER = 0;
                 return true; // TODO @Timo
             }
             break;
         case '\0':
-            if (exp_brack && token->ID == TOKEN_ID_RBRACKET) {
+            if (exp_brack && token_ptr->ID == TOKEN_ID_RBRACKET) {
                 NEXT_TOKEN;
                 if (ERROR) {
                     expr_stack_free(expr_stack);
                     UNDO_DLL_ACTIVE;
                     return false;
                 }
-                if (get_index_token(token) == 0) { // not an expression
+                if (get_index_token(token_ptr) == 0) { // not an expression
                     printf("Type of expression: %d\n", expr_stack->top_item->data_type);
                     expr_stack_free(expr_stack);
-                    DLL_move_active_left(dll);
-                    DLL_move_active_left(dll);
+                    return_tok;
+                    return_tok;
                     // printf(":D GOOOT expresoizn\n");
                     COUNTER = 0;
 

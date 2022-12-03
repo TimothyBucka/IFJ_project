@@ -28,9 +28,16 @@
     }                                             \
     else {                                        \
         DLL_move_active_right(dll);               \
-        token tmp = DLL_get_active(dll);           \
-        token_ptr = &tmp;              \
+        token_ptr = DLL_get_active(dll);              \
     }
+
+#define return_tok\
+    ;\
+    if (dll->activeElement == dll->lastElement) {\
+        free(token_ptr);\
+    }\
+    DLL_move_active_left(dll);\
+
 
 bool accept(token *token_ptr, token_ID acceptedID);
 

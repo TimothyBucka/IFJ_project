@@ -31,6 +31,11 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     debug_print_table(global);
 
+    hash_table_free(tables.global);
+
+    hash_table_free(tables.local);
+
+
 
 
     return var;
@@ -64,12 +69,12 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
         }
 
         else {
-            DLL_move_active_left(dll);
+            return_tok;
             return false;
         }
     }
     else {
-        DLL_move_active_left(dll);
+        return_tok;
         return true;
     }
     return true;
@@ -103,7 +108,7 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     else {
-        DLL_move_active_left(dll);
+        return_tok;
         return true;
     }
     return true;
@@ -126,7 +131,7 @@ bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
         return true;
     }
     else {
-        DLL_move_active_left(dll);
+        return_tok;
         return false;
     }
 }
@@ -162,12 +167,12 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables) {
         }
 
         else {
-            DLL_move_active_left(dll);
+            return_tok;
             return_error;
         }
     }
     else {
-        DLL_move_active_left(dll);
+        return_tok;
         return true;
     }
     return true;
@@ -182,7 +187,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables) {
             return_error;
         }
         else {
-            DLL_move_active_left(dll);
+            return_tok;
             return true;
         }
     }
@@ -211,7 +216,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     else {
-        DLL_move_active_left(dll);
+        return_tok;
         return true;
     }
     return true;
@@ -230,22 +235,31 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 
     next_tok;
     if (!accept(token_ptr, TOKEN_ID_VARIABLE)) {
-        DLL_move_active_left(dll);
+        return_tok;
         return false;
     }
 
     // //TODO add variable info to symtable
-    table_item_data *data = malloc(sizeof(table_item_data));
-    data->name = token_ptr->VAL.string;
-    variable *var = malloc(sizeof(variable));
-    var->type = NO_TYPE;
-    data->f_or_v = var;
-    hash_table_insert(tables.global, data)
+    if (!hash_table_has_item(tables.global, token_ptr->VAL.string))
+    {
+            
+        table_item_data *data = malloc(sizeof(table_item_data));
+        data->name = token_ptr->VAL.string;
+        variable *var = malloc(sizeof(variable));
+        var->type = NO_TYPE;
+        data->f_or_v = var;
+        data->is_var=true;
+        hash_table_insert(tables.global, data);
+    }
 
-        next_tok;
+
+
+
+
+    next_tok;
     if (!accept(token_ptr, TOKEN_ID_EQUALS) && !accept(token_ptr, TOKEN_ID_NOT_EQUALS) && !accept(token_ptr, TOKEN_ID_TRIPLE_EQUALS)) {
-        DLL_move_active_left(dll);
-        DLL_move_active_left(dll);
+        return_tok;
+        return_tok;
         return false;
     }
     next_tok;
@@ -270,7 +284,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         }
     }
     else {
-        DLL_move_active_left(dll);
+        return_tok;
         if (!parse_assignment_prime(lexer, dll, tables)) {
             return_error;
         }
@@ -414,7 +428,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             }
         }
         else {
-            DLL_move_active_left(dll);
+            return_tok;
             if (!parse_expression(lexer, dll, tables, false)) {
                 return_error;
             }
@@ -460,7 +474,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     else {
-        DLL_move_active_left(dll);
+        return_tok;
         //  case assignment
         if (parse_assignment(lexer, dll, tables)) {
             if (!parse_body(lexer, dll, tables)) {
