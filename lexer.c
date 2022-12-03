@@ -242,7 +242,7 @@ void str_to_double(char *string) {
             if (cel >= 1000000000) // TODO mozno netreba ak teda nemusime overovať ak som ťa DANNY dobre pochopil
             {
                 printf("Chyba: cislo je prilis velke");
-                exit(1);
+                exit(1); //FIXME
             }
             arrayCEL[CELCounter++] = '.';
             stringCounter++;
