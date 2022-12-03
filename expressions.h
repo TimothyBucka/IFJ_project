@@ -17,8 +17,6 @@
 
 
 
-
-
 #define NEXT_TOKEN                                  \
     ;                                             \
     if (dll->activeElement == dll->lastElement) { \
