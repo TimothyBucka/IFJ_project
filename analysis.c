@@ -22,8 +22,8 @@ bool expect(token *token_ptr, token_ID acceptedID) {
 
 bool run_analysis(lexer_T *lexer, DLL *dll) {
 
-    hash_table *global = init_hash_table();
-    hash_table *local = init_hash_table();
+    hash_table global = init_hash_table();
+    hash_table local = init_hash_table();
 
     symtables tables = {global, local};
 

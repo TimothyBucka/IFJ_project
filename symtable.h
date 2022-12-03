@@ -43,8 +43,8 @@ typedef struct table_item {
 typedef table_item_t** hash_table;
 
 typedef struct{
-    hash_table * global;
-    hash_table * local;
+    hash_table global;
+    hash_table local;
 }symtables;
 
 int get_hash(char *key);

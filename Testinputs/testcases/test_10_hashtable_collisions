@@ -1,0 +1,60 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+
+//generate 50 collisions
+    $a = "a" . $i;
+    $b = "b" . $i;
+    $c = "c" . $i;
+    $d = "d" . $i;
+    $e = "e" . $i;
+    $f = "f" . $i;
+    $g = "g" . $i;
+    $h = "h" . $i;
+    $i = "i" . $i;
+    $j = "j" . $i;
+    $k = "k" . $i;
+    $l = "l" . $i;
+    $m = "m" . $i;
+    $n = "n" . $i;
+    $o = "o" . $i;
+    $p = "p" . $i;
+    $q = "q" . $i;
+    $r = "r" . $i;
+    $s = "s" . $i;
+    $t = "t" . $i;
+    $u = "u" . $i;
+    $v = "v" . $i;
+    $w = "w" . $i;
+    $x = "x" . $i;
+    $y = "y" . $i;
+    $z = "z" . $i;
+    $aa = "aa" . $i;
+    $bb = "bb" . $i;
+    $cc = "cc" . $i;
+    $dd = "dd" . $i;
+    $ee = "ee" . $i;
+    $ff = "ff" . $i;
+    $gg = "gg" . $i;
+    $hh = "hh" . $i;
+    $ii = "ii" . $i;
+    $jj = "jj" . $i;
+    $kk = "kk" . $i;
+    $ll = "ll" . $i;
+    $mm = "mm" . $i;
+    $nn = "nn" . $i;
+    $oo = "oo" . $i;
+    $pp = "pp" . $i;
+    $qq = "qq" . $i;
+    $rr = "rr" . $
+
+
+?>
