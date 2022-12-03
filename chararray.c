@@ -42,4 +42,17 @@ void chararray_append(char **chararray, char c) {
     free(str2);
 }
 
+void chararray_append_sring(char **chararray, char* str) {
+    char *new_str;
+    if ((new_str = malloc(strlen(*chararray) + strlen(str) + 1)) != NULL) {
+        new_str[0] = '\0'; // ensures the memory is an empty string
+        strcat(new_str, *chararray);
+        strcat(new_str, str);
+    }
+
+
+    free(*chararray);
+    *chararray = new_str;
+}
+
 void chararray_free(char *chararray) { free(chararray); }

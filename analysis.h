@@ -33,9 +33,6 @@
 
 #define return_tok\
     ;\
-    if (dll->activeElement == dll->lastElement) {\
-        free(token_ptr);\
-    }\
     DLL_move_active_left(dll);\
 
 

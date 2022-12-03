@@ -15,17 +15,6 @@
         return INTERNAL_ERR;               \
     }
 
-// #define NEXT_TOKEN                                \
-//     if (dll->activeElement == dll->lastElement) { \
-//         ERROR = lexer_next_token(lexer, token);   \
-//         DLL_push(dll, token);                     \
-//         COUNTER++;                                \
-//     }                                             \
-//     else {                                        \
-//         DLL_move_active_right(dll);               \
-//         *token = DLL_get_active(dll);             \
-//         COUNTER++;                                \
-//     }
 
 
 
@@ -36,6 +25,7 @@
         token_ptr = calloc(1, sizeof(*token_ptr));        \
         ERROR = lexer_next_token(lexer, token_ptr);   \
         DLL_push(dll, token_ptr);                     \
+        COUNTER++;                                         \
         if (ERROR != SUCCESS) {                   \
             return false;                         \
         }                                         \
@@ -43,21 +33,19 @@
     else {                                        \
         DLL_move_active_right(dll);               \
         token_ptr = DLL_get_active(dll);              \
+        COUNTER++; \
     }
 
 #define return_tok\
     ;\
-    if (dll->activeElement == dll->lastElement) {\
-        free(token_ptr);\
-    }\
-    DLL_move_active_left(dll);\
+    DLL_move_active_left(dll);
 
 
 
 
 #define UNDO_DLL_ACTIVE                    \
     for (size_t i = 0; i < COUNTER; i++) { \
-        return_tok;         \
+        DLL_move_active_left(dll);         \
     }                                      \
     COUNTER = 0;
 

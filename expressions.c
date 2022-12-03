@@ -369,7 +369,7 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
                 printf("Type of expression: %d\n", expr_stack->top_item->data_type);
                 expr_stack_free(expr_stack);
                 // printf(":D GOOOT expresoizn\n");
-                return_tok; // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
+                DLL_move_active_left(dll); // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
                 COUNTER = 0;
                 return true; // TODO @Timo
             }
@@ -385,8 +385,8 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, bool exp_brack
                 if (get_index_token(token_ptr) == 0) { // not an expression
                     printf("Type of expression: %d\n", expr_stack->top_item->data_type);
                     expr_stack_free(expr_stack);
-                    return_tok;
-                    return_tok;
+                    DLL_move_active_left(dll);
+                    DLL_move_active_left(dll);
                     // printf(":D GOOOT expresoizn\n");
                     COUNTER = 0;
 
