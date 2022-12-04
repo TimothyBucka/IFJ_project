@@ -49,8 +49,10 @@ typedef enum { //all instructions from IFJcode22
     INS_DPRINT //debugging
 } INSTRUCTIONS;
 
-#define FLOAT_VALUE
-//idk how
+#define FUNCTION_FLOAT_VALUE "LABEL $float_value\n\
+PUSHS GF@%s\n\
+TYPE GF@%s_type\n\
+
 
 #define FUNCTION_ORD "LABEL $ord\n\
 DEFVAR LF@&1type\n\
@@ -155,3 +157,346 @@ JUMPIFEQ $substroutbounds LF@&3lencheck bool@true\n\
 RETURN\n"
 
 #endif
+
+
+/* This must vypisat 
+.IFJcode22
+CALL NULLMAIN42069
+JUMP ENDENDENDEND
+
+LABEL shiftRight
+PUSHFRAME
+DEFVAR LF@$optype
+DEFVAR LF@i
+PUSHS int@0
+POPS LF@i
+CLEARS
+DEFVAR LF@ret
+TYPE LF@$optype LF@n
+PUSHS LF@$optype
+PUSHS string@
+JUMPIFNEQS checkinitializedgood69
+EXIT int@5
+LABEL checkinitializedgood69
+PUSHS LF@n
+POPS LF@ret
+CLEARS
+LABEL $WhileStart70
+TYPE LF@$optype LF@i
+PUSHS LF@$optype
+PUSHS string@
+JUMPIFNEQS checkinitializedgood71
+EXIT int@5
+LABEL checkinitializedgood71
+PUSHS LF@i
+TYPE LF@$optype LF@bits
+PUSHS LF@$optype
+PUSHS string@
+JUMPIFNEQS checkinitializedgood72
+EXIT int@5
+LABEL checkinitializedgood72
+PUSHS LF@bits
+CREATEFRAME
+DEFVAR TF@a
+DEFVAR TF@b
+DEFVAR TF@res
+POPS TF@b
+POPS TF@a
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@nil
+EQS
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@nil
+EQS
+ORS
+PUSHS bool@true
+JUMPIFEQS $LESSNOTCOMPARE73
+TYPE TF@res TF@a
+PUSHS TF@res
+TYPE TF@res TF@b
+PUSHS TF@res
+JUMPIFEQS $LESSCOMPARE73
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@string
+EQS
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@bool
+EQS
+ORS
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@string
+EQS
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@bool
+EQS
+ORS
+ORS
+PUSHS bool@true
+JUMPIFNEQS $LESSVALIDTYPE73
+EXIT int@7
+LABEL $LESSVALIDTYPE73
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@int
+JUMPIFNEQS $LESKIP173
+INT2FLOAT TF@a TF@a
+LABEL $LESKIP173
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@int
+JUMPIFNEQS $LESKIP273
+INT2FLOAT TF@b TF@b
+LABEL $LESKIP273
+LABEL $LESSCOMPARE73
+PUSHS TF@a
+PUSHS TF@b
+LTS
+JUMP $LESSEND73
+LABEL $LESSNOTCOMPARE73
+PUSHS bool@false
+LABEL $LESSEND73
+CREATEFRAME
+DEFVAR TF@a
+POPS TF@a
+DEFVAR TF@type
+TYPE TF@type TF@a
+PUSHS TF@type
+PUSHS string@bool
+JUMPIFNEQS $IsSomethingElse70
+PUSHS TF@a
+JUMP $ENDOFCONDITION70
+LABEL $IsSomethingElse70
+TYPE TF@type TF@a
+PUSHS TF@type
+PUSHS string@int
+JUMPIFNEQS $Next170
+PUSHS TF@a
+PUSHS int@0
+JUMPIFNEQS $PUSHTRUUU70
+PUSHS bool@false
+JUMP $ENDOFCONDITION70
+LABEL $Next170
+TYPE TF@type TF@a
+PUSHS TF@type
+PUSHS string@float
+JUMPIFNEQS $Next270
+PUSHS TF@a
+PUSHS float@0x0p+0
+JUMPIFNEQS $PUSHTRUUU70
+PUSHS bool@false
+JUMP $ENDOFCONDITION70
+LABEL $Next270
+TYPE TF@type TF@a
+PUSHS TF@type
+PUSHS string@string
+JUMPIFNEQS $Next370
+PUSHS TF@a
+PUSHS string@
+EQS
+PUSHS TF@a
+PUSHS string@0
+EQS
+PUSHS TF@a
+PUSHS string@0.0
+EQS
+ORS
+JUMPIFEQS $PUSHTRUUU70
+PUSHS bool@false
+JUMP $ENDOFCONDITION70
+LABEL $Next370
+PUSHS bool@false
+JUMP $ENDOFCONDITION70
+LABEL $PUSHTRUUU70
+PUSHS bool@true
+LABEL $ENDOFCONDITION70
+PUSHS bool@true
+JUMPIFNEQS $WhileEnd70
+TYPE LF@$optype LF@ret
+PUSHS LF@$optype
+PUSHS string@
+JUMPIFNEQS checkinitializedgood74
+EXIT int@5
+LABEL checkinitializedgood74
+PUSHS LF@ret
+PUSHS int@2
+CREATEFRAME
+DEFVAR TF@a
+DEFVAR TF@b
+DEFVAR TF@res
+POPS TF@b
+POPS TF@a
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@nil
+EQS
+PUSHS bool@true
+JUMPIFNEQS $NOTNUL76
+MOVE TF@a int@0
+JUMP $tudytamskip76
+LABEL $NOTNUL76
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@string
+EQS
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@bool
+EQS
+ORS
+PUSHS bool@true
+JUMPIFEQS $FAIL75
+LABEL $tudytamskip76
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@nil
+EQS
+PUSHS bool@true
+JUMPIFNEQS $NOTNUL77
+MOVE TF@b int@0
+JUMP $tudytamskip77
+LABEL $NOTNUL77
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@string
+EQS
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@bool
+EQS
+ORS
+PUSHS bool@true
+JUMPIFEQS $FAIL75
+LABEL $tudytamskip77
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@int
+JUMPIFNEQS $DIVLABEL177
+INT2FLOAT TF@a TF@a
+LABEL $DIVLABEL177
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@int
+JUMPIFNEQS $DIVLABEL277
+INT2FLOAT TF@b TF@b
+LABEL $DIVLABEL277
+DIV TF@res TF@a TF@b
+PUSHS TF@res
+JUMP $EXIT77
+LABEL $FAIL77
+EXIT int@57
+LABEL $EXIT77
+POPS LF@ret
+CLEARS
+TYPE LF@$optype LF@i
+PUSHS LF@$optype
+PUSHS string@
+JUMPIFNEQS checkinitializedgood78
+EXIT int@5
+LABEL checkinitializedgood78
+PUSHS LF@i
+PUSHS int@1
+CREATEFRAME
+DEFVAR TF@a
+DEFVAR TF@b
+DEFVAR TF@res
+POPS TF@b
+POPS TF@a
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@nil
+EQS
+PUSHS bool@true
+JUMPIFNEQS $NOTNUL80
+MOVE TF@a int@0
+JUMP $tudytamskip80
+LABEL $NOTNUL80
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@string
+EQS
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@bool
+EQS
+ORS
+PUSHS bool@true
+JUMPIFEQS $FAIL79
+LABEL $tudytamskip80
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@nil
+EQS
+PUSHS bool@true
+JUMPIFNEQS $NOTNUL81
+MOVE TF@b int@0
+JUMP $tudytamskip81
+LABEL $NOTNUL81
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@string
+EQS
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@bool
+EQS
+ORS
+PUSHS bool@true
+JUMPIFEQS $FAIL79
+LABEL $tudytamskip81
+TYPE TF@res TF@a
+PUSHS TF@res
+TYPE TF@res TF@b
+PUSHS TF@res
+JUMPIFEQS $ADD81
+TYPE TF@res TF@a
+PUSHS TF@res
+PUSHS string@int
+JUMPIFNEQS $ADDLABEL181
+INT2FLOAT TF@a TF@a
+LABEL $ADDLABEL181
+TYPE TF@res TF@b
+PUSHS TF@res
+PUSHS string@int
+JUMPIFNEQS $ADDLABEL281
+INT2FLOAT TF@b TF@b
+LABEL $ADDLABEL281
+LABEL $ADD81
+ADD TF@res TF@a TF@b
+PUSHS TF@res
+JUMP $EXIT81
+LABEL $FAIL81
+EXIT int@57
+LABEL $EXIT81
+POPS LF@i
+CLEARS
+JUMP $WhileStart70
+LABEL $WhileEnd70
+TYPE LF@$optype LF@ret
+PUSHS LF@$optype
+PUSHS string@
+JUMPIFNEQS checkinitializedgood82
+EXIT int@5
+LABEL checkinitializedgood82
+PUSHS LF@ret
+CREATEFRAME
+DEFVAR TF@val2convert
+POPS TF@val2convert
+CALL intval
+POPS LF@ret
+CLEARS
+TYPE LF@$optype LF@ret
+PUSHS LF@$optype
+PUSHS string@
+JUMPIFNEQS checkinitializedgood83
+EXIT int@5
+LABEL checkinitializedgood83
+PUSHS LF@ret
+POPFRAME
+RETURN
+*/
