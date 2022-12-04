@@ -49,6 +49,9 @@ typedef enum { //all instructions from IFJcode22
     INS_DPRINT //debugging
 } INSTRUCTIONS;
 
+#define FLOAT_VALUE
+//idk how
+
 #define FUNCTION_ORD "LABEL $ord\n\
 DEFVAR LF@&1type\n\
 DEFVAR LF@&2type\n\
@@ -101,46 +104,6 @@ EXIT int@4\n\
 LABEL $strlenstr\n\
 STRLEN LF@&RETVAL LF@&1\n\
 RETURN\n"
-
-#define FUNCTION_SUBSTR "LABEL $substr\n\
-DEFVAR LF@&1type\n\
-DEFVAR LF@&2type\n\
-DEFVAR LF@&3type\n\
-TYPE LF@&1type LF@&1\n\
-TYPE LF@&2type LF@&2\n\
-TYPE LF@&3type LF@&3\n\
-JUMPIFEQ $substrstr LF@&1type string@string\n\
-EXIT int@4\n\
-LABEL $substrstr\n\
-JUMPIFEQ $substrint LF@&2type string@int\n\
-EXIT int@4\n\
-LABEL $substrint\n\
-JUMPIFEQ $substrint2 LF@&3type string@int\n\
-EXIT int@4\n\
-LABEL $substrint2\n\
-\
-DEFVAR LF@&2check\n\
-LT LF@&2check LF@&2 int@0\n\
-JUMPIFEQ $substroutbounds LF@&2check bool@true\n\
-\
-DEFVAR LF@&1len\n\
-STRLEN LF@&1len LF@&1\n\
-LT LF@&2check LF@&2 LF@&1len\n\
-JUMPIFEQ $substroutbounds LF@&2check bool@false\n\
-\
-DEFVAR LF@&3check\n\
-LT LF@&3check LF@&3 int@0\n\
-JUMPIFEQ $substroutbounds LF@&3check bool@true\n\
-\
-DEFVAR LF@&3lencheck\n\
-ADD LF@&3lencheck LF@&2 LF@&3\n\
-LT LF@&3lencheck LF@&3lencheck LF@&1len\n\
-JUMPIFEQ $substroutbounds LF@&3lencheck bool@false\n\
-\
-DEFVAR LF@&3lencheck2\n\
-ADD LF@&3lencheck2 LF@&2 LF@&3\n\
-GT LF@&3lencheck2 LF@&3lencheck2 int@0\n\
-JUMPI
 
 #define FUNCTION_SUBSTR "LABEL $substr\n\
 LABEL $substrtypecmp\n\
