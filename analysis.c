@@ -386,7 +386,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     next_tok;
 
     // case Function
-    if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_FUNCTION) { //  function
+    if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_FUNCTION && BODYRECURSIONCOUNT == 1) { //  function
         next_tok;
         function *func = malloc(sizeof(function));
         table_item_data *data = malloc(sizeof(table_item_data));
