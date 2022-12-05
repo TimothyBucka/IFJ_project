@@ -7,52 +7,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef enum { //all instructions from IFJcode22
-    INS_MOVE,
-    INS_CREATEFRAME,
-    INS_PUSHFRAME,
-    INS_POPFRAME,
-    INS_DEFVAR,
-    INS_CALL,
-    INS_RETURN,
-    INS_PUSHS, //functions
-    INS_POPS,
-    INS_CLEARS, //stack
-    INS_ADD,
-    INS_SUB,
-    INS_MUL,
-    INS_IDIV,
-    INS_LT,
-    INS_GT, //zevraj sa nepouziva ADAM POVEDAL XD ale dam ho tu lebo je v zadani //FIXME
-    INS_EQ,
-    INS_AND,
-    INS_OR,
-    INS_NOT,
-    INS_INT2FLOAT,
-    INS_FLOAT2INT,
-    INS_INT2CHAR,
-    INS_STRI2INT, //for calculating idk how to say it in english
-    INS_READ,
-    INS_WRITE, //input output
-    INS_CONCAT,
-    INS_STRLEN,
-    INS_GETCHAR,
-    INS_SETCHAR, //string operations
-    INS_TYPE,
-    INS_LABEL,
-    INS_JUMP,
-    INS_JUMPIFEQ,
-    INS_JUMPIFNEQ, //flow control
-    INS_EXIT,
-    INS_BREAK ,
-    INS_DPRINT //debugging
-} INSTRUCTIONS;
-
-#define ADD_INST(x) ; //FIXME
-
 #define FUNCTION_FLOAT_VALUE "LABEL $float_value\n\
 PUSHS GF@%s\n\
 TYPE GF@%s_type\n"
+
+#define START ".IFJcode22 \n\
+CREATEFRAME \n\
+CALL $main \n\
+JUMP $end \n"
 
 
 #define FUNCTION_ORD "LABEL $ord\n\
@@ -156,6 +118,8 @@ LT LF@&3lencheck LF@&3 int@0\n\
 JUMPIFEQ $substroutbounds LF@&2lencheck bool@true\n\
 JUMPIFEQ $substroutbounds LF@&3lencheck bool@true\n\
 RETURN\n"
+
+
 
 #endif
 
