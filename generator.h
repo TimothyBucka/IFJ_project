@@ -3,7 +3,6 @@
 #define CODE_GEN_H
 
 #include <stdio.h>
-#include <analysis.c>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -49,9 +48,11 @@ typedef enum { //all instructions from IFJcode22
     INS_DPRINT //debugging
 } INSTRUCTIONS;
 
+#define ADD_INST(x) ; //FIXME
+
 #define FUNCTION_FLOAT_VALUE "LABEL $float_value\n\
 PUSHS GF@%s\n\
-TYPE GF@%s_type\n\
+TYPE GF@%s_type\n"
 
 
 #define FUNCTION_ORD "LABEL $ord\n\

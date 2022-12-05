@@ -1,11 +1,10 @@
 #include <stdio.h>
-#include <analysis.c>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include <generator.h>
-#include <chararray.h>
+#include "generator.h"
+#include "chararray.h"
 
 static bool built_in_functions()
 {
