@@ -149,6 +149,24 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
             func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter));
             parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
             func->parameters[func->num_of_params] = param;
+
+
+                table_item_data *local_data;
+                char* variable_name = dll->activeElement->data.VAL.string;
+                data_type assi_type;
+                if (!hash_table_has_item(tables.local, variable_name)) {
+                    local_data = malloc(sizeof(table_item_data));
+                    local_data->name = variable_name;
+                    variable *var = malloc(sizeof(variable));
+                    var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
+                    local_data->f_or_v.variable = var;
+                    local_data->is_var = true;
+                    hash_table_insert(tables.local, local_data);
+                } else {
+                    //error duplicate variable???
+                }
+
+
             if (!parse_parameters_prime(lexer, dll, tables, func)) {
                 return_error(SYNTAX_ERR);
             }
@@ -565,7 +583,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
         else {
             if (dll->activeElement != NULL /*&& expect(&dll->activeElement->data, TOKEN_ID_SEMICOLLON)*/) {
-                if (ERROR == SYNTAX_ERR && ERRORFROMLEXER ==0) {
+                if ((ERROR == SYNTAX_ERR && ERRORFROMLEXER ==0)||(ERROR == UNDEFINED_VAR_ERR && ERRORFROMLEXER ==0)) {
                     ERROR = SUCCESS;
                     BODYRECURSIONCOUNT --;
                     return true;

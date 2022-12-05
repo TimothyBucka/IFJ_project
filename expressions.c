@@ -137,7 +137,12 @@ int count_breakpoint(expr_stack *expr_stack) {
 data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left, symtables tables) {
     if (item_right->type == TERM) {
         if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
-            table_item_data *item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
+            table_item_data *item;
+            printf("Seraching for %s \n",item_right->token_ptr->VAL.string);
+            item = hash_table_lookup(tables.local, item_right->token_ptr->VAL.string);
+            if (!item) {
+            item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
+            }
             if (!item) {
                 ERROR = UNDEFINED_VAR_ERR;
                 return UNDEFINED;
