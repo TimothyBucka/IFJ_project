@@ -218,7 +218,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
             local_data->is_var = true;
             hash_table_insert(tables.local, local_data);
         } else {
-            //error duplicate variable???
+            return_error(UNDEFINED_FUNCTION_ERR);
         }
 
 
@@ -261,11 +261,12 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     // //TODO add variable info to symtable
     table_item_data *data;
     char* variable_name = token_ptr->VAL.string;
+    variable *var;
     data_type assi_type;
     if (!hash_table_has_item(table_to_use, token_ptr->VAL.string)) {
         data = malloc(sizeof(table_item_data));
         data->name = token_ptr->VAL.string;
-        variable *var = malloc(sizeof(variable));
+        var = malloc(sizeof(variable));
         var->type = UNDEFINED;
         data->f_or_v.variable = var;
         data->is_var = true;
@@ -282,6 +283,12 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     }
     next_tok;
     if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
+        table_item_data *fun = hash_table_lookup(tables.global, token_ptr->VAL.string);
+        if(fun == NULL) {
+            return_error(UNDEFINED_FUNCTION_ERR);
+        }
+        
+        var->type = fun->f_or_v.function->return_type;
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
