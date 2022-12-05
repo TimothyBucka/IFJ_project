@@ -316,6 +316,9 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
 }
 
 bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *final_type, bool exp_brack) {
+    if (ERROR == LEXICAL_ERR) {
+        return false;
+    }
     // printf("Parsing expression...\n");
     token *token_ptr;
     expr_item *new_item;

@@ -9,6 +9,7 @@
 */
 
 declare(strict_types=1);
+$a="ahoj";
 
 function foo(string $x) : ?float {
     bar();
@@ -22,7 +23,7 @@ function concat(string $a, string $b) : string {
     $abc = $a . $b;
     return $abc . " " . $b;
 }
-et();
+
 $ret = concat($a, "svete");
 write($ret, $a);
 
@@ -32,5 +33,4 @@ write($ret, $a);
 ===         -> ==
 !==         -> !=
 */
-
 ?>

@@ -8,9 +8,9 @@
 #include "semantics.h"
 
 
-#define return_error        \
+#define return_error(error_type)        \
     if (ERROR == SUCCESS) { \
-        ERROR = SYNTAX_ERR; \
+        ERROR = error_type; \
     }                       \
     return false;
 
@@ -45,8 +45,6 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables);
 bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables);
 
 bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables);
-
-bool parse_function_call_prime(lexer_T *lexer, DLL *dll, symtables tables);
 
 bool parse_type(lexer_T *lexer, DLL *dll, symtables tables);
 

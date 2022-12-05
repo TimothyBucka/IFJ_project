@@ -1,0 +1,21 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+    $i="5";
+//generate 50 collisions
+
+    $i = 6;
+
+    $i = "6";
+
+    $i = $i . $i . $i;
+    
+?>

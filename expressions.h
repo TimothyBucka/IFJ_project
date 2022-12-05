@@ -7,6 +7,7 @@
 #include "stack.h"
 #include "symtable.h"
 #include "token.h"
+#include "analysis.h"
 
 #define NEW_ITEM(new_item, token_ptr, type)    \
     new_item = expr_item_new(token_ptr, type); \

@@ -65,4 +65,6 @@ void hash_table_remove(hash_table table, char *key);
 
 void debug_print_table(hash_table table);
 
+void hash_table_free(hash_table table);
+
 #endif
