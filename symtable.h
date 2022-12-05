@@ -67,4 +67,6 @@ void debug_print_table(hash_table table);
 
 void hash_table_free(hash_table table);
 
+void preload_hash_table(hash_table table);
+
 #endif

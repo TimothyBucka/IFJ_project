@@ -5,6 +5,9 @@ extern error ERROR;
 extern int ERRORFROMLEXER;
 extern int BODYRECURSIONCOUNT;
 
+
+
+
 bool accept(token *token_ptr, token_ID acceptedID) {
     if (acceptedID == token_ptr->ID) {
         return true;
@@ -27,6 +30,9 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
     hash_table global = init_hash_table();
     hash_table local = init_hash_table();
 
+    preload_hash_table(global);
+
+
     symtables tables = {global, local};
 
     bool var = parse_body(lexer, dll, tables);
@@ -40,6 +46,8 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     return var;
 }
+
+
 
 bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
@@ -163,7 +171,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
                     local_data->is_var = true;
                     hash_table_insert(tables.local, local_data);
                 } else {
-                    //error duplicate variable???
+                    return_error(SEM_OTHER_ERR);
                 }
 
 
