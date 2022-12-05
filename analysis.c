@@ -150,22 +150,21 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
             parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
             func->parameters[func->num_of_params] = param;
 
-
-                table_item_data *local_data;
-                char* variable_name = dll->activeElement->data.VAL.string;
-                data_type assi_type;
-                if (!hash_table_has_item(tables.local, variable_name)) {
-                    local_data = malloc(sizeof(table_item_data));
-                    local_data->name = variable_name;
-                    variable *var = malloc(sizeof(variable));
-                    var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
-                    local_data->f_or_v.variable = var;
-                    local_data->is_var = true;
-                    hash_table_insert(tables.local, local_data);
-                } else {
-                    //error duplicate variable???
-                }
-
+            table_item_data *local_data;
+            char *variable_name = dll->activeElement->data.VAL.string;
+            data_type assi_type;
+            if (!hash_table_has_item(tables.local, variable_name)) {
+                local_data = malloc(sizeof(table_item_data));
+                local_data->name = variable_name;
+                variable *var = malloc(sizeof(variable));
+                var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
+                local_data->f_or_v.variable = var;
+                local_data->is_var = true;
+                hash_table_insert(tables.local, local_data);
+            }
+            else {
+                // error duplicate variable???
+            }
 
             if (!parse_parameters_prime(lexer, dll, tables, func)) {
                 return_error(SYNTAX_ERR);
@@ -200,14 +199,12 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
 
     // case Function
     if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
-        func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter));                                        //adding function info to global table
+        func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter)); // adding function info to global table
         parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
         func->parameters[func->num_of_params] = param;
 
-
-
         table_item_data *local_data;
-        char* variable_name = dll->activeElement->data.VAL.string;
+        char *variable_name = dll->activeElement->data.VAL.string;
         data_type assi_type;
         if (!hash_table_has_item(tables.local, variable_name)) {
             local_data = malloc(sizeof(table_item_data));
@@ -217,10 +214,10 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
             local_data->f_or_v.variable = var;
             local_data->is_var = true;
             hash_table_insert(tables.local, local_data);
-        } else {
+        }
+        else {
             return_error(UNDEFINED_FUNCTION_ERR);
         }
-
 
         if (!parse_parameters_prime(lexer, dll, tables, func)) {
             return_error(SYNTAX_ERR);
@@ -253,14 +250,13 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 
     printf("Recursion depth %d\n", BODYRECURSIONCOUNT);
     hash_table table_to_use = tables.global;
-    if (BODYRECURSIONCOUNT != 1)
-    {
+    if (BODYRECURSIONCOUNT != 1) {
         table_to_use = tables.local;
     }
 
     // //TODO add variable info to symtable
     table_item_data *data;
-    char* variable_name = token_ptr->VAL.string;
+    char *variable_name = token_ptr->VAL.string;
     variable *var;
     data_type assi_type;
     if (!hash_table_has_item(table_to_use, token_ptr->VAL.string)) {
@@ -272,9 +268,6 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         data->is_var = true;
     }
 
-
-
-
     next_tok;
     if (!accept(token_ptr, TOKEN_ID_EQUALS) && !accept(token_ptr, TOKEN_ID_NOT_EQUALS) && !accept(token_ptr, TOKEN_ID_TRIPLE_EQUALS)) {
         return_tok;
@@ -285,24 +278,32 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
 
         table_item_data *fun = hash_table_lookup(tables.global, token_ptr->VAL.string);
-        if(fun == NULL) {
+        if (fun == NULL) {
             return_error(UNDEFINED_FUNCTION_ERR);
         }
-        
-        switch (fun->f_or_v.function->return_type)
-        {
+
+        switch (fun->f_or_v.function->return_type) {
         case INT_NULL:
-            var->type = INT;
+            assi_type = INT;
             break;
         case FLOAT_NULL:
-            var->type = FLOAT;
+            assi_type = FLOAT;
             break;
         case STRING_NULL:
-            var->type = STRING;
+            assi_type = STRING;
             break;
         default:
-            var->type = fun->f_or_v.function->return_type;
+            assi_type = fun->f_or_v.function->return_type;
             break;
+        }
+
+        if (!hash_table_has_item(table_to_use, variable_name)) {
+            data->f_or_v.variable->type = assi_type;
+            hash_table_insert(table_to_use, data);
+        }
+        else {
+            data = hash_table_lookup(table_to_use, variable_name);
+            data->f_or_v.variable->type = assi_type;
         }
 
         next_tok;
@@ -331,32 +332,28 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
             return_error(SYNTAX_ERR);
         }
 
-
-        
-
-
-
-        
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error(SYNTAX_ERR);
         }
-    }
+
         if (!hash_table_has_item(table_to_use, variable_name)) {
             data->f_or_v.variable->type = assi_type;
             hash_table_insert(table_to_use, data);
-        } else {
-            data = hash_table_lookup(table_to_use, variable_name);
-            data->f_or_v.variable->type = assi_type;  
         }
+        else {
+            data = hash_table_lookup(table_to_use, variable_name);
+            data->f_or_v.variable->type = assi_type;
+        }
+    }
 
     return true;
 }
 
-bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables){
+bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
     next_tok;
-    if (accept(token_ptr, TOKEN_ID_IDENTIFIER)){
+    if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
@@ -386,10 +383,6 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables){
         //     data->is_var = true;
         // }
 
-
-
-
-
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
         }
@@ -402,7 +395,7 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables){
 }
 
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
-    BODYRECURSIONCOUNT ++;
+    BODYRECURSIONCOUNT++;
     data_type final_type;
 
     token *token_ptr;
@@ -443,7 +436,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
         } //  {
-        
+
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
         } //  body
@@ -457,8 +450,6 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         data->is_var = false;
         data->f_or_v.function = func;
         hash_table_insert(tables.global, data);
-        
-
 
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
@@ -570,23 +561,23 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 
     else if (accept(token_ptr, TOKEN_ID_EOF)) {
-        BODYRECURSIONCOUNT --; 
+        BODYRECURSIONCOUNT--;
         return true;
     }
 
     else {
         return_tok;
         //  case assignment
-        if (parse_function_call(lexer, dll, tables)){
+        if (parse_function_call(lexer, dll, tables)) {
             BODYRECURSIONCOUNT--;
             if (!parse_body(lexer, dll, tables)) {
                 return_error(SYNTAX_ERR);
             }
-            
+
             return true;
         }
         if (parse_assignment(lexer, dll, tables)) {
-            BODYRECURSIONCOUNT --;
+            BODYRECURSIONCOUNT--;
             if (!parse_body(lexer, dll, tables)) {
                 return_error(SYNTAX_ERR);
             }
@@ -597,7 +588,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
                 return_error(SYNTAX_ERR);
             }
-            BODYRECURSIONCOUNT --;
+            BODYRECURSIONCOUNT--;
             if (!parse_body(lexer, dll, tables)) {
                 return_error(SYNTAX_ERR);
             }
@@ -605,13 +596,13 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
         else {
             if (dll->activeElement != NULL /*&& expect(&dll->activeElement->data, TOKEN_ID_SEMICOLLON)*/) {
-                if ((ERROR == SYNTAX_ERR && ERRORFROMLEXER ==0)||(ERROR == UNDEFINED_VAR_ERR && ERRORFROMLEXER ==0)) {
+                if ((ERROR == SYNTAX_ERR && ERRORFROMLEXER == 0) || (ERROR == UNDEFINED_VAR_ERR && ERRORFROMLEXER == 0)) {
                     ERROR = SUCCESS;
-                    BODYRECURSIONCOUNT --;
+                    BODYRECURSIONCOUNT--;
                     return true;
                 }
                 else {
-                    BODYRECURSIONCOUNT --;
+                    BODYRECURSIONCOUNT--;
                     return false;
                 }
             }
@@ -619,7 +610,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
                 return_error(SYNTAX_ERR);
             }
         }
-        BODYRECURSIONCOUNT --;
+        BODYRECURSIONCOUNT--;
         return true;
     }
 
