@@ -5,6 +5,9 @@ extern error ERROR;
 extern int ERRORFROMLEXER;
 extern int BODYRECURSIONCOUNT;
 
+
+
+
 bool accept(token *token_ptr, token_ID acceptedID) {
     if (acceptedID == token_ptr->ID) {
         return true;
@@ -27,6 +30,9 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
     hash_table global = init_hash_table();
     hash_table local = init_hash_table();
 
+    preload_hash_table(global);
+
+
     symtables tables = {global, local};
 
     bool var = parse_body(lexer, dll, tables);
@@ -40,6 +46,8 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     return var;
 }
+
+
 
 bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
@@ -150,21 +158,21 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
             parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
             func->parameters[func->num_of_params] = param;
 
-            table_item_data *local_data;
-            char *variable_name = dll->activeElement->data.VAL.string;
-            data_type assi_type;
-            if (!hash_table_has_item(tables.local, variable_name)) {
-                local_data = malloc(sizeof(table_item_data));
-                local_data->name = variable_name;
-                variable *var = malloc(sizeof(variable));
-                var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
-                local_data->f_or_v.variable = var;
-                local_data->is_var = true;
-                hash_table_insert(tables.local, local_data);
-            }
-            else {
-                // error duplicate variable???
-            }
+
+                table_item_data *local_data;
+                char* variable_name = dll->activeElement->data.VAL.string;
+                data_type assi_type;
+                if (!hash_table_has_item(tables.local, variable_name)) {
+                    local_data = malloc(sizeof(table_item_data));
+                    local_data->name = variable_name;
+                    variable *var = malloc(sizeof(variable));
+                    var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
+                    local_data->f_or_v.variable = var;
+                    local_data->is_var = true;
+                    hash_table_insert(tables.local, local_data);
+                } else {
+                    return_error(SEM_OTHER_ERR);
+                }
 
             if (!parse_parameters_prime(lexer, dll, tables, func)) {
                 return_error(SYNTAX_ERR);
