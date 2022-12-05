@@ -8,6 +8,8 @@
 #include "analysis.h"
 
 error ERROR = SUCCESS;
+int ERRORFROMLEXER = 0;
+int BODYRECURSIONCOUNT = 0;
 
 int main() {
 

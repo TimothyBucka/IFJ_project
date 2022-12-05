@@ -22,7 +22,8 @@
         token_ptr = calloc(1, sizeof(*token_ptr));        \
         ERROR = lexer_next_token(lexer, token_ptr);   \
         DLL_push(dll, token_ptr);                     \
-        if (ERROR != SUCCESS) {                   \
+        if (ERROR != SUCCESS) {   \
+            ERRORFROMLEXER = 1;                \
             return false;                         \
         }                                         \
     }                                             \

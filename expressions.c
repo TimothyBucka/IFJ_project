@@ -1,6 +1,7 @@
 #include "expressions.h"
 
 extern error ERROR;
+extern int ERRORFROMLEXER;
 
 size_t COUNTER = 0;
 

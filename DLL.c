@@ -11,7 +11,6 @@ DLL *createDLL() {
 
 void DLL_push(DLL *dll, token *t) {
     DLLElementPtr new_element = malloc(sizeof(*new_element));
-    printf("token %ld,    new %ld", sizeof(*t), sizeof(new_element->data));
     new_element->data = *t;
     new_element->previousElement = dll->lastElement;
     new_element->nextElement = NULL;
