@@ -6,7 +6,7 @@
 
 typedef enum {
     UNDEFINED,        // 0
-    NULL_TYPE,    // 1
+    NULL_TYPE,    // 1 void
     INT,         // 2
     INT_NULL,    // 3
     FLOAT,      // 4

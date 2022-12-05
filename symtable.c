@@ -116,7 +116,11 @@ void debug_print_table(hash_table table){
         printf("%d: ", i);
         table_item_t *item = table[i];
         while (item != NULL && item->value.name != NULL) {
-            printf("[name:%s, type:%s] ", item->value.name, item->value.is_var==true ? "var" : "func" );
+            if (item->value.is_var) {
+                printf("[Varialbe %s, type: %d]", item->value.name, item->value.f_or_v.variable->type);
+            } else {
+                printf("[Function %s, type: %d]", item->value.name, item->value.f_or_v.function->return_type);
+            }
             item = item->next_item;
         }
         printf("\n");

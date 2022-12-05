@@ -261,7 +261,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 
     printf("Recursion depth %d\n", BODYRECURSIONCOUNT);
     hash_table table_to_use = tables.global;
-    if (BODYRECURSIONCOUNT !=1)
+    if (BODYRECURSIONCOUNT != 1)
     {
         table_to_use = tables.local;
     }
@@ -291,13 +291,30 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     }
     next_tok;
     if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
+
         table_item_data *fun = hash_table_lookup(tables.global, token_ptr->VAL.string);
         if(fun == NULL) {
             return_error(UNDEFINED_FUNCTION_ERR);
         }
         
-        var->type = fun->f_or_v.function->return_type;
+        switch (fun->f_or_v.function->return_type)
+        {
+        case INT_NULL:
+            var->type = INT;
+            break;
+        case FLOAT_NULL:
+            var->type = FLOAT;
+            break;
+        case STRING_NULL:
+            var->type = STRING;
+            break;
+        default:
+            var->type = fun->f_or_v.function->return_type;
+            break;
+        }
+
         next_tok;
+
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
         }
@@ -325,13 +342,6 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 
         
 
-        if (!hash_table_has_item(table_to_use, variable_name)) {
-            data->f_or_v.variable->type = assi_type;
-            hash_table_insert(table_to_use, data);
-        } else {
-            data = hash_table_lookup(table_to_use, variable_name);
-            data->f_or_v.variable->type = assi_type;  
-        }
 
 
         
@@ -340,6 +350,13 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
             return_error(SYNTAX_ERR);
         }
     }
+        if (!hash_table_has_item(table_to_use, variable_name)) {
+            data->f_or_v.variable->type = assi_type;
+            hash_table_insert(table_to_use, data);
+        } else {
+            data = hash_table_lookup(table_to_use, variable_name);
+            data->f_or_v.variable->type = assi_type;  
+        }
 
     return true;
 }
@@ -429,6 +446,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!parse_type(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
         } //  type
+        func->return_type = kw_to_data_type(dll->activeElement->data.VAL.keyword);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
@@ -443,9 +461,6 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         } //  }
 
         // TODO add function info to symtable
-
-        keyword kw = dll->lastElement->previousElement->previousElement->previousElement->data.VAL.keyword;
-        func->return_type = kw_to_data_type(kw);
 
         data->is_var = false;
         data->f_or_v.function = func;
