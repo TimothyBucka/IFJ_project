@@ -253,7 +253,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 
     printf("Recursion depth %d\n", BODYRECURSIONCOUNT);
     hash_table table_to_use = tables.global;
-    if (BODYRECURSIONCOUNT !=1)
+    if (BODYRECURSIONCOUNT != 1)
     {
         table_to_use = tables.local;
     }
@@ -414,6 +414,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!parse_type(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
         } //  type
+        func->return_type = kw_to_data_type(dll->activeElement->data.VAL.keyword);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
@@ -428,9 +429,6 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         } //  }
 
         // TODO add function info to symtable
-
-        keyword kw = dll->lastElement->previousElement->previousElement->previousElement->data.VAL.keyword;
-        func->return_type = kw_to_data_type(kw);
 
         data->is_var = false;
         data->f_or_v.function = func;
