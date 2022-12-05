@@ -1,9 +1,8 @@
 #include "semantics.h"
 
-data_type kw_to_data_type(keyword kw){
-    switch (kw)
-    {
-    case KW_VOID:    
+data_type kw_to_data_type(keyword kw) {
+    switch (kw) {
+    case KW_VOID:
         return NULL_TYPE;
     case KW_INT:
         return INT;
@@ -18,6 +17,6 @@ data_type kw_to_data_type(keyword kw){
     case KW_STRING_NULL:
         return STRING_NULL;
     default:
-        break;
+        return UNDEFINED;
     }
 }

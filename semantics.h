@@ -1,5 +1,7 @@
-# ifndef SEMANTICS_H
-# define SEMANTICS_H
+
+#ifndef SEMANTICS_H
+#define SEMANTICS_H
+
 #include "token.h"
 
 typedef enum {
@@ -17,4 +19,4 @@ typedef enum {
 
 data_type kw_to_data_type(keyword);
 
-# endif
+#endif
