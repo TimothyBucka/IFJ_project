@@ -91,9 +91,9 @@
     }
 
     void gen_fun_ord(){
-        //TODO printf(FUNCTION_ORD); 
+        printf(FUNCTION_ORD); 
     }
 
     void gen_fun_chr(){
-        //TODO printf(FUNCTION_CHR); 
+        printf(FUNCTION_CHR); 
     }

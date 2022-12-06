@@ -238,6 +238,33 @@ POPFRAME\n\
 RETURN\n\
 \n"
 
+#define FUNCTION_ORD "LABEL $ord\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+DEFVAR LF@string\n\
+DEFVAR LF@retval\n\
+POPS LF@string\n\
+MOVE LF@&1 int@0\n\
+JUMPIFEQ $ord_error LF@string string@""\n\
+STRI2INT LF@&1 LF@string LF@&1\n\
+MOVE LF@retval LF@&1\n\
+LABEL $ord_error\n\
+MOVE LF@retval nil@nil\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+#define FUNCTION_CHR "LABEL $chr\n\
+PUSHFRAME\n\
+DEFVAR LF@&parameter\n\
+DEFVAR LF@&ret\n\
+POPS LF@&parameter\n\
+INT2CHAR LF@&ret LF@&parameter\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+
 
 void start_of_generator();
 void gen_fun_reads();
