@@ -6,10 +6,10 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define TABLESIZE 193
-#define PRIME 1153
-#define P 103
-#define A 83103
+#define TABLESIZE 49157
+#define PRIME 196613            //prime number larger than TABLESIZE   
+#define P 37                    //empirical constant    http://www.cs.emory.edu/~cheung/Courses/253/Syllabus/Map/hash-func.html
+#define A 83103                 
 #define B 930721
 
 typedef struct

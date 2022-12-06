@@ -11,12 +11,13 @@
 declare(strict_types=1);
 $a="ahoj";
 
-function foo(string $x) : ?float {
-    bar();
-}
 
 function bar() : void {
     return;
+}
+
+function foo(string $x) : ?float {
+    bar();
 }
 
 function concat(string $a, string $b) : string {

@@ -13,6 +13,6 @@ declare(strict_types=1);
 function foo(string $x, string $y, float $z, int $w) : ?float {
     return;
 }
-write("lala");
+foo("1", "2", 3.0, 4);
 
 ?>
