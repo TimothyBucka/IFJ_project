@@ -109,6 +109,22 @@ void hash_table_free(hash_table table){
     }
     free(table);
 }
+void clear_hash_table_to_inicialised(hash_table table){
+    for (int i = 0; i < TABLESIZE; i++) {
+        
+        while (table[i] != NULL ) {
+            table_item_t *item = table[i];
+            table[i] = (*table[i]).next_item;
+            if (item->value.is_var) 
+            {
+                free(item->value.f_or_v.variable);
+            } else {
+                free(item->value.f_or_v.function);
+            }
+            item = &(*table[i]);
+        }
+    }
+}
 
 void debug_print_table(hash_table table){
     printf("\n\n--------------------------------------\n");

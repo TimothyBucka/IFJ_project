@@ -236,16 +236,17 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
     }
 
     else {
+        //TODO free symtable?
         return_tok;
         return true;
     }
+    //TODO free symtable?
+
     return true;
 }
 
 bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables, data_type *type) {
     token *token_ptr;
-
-    // TODO add FUNCALL case
     bool r = parse_expression(lexer, dll, tables, type, false);
     return r;
 }
@@ -287,6 +288,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     if (!accept(token_ptr, TOKEN_ID_EQUALS) && !accept(token_ptr, TOKEN_ID_NOT_EQUALS) && !accept(token_ptr, TOKEN_ID_TRIPLE_EQUALS)) {
         return_tok;
         return_tok;
+        
         return false;
     }
     next_tok;
@@ -451,6 +453,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
         } //  {
+        //TODO free symtable?
         
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
@@ -469,6 +472,10 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
 
         BODYRECURSIONCOUNT--;
+        //TODO free symtable?
+        printf("Llcal table\n");
+        debug_print_table(tables.local);
+        clear_hash_table_to_inicialised(tables.local);
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
         } //  body

@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-2+2;
-2 + 2;
-2===2;
-5!==4;
-$var !== 5;
-$fiz === 45;
+function foo(string $x) : ?float {
+    return $x;
+}
+function bar(string $y) : ?float {
 
+    return $x;
+}
 
 ?>
