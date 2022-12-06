@@ -1,0 +1,18 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+
+function foo(string $x, string $y, float $z, int $w) : ?float {
+    return;
+}
+write("lala");
+
+?>

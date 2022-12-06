@@ -6,7 +6,11 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define TABLESIZE 13
+#define TABLESIZE 193
+#define PRIME 1153
+#define P 103
+#define A 83103
+#define B 930721
 
 typedef struct
 {
