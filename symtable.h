@@ -69,4 +69,5 @@ void hash_table_free(hash_table table);
 
 void preload_hash_table(hash_table table);
 
+void clear_hash_table_to_inicialised(hash_table table);
 #endif
