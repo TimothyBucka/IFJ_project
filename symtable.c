@@ -1,7 +1,8 @@
 #include "symtable.h"
+#include <math.h>
 #include <stdbool.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int get_hash(char *key) {
     int h = 0, high;
@@ -11,12 +12,23 @@ int get_hash(char *key) {
             h ^= high >> 24;
         h &= ~high;
     }
-    return h%TABLESIZE;
+    return h % TABLESIZE;
+
+    // int length = strlen(key);
+
+    // unsigned int hash_value = 0;
+    // for (int i = 0; i < length; i++)
+    // {
+    //     hash_value += key[i] * pow(P, length - i + 1); /* Polynomial rolling hash code */
+    // }
+
+    // hash_value = ((A * hash_value + B) % PRIME) % TABLESIZE; /* MAD (multiply add divide) compression method using positive int A and B <0;p-1> (also not a multiple of N) and prime larger then N*/
+    // printf("hash value: %d\n", hash_value);
+    // return hash_value;
 }
 
-
 hash_table init_hash_table() {
-    hash_table table = calloc(TABLESIZE,sizeof(table_item_t*));
+    hash_table table = calloc(TABLESIZE, sizeof(table_item_t *));
     for (int i = 0; i < TABLESIZE; i++) {
         table[i] = NULL;
     }
@@ -27,8 +39,8 @@ table_item_data *hash_table_lookup(hash_table table, char *key) {
     table_item_t *item = table[get_hash(key)];
     if (item != NULL) {
         while (item != NULL) {
-            if (!strcmp(item->value.name,key)) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
-            {                                  // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
+            if (!strcmp(item->value.name, key)) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
+            {                                   // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
                 return &item->value;
             }
             else {
@@ -42,12 +54,12 @@ table_item_data *hash_table_lookup(hash_table table, char *key) {
     }
 }
 
-bool hash_table_has_item(hash_table table, char *key){
-        table_item_t *item = table[get_hash(key)];
+bool hash_table_has_item(hash_table table, char *key) {
+    table_item_t *item = table[get_hash(key)];
     if (item != NULL) {
         while (item != NULL) {
             if (!strcmp(item->value.name, key)) // TODO neviem s cim mam porovnavat, co bude kluc v tokene?
-            {                                  // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
+            {                                   // mozno bude treba pridat nieco do token struktury, ak ideme teda vkladat tokeny
                 return true;
             }
             else {
@@ -61,9 +73,8 @@ bool hash_table_has_item(hash_table table, char *key){
     }
 }
 
-
 void hash_table_insert(hash_table table, table_item_data *item) {
-    table_item_t *new_item = calloc(1,sizeof(table_item_t));
+    table_item_t *new_item = calloc(1, sizeof(table_item_t));
     new_item->next_item = table[get_hash(item->name)];
     new_item->value = *item;
     table[get_hash(item->name)] = new_item;
@@ -90,17 +101,17 @@ void hash_table_remove(hash_table table, char *key) {
     }
 }
 
-void hash_table_free(hash_table table){
+void hash_table_free(hash_table table) {
     for (int i = 0; i < TABLESIZE; i++) {
-        
-        while (table[i] != NULL ) {
+
+        while (table[i] != NULL) {
             table_item_t *item = table[i];
             table[i] = (*table[i]).next_item;
-            if (item->value.is_var) 
-            {
+            if (item->value.is_var) {
                 free(item->value.f_or_v.variable);
-            } else {
-                //free(item->value.f_or_v.function->parameters);
+            }
+            else {
+                // free(item->value.f_or_v.function->parameters);
                 free(item->value.f_or_v.function);
             }
             free(item);
@@ -110,15 +121,19 @@ void hash_table_free(hash_table table){
     free(table);
 }
 
-void debug_print_table(hash_table table){
+void debug_print_table(hash_table table) {
     printf("\n\n--------------------------------------\n");
     for (int i = 0; i < TABLESIZE; i++) {
+        if (table[i] == NULL) {
+            continue;
+        }
         printf("%d: ", i);
         table_item_t *item = table[i];
         while (item != NULL && item->value.name != NULL) {
             if (item->value.is_var) {
                 printf("[Varialbe %s, type: %d]", item->value.name, item->value.f_or_v.variable->type);
-            } else {
+            }
+            else {
                 printf("[Function %s, type: %d]", item->value.name, item->value.f_or_v.function->return_type);
             }
             item = item->next_item;
@@ -128,10 +143,9 @@ void debug_print_table(hash_table table){
     printf("--------------------------------------\n");
 }
 
+void preload_hash_table(hash_table table) {
 
-void preload_hash_table(hash_table table){
-
-    //readInt
+    // readInt
     function *func_readi = malloc(sizeof(function));
     table_item_data *data_readi = malloc(sizeof(table_item_data));
     func_readi->return_type = INT;
@@ -140,7 +154,7 @@ void preload_hash_table(hash_table table){
     data_readi->f_or_v.function = func_readi;
     hash_table_insert(table, &(*data_readi));
 
-    //readFloat
+    // readFloat
     function *func_readf = malloc(sizeof(function));
     table_item_data *data_readf = malloc(sizeof(table_item_data));
     func_readf->return_type = FLOAT;
@@ -149,7 +163,7 @@ void preload_hash_table(hash_table table){
     data_readf->f_or_v.function = func_readf;
     hash_table_insert(table, &(*data_readf));
 
-    //readString
+    // readString
     function *func_reads = malloc(sizeof(function));
     table_item_data *data_reads = malloc(sizeof(table_item_data));
     func_reads->return_type = STRING;
@@ -158,7 +172,7 @@ void preload_hash_table(hash_table table){
     data_reads->f_or_v.function = func_reads;
     hash_table_insert(table, &(*data_reads));
 
-    //ord
+    // ord
     function *func_ord = malloc(sizeof(function));
     table_item_data *data_ord = malloc(sizeof(table_item_data));
     parameter *param_ord = malloc(sizeof(parameter));
@@ -170,7 +184,7 @@ void preload_hash_table(hash_table table){
     data_ord->f_or_v.function = func_ord;
     hash_table_insert(table, &(*data_ord));
 
-    //chr
+    // chr
     function *func_chr = malloc(sizeof(function));
     table_item_data *data_chr = malloc(sizeof(table_item_data));
     parameter *param_chr = malloc(sizeof(parameter));
@@ -182,21 +196,22 @@ void preload_hash_table(hash_table table){
     data_chr->f_or_v.function = func_chr;
     hash_table_insert(table, &(*data_chr));
 
-    //substring
+    // substring
     function *func_substring = malloc(sizeof(function));
     table_item_data *data_substring = malloc(sizeof(table_item_data));
-    parameter *param_substring = malloc(sizeof(parameter)*3);
+    parameter *param_substring = malloc(sizeof(parameter) * 3);
     func_substring->return_type = STRING;
     param_substring[0].type = STRING;
     param_substring[1].type = INT;
     param_substring[2].type = INT;
+    func_substring->num_of_params = 3;
     func_substring->parameters = param_substring;
     data_substring->is_var = false;
     data_substring->name = "substring";
     data_substring->f_or_v.function = func_substring;
     hash_table_insert(table, &(*data_substring));
 
-    //floatval
+    // floatval
     function *func_floatval = malloc(sizeof(function));
     table_item_data *data_floatval = malloc(sizeof(table_item_data));
     parameter *param_floatval = malloc(sizeof(parameter));
@@ -208,7 +223,7 @@ void preload_hash_table(hash_table table){
     data_floatval->f_or_v.function = func_floatval;
     hash_table_insert(table, &(*data_floatval));
 
-    //intval
+    // intval
     function *func_intval = malloc(sizeof(function));
     table_item_data *data_intval = malloc(sizeof(table_item_data));
     parameter *param_intval = malloc(sizeof(parameter));
@@ -220,7 +235,7 @@ void preload_hash_table(hash_table table){
     data_intval->f_or_v.function = func_intval;
     hash_table_insert(table, &(*data_intval));
 
-    //strval
+    // strval
     function *func_strval = malloc(sizeof(function));
     table_item_data *data_strval = malloc(sizeof(table_item_data));
     parameter *param_strval = malloc(sizeof(parameter));
@@ -232,7 +247,7 @@ void preload_hash_table(hash_table table){
     data_strval->f_or_v.function = func_strval;
     hash_table_insert(table, &(*data_strval));
 
-    //write
+    // write
     function *func_write = malloc(sizeof(function));
     table_item_data *data_write = malloc(sizeof(table_item_data));
     parameter *param_write = malloc(sizeof(parameter));
@@ -243,5 +258,4 @@ void preload_hash_table(hash_table table){
     data_write->name = "write";
     data_write->f_or_v.function = func_write;
     hash_table_insert(table, &(*data_write));
-
 }

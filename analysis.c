@@ -4,9 +4,7 @@
 extern error ERROR;
 extern int ERRORFROMLEXER;
 extern int BODYRECURSIONCOUNT;
-
-
-
+int ARGSCOUNT = 0;
 
 bool accept(token *token_ptr, token_ID acceptedID) {
     if (acceptedID == token_ptr->ID) {
@@ -32,7 +30,6 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     preload_hash_table(global);
 
-
     symtables tables = {global, local};
 
     bool var = parse_body(lexer, dll, tables);
@@ -47,31 +44,46 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
     return var;
 }
 
-
-
-bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
+bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data) {
     token *token_ptr;
+    ARGSCOUNT++;
 
     next_tok;
     if (accept(token_ptr, TOKEN_ID_COMMA)) {
         next_tok;
-        if (expect(token_ptr, TOKEN_ID_VARIABLE)) {
-            if (!parse_arguments_prime(lexer, dll, tables)) {
+        hash_table table_to_use;
+        if (BODYRECURSIONCOUNT == 0) {
+            table_to_use = tables.global;
+        }
+        else {
+            table_to_use = tables.local;
+        }
+        if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
+            table_item_data *var_data = hash_table_lookup(table_to_use, token_ptr->VAL.string);
+            if (var_data == NULL) {
+                ERROR = UNDEFINED_VAR_ERR;
+                return false;
+            }
+            compare_params(var_data->f_or_v.variable->type);
+            if (!parse_arguments_prime(lexer, dll, tables, data)) {
                 return false;
             }
         }
-        else if (expect(token_ptr, TOKEN_ID_INTEGER)) {
-            if (!parse_arguments_prime(lexer, dll, tables)) {
+        else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
+            compare_params(INT);
+            if (!parse_arguments_prime(lexer, dll, tables, data)) {
                 return false;
             }
         }
-        else if (expect(token_ptr, TOKEN_ID_STRING)) {
-            if (!parse_arguments_prime(lexer, dll, tables)) {
+        else if (accept(token_ptr, TOKEN_ID_STRING)) {
+            compare_params(STRING);
+            if (!parse_arguments_prime(lexer, dll, tables, data)) {
                 return false;
             }
         }
-        else if (expect(token_ptr, TOKEN_ID_FLOAT)) {
-            if (!parse_arguments_prime(lexer, dll, tables)) {
+        else if (accept(token_ptr, TOKEN_ID_FLOAT)) {
+            compare_params(FLOAT);
+            if (!parse_arguments_prime(lexer, dll, tables, data)) {
                 return false;
             }
         }
@@ -90,27 +102,47 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables) {
 
 bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
-
+    ARGSCOUNT = 0;
+    char *function_name = dll->activeElement->previousElement->data.VAL.string; // name of function thats being called
+    table_item_data *data = hash_table_lookup(tables.global, function_name);
+    if (data == NULL) {
+        ERROR = UNDEFINED_FUNCTION_ERR;
+        return false;
+    }
     next_tok;
-
-    // case Function
+    hash_table table_to_use;
+    if (BODYRECURSIONCOUNT == 0) {
+        table_to_use = tables.global;
+    }
+    else {
+        table_to_use = tables.local;
+    }
     if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
-        if (!parse_arguments_prime(lexer, dll, tables)) {
+        table_item_data *var_data = hash_table_lookup(table_to_use, token_ptr->VAL.string);
+        if (var_data == NULL) {
+            ERROR = UNDEFINED_VAR_ERR;
+            return false;
+        }
+        compare_params(var_data->f_or_v.variable->type);
+        if (!parse_arguments_prime(lexer, dll, tables, data)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
-        if (!parse_arguments_prime(lexer, dll, tables)) {
+        compare_params(INT);
+        if (!parse_arguments_prime(lexer, dll, tables, data)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_STRING)) {
-        if (!parse_arguments_prime(lexer, dll, tables)) {
+        compare_params(STRING);
+        if (!parse_arguments_prime(lexer, dll, tables, data)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_FLOAT)) {
-        if (!parse_arguments_prime(lexer, dll, tables)) {
+        compare_params(FLOAT);
+        if (!parse_arguments_prime(lexer, dll, tables, data)) {
             return false;
         }
     }
@@ -158,21 +190,21 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
             parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
             func->parameters[func->num_of_params] = param;
 
-
-                table_item_data *local_data;
-                char* variable_name = dll->activeElement->data.VAL.string;
-                data_type assi_type;
-                if (!hash_table_has_item(tables.local, variable_name)) {
-                    local_data = malloc(sizeof(table_item_data));
-                    local_data->name = variable_name;
-                    variable *var = malloc(sizeof(variable));
-                    var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
-                    local_data->f_or_v.variable = var;
-                    local_data->is_var = true;
-                    hash_table_insert(tables.local, local_data);
-                } else {
-                    return_error(SEM_OTHER_ERR);
-                }
+            table_item_data *local_data;
+            char *variable_name = dll->activeElement->data.VAL.string;
+            data_type assi_type;
+            if (!hash_table_has_item(tables.local, variable_name)) {
+                local_data = malloc(sizeof(table_item_data));
+                local_data->name = variable_name;
+                variable *var = malloc(sizeof(variable));
+                var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
+                local_data->f_or_v.variable = var;
+                local_data->is_var = true;
+                hash_table_insert(tables.local, local_data);
+            }
+            else {
+                return_error(SEM_OTHER_ERR);
+            }
 
             if (!parse_parameters_prime(lexer, dll, tables, func)) {
                 return_error(SYNTAX_ERR);
@@ -576,7 +608,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     else {
         return_tok;
         //  case assignment
-        if (parse_function_call(lexer, dll, tables)) {
+        if ((ERROR == SUCCESS || ERROR == SYNTAX_ERR) && parse_function_call(lexer, dll, tables)) {
             BODYRECURSIONCOUNT--;
             if (!parse_body(lexer, dll, tables)) {
                 return_error(SYNTAX_ERR);
@@ -584,14 +616,14 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
             return true;
         }
-        if (parse_assignment(lexer, dll, tables)) {
+        if ((ERROR == SUCCESS || ERROR == SYNTAX_ERR) && parse_assignment(lexer, dll, tables)) {
             BODYRECURSIONCOUNT--;
             if (!parse_body(lexer, dll, tables)) {
                 return_error(SYNTAX_ERR);
             }
             return true;
         }
-        if (parse_expression(lexer, dll, tables, &final_type, false)) {
+        if ((ERROR == SUCCESS || ERROR == SYNTAX_ERR) && parse_expression(lexer, dll, tables, &final_type, false)) {
             next_tok;
             if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
                 return_error(SYNTAX_ERR);
