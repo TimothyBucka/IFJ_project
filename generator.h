@@ -11,11 +11,36 @@
 PUSHS GF@%s\n\
 TYPE GF@%s_type\n"
 
-#define START ".IFJcode22 \n\
-CREATEFRAME \n\
-CALL $main \n\
-JUMP $end \n"
+#define START ".IFJcode22\n\
+CREATEFRAME\n\
+CALL $$main\n\
+JUMP $$end\n"
 
+#define FUNCTION_READS "LABEL $reads\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+DEFVAR LF@param1\n\
+READ LF@param1 string\n\
+DEFVAR LF@errorCheck\n\
+TYPE LF@errorCheck LF@param1\n\
+JUMPIFNEQ $ERROR$READS string@string LF@errorCheck\n\
+DEFVAR LF@strlen\n\
+STRLEN LF@strlen LF@param1\n\
+JUMPIFEQ $ERROR$READS LF@strlen int@0\n\
+SUB LF@strlen LF@strlen int@1\n\
+DEFVAR LF@getchar\n\
+GETCHAR LF@getchar LF@param1 LF@strlen\n\
+JUMPIFNEQ $END$OF$READS LF@getchar string@\\010\n\
+SETCHAR LF@param1 LF@strlen string@\\000\n\
+LABEL $ERROR$OF$READS\n\
+MOVE LF@&1 LF@param1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $ERROR$READS\n\
+MOVE LF@&1 nil@nil\n\
+POPFRAME\n\
+RETURN\n\
+\n"
 
 #define FUNCTION_ORD "LABEL $ord\n\
 DEFVAR LF@&1type\n\
@@ -119,7 +144,18 @@ JUMPIFEQ $substroutbounds LF@&2lencheck bool@true\n\
 JUMPIFEQ $substroutbounds LF@&3lencheck bool@true\n\
 RETURN\n"
 
-
+void start_of_generator();
+void gen_fun_reads();
+void gen_fun_readi();
+void gen_fun_readf();
+void gen_fun_write();
+void gen_fun_floatval();
+void gen_fun_intval();
+void gen_fun_strval();
+void gen_fun_strlen();
+void gen_fun_substr();
+void gen_fun_ord();
+void gen_fun_chr();
 
 #endif
 

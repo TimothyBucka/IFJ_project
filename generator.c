@@ -35,6 +35,65 @@
 
 	// ("JUMP $$main");
 
+
     void start_of_generator(){
-        printf(START); 
+        printf(START);
+        
+        gen_fun_reads();
+        gen_fun_readi();
+        gen_fun_readf();
+        gen_fun_write();
+        gen_fun_floatval();
+        gen_fun_intval();
+        gen_fun_strval();
+        gen_fun_strlen();
+        gen_fun_substr();
+        gen_fun_ord();
+        gen_fun_chr();
+
+        printf("LABEL $$main\n");
+    }
+
+    void gen_fun_reads(){
+        printf(FUNCTION_READS); 
+    }
+
+    void gen_fun_readi(){
+        //TODO printf(FUNCTION_READI); 
+    }
+
+    void gen_fun_readf(){
+        //TODO printf(FUNCTION_READF); 
+    }
+
+    void gen_fun_write(){
+        //TODO printf(FUNCTION_WRITE); 
+    }
+
+    void gen_fun_floatval(){
+        //TODO printf(FUNCTION_FLOATVAL); 
+    }
+
+    void gen_fun_intval(){
+        //TODO printf(FUNCTION_INTVAL); 
+    }
+
+    void gen_fun_strval(){
+        //TODO printf(FUNCTION_STRVAL); 
+    }
+
+    void gen_fun_strlen(){
+        printf(FUNCTION_STRLEN); 
+    }
+
+    void gen_fun_substr(){
+        printf(FUNCTION_SUBSTR); 
+    }
+
+    void gen_fun_ord(){
+        printf(FUNCTION_ORD); 
+    }
+
+    void gen_fun_chr(){
+        printf(FUNCTION_CHR); 
     }
