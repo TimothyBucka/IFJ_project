@@ -1,0 +1,25 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+
+
+
+should_be_int = readi();
+should_be_float = readf();
+should_be_string = reads();
+
+write(should_be_int, "wfe", should_be_string);
+
+new_strting = substring(should_be_string, 0, 1);
+one_int = ord("a");
+one_str = chr(80);
+
+?>

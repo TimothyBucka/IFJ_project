@@ -10,9 +10,12 @@
 
 declare(strict_types=1);
 
-function foo(string $x, string $y, float $z, int $w) : ?float {
-    return;
+function foo(string $x) : ?float {
+    return $x;
 }
-write("lala");
+function bar(string $y) : ?float {
+
+    return $x;
+}
 
 ?>

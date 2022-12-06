@@ -5,26 +5,26 @@
 #include <stdlib.h>
 
 int get_hash(char *key) {
-    int h = 0, high;
-    while (*key) {
-        h = (h << 4) + *key++;
-        if ((high = h & 0xF0000000))
-            h ^= high >> 24;
-        h &= ~high;
-    }
-    return h % TABLESIZE;
-
-    // int length = strlen(key);
-
-    // unsigned int hash_value = 0;
-    // for (int i = 0; i < length; i++)
-    // {
-    //     hash_value += key[i] * pow(P, length - i + 1); /* Polynomial rolling hash code */
+    // int h = 0, high;
+    // while (*key) {
+    //     h = (h << 4) + *key++;
+    //     if ((high = h & 0xF0000000))
+    //         h ^= high >> 24;
+    //     h &= ~high;
     // }
+    // return h % TABLESIZE;
 
-    // hash_value = ((A * hash_value + B) % PRIME) % TABLESIZE; /* MAD (multiply add divide) compression method using positive int A and B <0;p-1> (also not a multiple of N) and prime larger then N*/
-    // printf("hash value: %d\n", hash_value);
-    // return hash_value;
+    int length = strlen(key);
+
+    unsigned int hash_value = 0;
+    for (int i = 0; i < length; i++)
+    {
+        hash_value = key[i] + P*hash_value; /* Polynomial rolling hash code */
+    }
+
+    hash_value = ((A * hash_value + B) % PRIME) % TABLESIZE; /* MAD (multiply add divide) compression method using positive int A and B <0;p-1> (also not a multiple of N) and prime larger then N*/
+    printf("hash value: %d\n", hash_value);
+    return hash_value;
 }
 
 hash_table init_hash_table() {
@@ -120,6 +120,22 @@ void hash_table_free(hash_table table) {
     }
     free(table);
 }
+void clear_hash_table_to_inicialised(hash_table table) {
+    for (int i = 0; i < TABLESIZE; i++) {
+
+        while (table[i] != NULL) {
+            table_item_t *item = table[i];
+            table[i] = (*table[i]).next_item;
+            if (item->value.is_var) {
+                free(item->value.f_or_v.variable);
+            }
+            else {
+                free(item->value.f_or_v.function);
+            }
+            item = &(*table[i]);
+        }
+    }
+}
 
 void debug_print_table(hash_table table) {
     printf("\n\n--------------------------------------\n");
@@ -134,7 +150,7 @@ void debug_print_table(hash_table table) {
                 printf("[Varialbe %s, type: %d]", item->value.name, item->value.f_or_v.variable->type);
             }
             else {
-                printf("[Function %s, type: %d]", item->value.name, item->value.f_or_v.function->return_type);
+                printf("[Function %s, type: %d, param_c %d]", item->value.name, item->value.f_or_v.function->return_type, item->value.f_or_v.function->num_of_params);
             }
             item = item->next_item;
         }
@@ -178,6 +194,7 @@ void preload_hash_table(hash_table table) {
     parameter *param_ord = malloc(sizeof(parameter));
     func_ord->return_type = INT;
     param_ord->type = STRING;
+    func_ord->num_of_params = 1;
     func_ord->parameters = param_ord;
     data_ord->is_var = false;
     data_ord->name = "ord";
@@ -190,6 +207,7 @@ void preload_hash_table(hash_table table) {
     parameter *param_chr = malloc(sizeof(parameter));
     func_chr->return_type = STRING;
     param_chr->type = INT;
+    func_chr->num_of_params = 1;
     func_chr->parameters = param_chr;
     data_chr->is_var = false;
     data_chr->name = "chr";
@@ -217,6 +235,7 @@ void preload_hash_table(hash_table table) {
     parameter *param_floatval = malloc(sizeof(parameter));
     func_floatval->return_type = FLOAT;
     param_floatval->type = TERM_TYPE;
+    func_floatval->num_of_params = 1;
     func_floatval->parameters = param_floatval;
     data_floatval->is_var = false;
     data_floatval->name = "floatval";
@@ -229,6 +248,7 @@ void preload_hash_table(hash_table table) {
     parameter *param_intval = malloc(sizeof(parameter));
     func_intval->return_type = INT;
     param_intval->type = TERM_TYPE;
+    func_intval->num_of_params = 1;
     func_intval->parameters = param_intval;
     data_intval->is_var = false;
     data_intval->name = "intval";
@@ -241,6 +261,7 @@ void preload_hash_table(hash_table table) {
     parameter *param_strval = malloc(sizeof(parameter));
     func_strval->return_type = STRING;
     param_strval->type = TERM_TYPE;
+    func_strval->num_of_params = 1;
     func_strval->parameters = param_strval;
     data_strval->is_var = false;
     data_strval->name = "strval";
@@ -253,6 +274,7 @@ void preload_hash_table(hash_table table) {
     parameter *param_write = malloc(sizeof(parameter));
     func_write->return_type = NULL_TYPE;
     param_write->type = TERM_TYPE;
+    func_write->num_of_params = 1;
     func_write->parameters = param_write;
     data_write->is_var = false;
     data_write->name = "write";
