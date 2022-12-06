@@ -2,6 +2,7 @@
 ifj22
 output
 *.zip
+out.txt
 
 ### VisualStudioCode ###
 .vscode

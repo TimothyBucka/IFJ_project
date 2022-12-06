@@ -7,155 +7,277 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef enum { //all instructions from IFJcode22
-    INS_MOVE,
-    INS_CREATEFRAME,
-    INS_PUSHFRAME,
-    INS_POPFRAME,
-    INS_DEFVAR,
-    INS_CALL,
-    INS_RETURN,
-    INS_PUSHS, //functions
-    INS_POPS,
-    INS_CLEARS, //stack
-    INS_ADD,
-    INS_SUB,
-    INS_MUL,
-    INS_IDIV,
-    INS_LT,
-    INS_GT, //zevraj sa nepouziva ADAM POVEDAL XD ale dam ho tu lebo je v zadani //FIXME
-    INS_EQ,
-    INS_AND,
-    INS_OR,
-    INS_NOT,
-    INS_INT2FLOAT,
-    INS_FLOAT2INT,
-    INS_INT2CHAR,
-    INS_STRI2INT, //for calculating idk how to say it in english
-    INS_READ,
-    INS_WRITE, //input output
-    INS_CONCAT,
-    INS_STRLEN,
-    INS_GETCHAR,
-    INS_SETCHAR, //string operations
-    INS_TYPE,
-    INS_LABEL,
-    INS_JUMP,
-    INS_JUMPIFEQ,
-    INS_JUMPIFNEQ, //flow control
-    INS_EXIT,
-    INS_BREAK ,
-    INS_DPRINT //debugging
-} INSTRUCTIONS;
+#define START ".IFJcode22\n\
+CREATEFRAME\n\
+CALL $$main\n\
+JUMP $$end\n\
+\n"
 
-#define ADD_INST(x) ; //FIXME
+//TODO zmenit premenne
+#define FUNCTION_READS "LABEL $reads\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+DEFVAR LF@param1\n\
+READ LF@param1 string\n\
+DEFVAR LF@errorCheck\n\
+TYPE LF@errorCheck LF@param1\n\
+JUMPIFNEQ $ERROR$READS string@string LF@errorCheck\n\
+DEFVAR LF@strlen\n\
+STRLEN LF@strlen LF@param1\n\
+JUMPIFEQ $ERROR$READS LF@strlen int@0\n\
+SUB LF@strlen LF@strlen int@1\n\
+DEFVAR LF@getchar\n\
+GETCHAR LF@getchar LF@param1 LF@strlen\n\
+JUMPIFNEQ $END$OF$READS LF@getchar string@\\010\n\
+SETCHAR LF@param1 LF@strlen string@\\000\n\
+LABEL $ERROR$OF$READS\n\
+MOVE LF@&1 LF@param1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $ERROR$READS\n\
+MOVE LF@&1 nil@nil\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+#define FUNCTION_READI "LABEL $readi\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+DEFVAR LF@param1\n\
+DEFVAR LF@errorCheck\n\
+READ LF@param1 int\n\
+TYPE LF@errorCheck LF@param1\n\
+JUMPIFNEQ $ERROR$READI string@int LF@errorCheck\n\
+MOVE LF@&1 LF@param1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $ERROR$READI\n\
+MOVE LF@&1 nil@nil\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+#define FUNCTION_READF "LABEL $readf\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+DEFVAR LF@param1\n\
+DEFVAR LF@errorCheck\n\
+READ LF@param1 float\n\
+TYPE LF@errorCheck LF@param1\n\
+JUMPIFNEQ $ERROR$READF string@float LF@errorCheck\n\
+MOVE LF@&1 LF@param1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $ERROR$READF\n\
+MOVE LF@&1 nil@nil\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+//TODO vypis pre int pomocou %d a pre float pomocou %a
+#define FUNCTION_WRITE "LABEL $write\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+DEFVAR LF@&1type\n\
+LABEL $write_loop\n\
+JUMPIFEQ loop$end LF@&0 int@0\n\
+POPS LF@&1\n\
+TYPE LF@&1type LF@&1\n\
+JUMPIFEQ $write_int string@int LF@&1type\n\
+JUMPIFEQ $write_float string@float LF@&1type\n\
+JUMPIFEQ $write_null string@nil LF@&1type\n\
+LABEL $write_string \n\
+WRITE LF@&1\n\
+SUB LF@&0 LF@&0 int@1\n\
+JUMP $write_loop\n\
+LABEL $write$int\n\
+MOVE LF@&1 LF@&1\n\
+JUMP $write_string\n\
+LABEL $write$float\n\
+MOVE LF@&1 LF@&1\n\
+JUMP $write_string\n\
+LABEL $write$null\n\
+MOVE LF@&1 string@nil\n\
+JUMP $write_string\n\
+LABEL loop$end\n\
+CLEARS\n\
+POPFRAME\n\
+RETURN\n\
+\n"
 
 #define FUNCTION_FLOAT_VALUE "LABEL $float_value\n\
-PUSHS GF@%s\n\
-TYPE GF@%s_type\n"
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+POPS LF@&1\n\
+DEFVAR LF@&1type\n\
+DEFVAR LF@&1val\n\
+TYPE LF@&1type LF@&1\n\
+JUMPIFEQ $float_value_null nil@nil LF@&1\n\
+JUMPIFEQ $float_value_int string@int LF@&1type\n\
+MOVE LF@&1val LF@&1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $float_value_int\n\
+INT2FLOAT LF@&1val LF@&1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $float_value_null\n\
+MOVE LF@&1val int@0\n\
+POPFRAME\n\
+RETURN\n\
+\n"
 
+#define FUNCTION_INT_VALUE "LABEL $int_value\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+POPS LF@&1\n\
+DEFVAR LF@&1type\n\
+DEFVAR LF@&1val\n\
+TYPE LF@&1type LF@&1\n\
+JUMPIFEQ $int_value_null nil@nil LF@&1\n\
+JUMPIFEQ $int_value_float string@float LF@&1type\n\
+MOVE LF@&1val LF@&1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $int_value_float\n\
+FLOAT2INT LF@&1val LF@&1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $int_value_null\n\
+MOVE LF@&1val int@0\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+#define FUNCTION_STRING_VALUE "LABEL $string_value\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+POPS LF@&1\n\
+DEFVAR LF@&1type\n\
+DEFVAR LF@&1val\n\
+TYPE LF@&1type LF@&1\n\
+JUMPIFEQ $string_value_null nil@nil LF@&1\n\
+#ROZSIRENIE NEROBIME\n\
+MOVE LF@&1val LF@&1\n\
+POPFRAME\n\
+RETURN\n\
+LABEL $string_value_null\n\
+MOVE LF@&1val string@""\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+#define FUNCTION_STRING_LENGTH "LABEL $length\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+POPS LF@&1\n\
+STRLEN LF@&1 LF@&1\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+#define FUNCTION_SUBSTRING "LABEL $substr\n\
+PUSHFRAME\n\
+DEFVAR LF@string\n\
+DEFVAR LF@start\n\
+DEFVAR LF@last\n\
+DEFVAR LF@i\n\
+DEFVAR LF@checking\n\
+DEFVAR LF@ret\n\
+DEFVAR LF@bool\n\
+DEFVAR LF@len\n\
+DEFVAR LF@string2\n\
+POPS LF@string\n\
+POPS LF@start\n\
+POPS LF@last\n\
+SUB LF@i LF@last LF@start\n\
+ADD LF@i LF@i int@1\n\
+GT LF@checking LF@start LF@last\n\
+JUMPIFEQ $substr_error LF@checking bool@true\n\
+STRLEN LF@len LF@string\n\
+GT LF@checking LF@last LF@len\n\
+JUMPIFEQ $substr_error LF@checking bool@true\n\
+EQ LF@checking LF@start LF@len\n\
+JUMPIFEQ $substr_error LF@checking bool@true\n\
+MOVE LF@ret string@\n\
+CLEARS\n\
+PUSHS LF@len\n\
+PUSHS int@0\n\
+GTS\n\
+PUSHS LF@start\n\
+PUSHS int@0\n\
+LTS \n\
+NOTS\n\
+ANDS\n\
+POPS LF@bool\n\
+JUMPIFEQ $substr_error LF@bool bool@false\n\
+PUSHS LF@len\n\
+PUSHS LF@start\n\
+SUBS\n\
+PUSHS LF@i\n\
+LTS\n\
+POPS LF@bool\n\
+ADD LF@i LF@i LF@start\n\
+JUMPIFEQ $substr_lts LF@bool bool@false\n\
+MOVE LF@i LF@len\n\
+LABEL $substr_lts\n\
+LABEL $substr_loop\n\
+PUSHS LF@start\n\
+PUSHS LF@i\n\
+LTS\n\
+POPS LF@bool\n\
+JUMPIFEQ $substr_end LF@bool bool@false\n\
+GETCHAR LF@string2 LF@string LF@start\n\
+CONCAT LF@ret LF@ret LF@string2\n\
+ADD LF@start LF@start int@1\n\
+JUMP $substr_loop\n\
+LABEL $substr_error\n\
+MOVE LF@ret nil@nil\n\
+LABEL $substr_end\n\
+POPFRAME\n\
+RETURN\n\
+\n"
 
 #define FUNCTION_ORD "LABEL $ord\n\
-DEFVAR LF@&1type\n\
-DEFVAR LF@&2type\n\
-DEFVAR LF@&1len\n\
-TYPE LF@&1type LF@&1\n\
-TYPE LF@&2type LF@&2\n\
-JUMPIFEQ $firstargstr LF@&1type string@string\n\
-EXIT int@4\n\
-LABEL $firstargstr\n\
-JUMPIFEQ $ordlengthcmp LF@&2type string@int\n\
-EXIT int@4\n\
-LABEL $ordlengthcmp\n\
-STRLEN LF@&1len LF@&1\n\
-\
-DEFVAR LF@&2lencheck\n\
-LT LF@&2lencheck LF@&2 int@0\n\
-JUMPIFEQ $ordoutbounds LF@&2lencheck bool@true\n\
-LT LF@&2lencheck LF@&2 LF@&1len\n\
-JUMPIFEQ $ordoutbounds LF@&2lencheck bool@false\n\
-\
-STRI2INT LF@&RETVAL LF@&1 LF@&2\n\
+PUSHFRAME\n\
+DEFVAR LF@&1\n\
+DEFVAR LF@string\n\
+DEFVAR LF@retval\n\
+POPS LF@string\n\
+MOVE LF@&1 int@0\n\
+JUMPIFEQ $ord_error LF@string string@""\n\
+STRI2INT LF@&1 LF@string LF@&1\n\
+MOVE LF@retval LF@&1\n\
+LABEL $ord_error\n\
+MOVE LF@retval nil@nil\n\
+POPFRAME\n\
 RETURN\n\
-LABEL $ordoutbounds\n\
-MOVE LF@&RETVAL nil@nil\n\
-RETURN\n"
+\n"
 
 #define FUNCTION_CHR "LABEL $chr\n\
-DEFVAR LF@&1type\n\
-TYPE LF@&1type LF@&1\n\
-JUMPIFEQ $chrtypecmp LF@&1type string@int\n\
-EXIT int@4\n\
-LABEL $chrtypecmp\n\
-DEFVAR LF@&1check\n\
-LT LF@&1check LF@&1 int@0\n\
-JUMPIFEQ $chroutbounds LF@&1check bool@true\n\
-GT LF@&1check LF@&1 int@255\n\
-JUMPIFEQ $chroutbounds LF@&1check bool@true\n\
-\
-INT2CHAR LF@&RETVAL LF@&1\n\
+PUSHFRAME\n\
+DEFVAR LF@&parameter\n\
+DEFVAR LF@&ret\n\
+POPS LF@&parameter\n\
+INT2CHAR LF@&ret LF@&parameter\n\
+POPFRAME\n\
 RETURN\n\
-LABEL $chroutbounds\n\
-MOVE LF@&RETVAL nil@nil\n\
-RETURN\n"
+\n"
 
-#define FUNCTION_STRLEN "LABEL $strlen\n\
-DEFVAR LF@&1type\n\
-TYPE LF@&1type LF@&1\n\
-JUMPIFEQ $strlenstr LF@&1type string@string\n\
-EXIT int@4\n\
-LABEL $strlenstr\n\
-STRLEN LF@&RETVAL LF@&1\n\
-RETURN\n"
 
-#define FUNCTION_SUBSTR "LABEL $substr\n\
-LABEL $substrtypecmp\n\
-DEFVAR LF@&2type\n\
-TYPE LF@&2type LF@&2\n\
-JUMPIFEQ $substrtypecmp2 LF@&2type string@int\n\
-EXIT int@4\n\
-LABEL $substrtypecmp2\n\
-DEFVAR LF@&3type\n\
-TYPE LF@&3type LF@&3\n\
-JUMPIFEQ $substrtypecmp3 LF@&3type string@int\n\
-EXIT int@4\n\
-LABEL $substrtypecmp3\n\
-DEFVAR LF@&2check\n\
-LT LF@&2check LF@&2 int@0\n\
-JUMPIFEQ $substroutbounds LF@&2check bool@true\n\
-DEFVAR LF@&3check\n\
-LT LF@&3check LF@&3 int@0\n\
-JUMPIFEQ $substroutbounds LF@&3check bool@true\n\
-\
-STRLEN LF@&RETVAL LF@&1\n\
-DEFVAR LF@&1lencheck\n\
-LT LF@&1lencheck LF@&RETVAL LF@&2\n\
-JUMPIFEQ $substroutbounds LF@&1lencheck bool@true\n\
-\
-DEFVAR LF@&3lencheck\n\
-LT LF@&3lencheck LF@&RETVAL LF@&3\n\
-JUMPIFEQ $substroutbounds LF@&3lencheck bool@true\n\
-\
-DEFVAR LF@&2endcheck\n\
-LT LF@&2endcheck LF@&2 LF@&3\n\
-JUMPIFEQ $substroutbounds LF@&2endcheck bool@true\n\
-\
-DEFVAR LF@&3endcheck\n\
-LT LF@&3endcheck LF@&3 LF@&2\n\
-JUMPIFEQ $substroutbounds LF@&3endcheck bool@true\n\
-\
-DEFVAR LF@&2len\n\
-DEFVAR LF@&3len\n\
-SUB LF@&2len LF@&3 LF@&2\n\
-ADD LF@&3len LF@&2 LF@&3\n\
-\
-DEFVAR LF@&2lencheck\n\
-DEFVAR LF@&3lencheck\n\
-LT LF@&2lencheck LF@&2 int@0\n\
-LT LF@&3lencheck LF@&3 int@0\n\
-JUMPIFEQ $substroutbounds LF@&2lencheck bool@true\n\
-JUMPIFEQ $substroutbounds LF@&3lencheck bool@true\n\
-RETURN\n"
+
+void start_of_generator();
+void gen_fun_reads();
+void gen_fun_readi();
+void gen_fun_readf();
+void gen_fun_write();
+void gen_fun_floatval();
+void gen_fun_intval();
+void gen_fun_strval();
+void gen_fun_strlen();
+void gen_fun_substr();
+void gen_fun_ord();
+void gen_fun_chr();
 
 #endif
 
