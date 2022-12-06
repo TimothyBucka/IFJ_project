@@ -38,7 +38,7 @@
 
     void start_of_generator(){
         printf(START);
-        
+
         gen_fun_reads();
         gen_fun_readi();
         gen_fun_readf();
@@ -59,41 +59,41 @@
     }
 
     void gen_fun_readi(){
-        //TODO printf(FUNCTION_READI); 
+        printf(FUNCTION_READI); 
     }
 
     void gen_fun_readf(){
-        //TODO printf(FUNCTION_READF); 
+        printf(FUNCTION_READF); 
     }
 
     void gen_fun_write(){
-        //TODO printf(FUNCTION_WRITE); 
+        printf(FUNCTION_WRITE); 
     }
 
     void gen_fun_floatval(){
-        //TODO printf(FUNCTION_FLOATVAL); 
+        printf(FUNCTION_FLOAT_VALUE); 
     }
 
     void gen_fun_intval(){
-        //TODO printf(FUNCTION_INTVAL); 
+        printf(FUNCTION_INT_VALUE); 
     }
 
     void gen_fun_strval(){
-        //TODO printf(FUNCTION_STRVAL); 
+        printf(FUNCTION_STRING_VALUE); 
     }
 
     void gen_fun_strlen(){
-        printf(FUNCTION_STRLEN); 
+        printf(FUNCTION_STRING_LENGTH); 
     }
 
     void gen_fun_substr(){
-        printf(FUNCTION_SUBSTR); 
+        //TODO printf(FUNCTION_SUBSTRING); 
     }
 
     void gen_fun_ord(){
-        printf(FUNCTION_ORD); 
+        //TODO printf(FUNCTION_ORD); 
     }
 
     void gen_fun_chr(){
-        printf(FUNCTION_CHR); 
+        //TODO printf(FUNCTION_CHR); 
     }
