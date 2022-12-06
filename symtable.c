@@ -127,3 +127,121 @@ void debug_print_table(hash_table table){
     }
     printf("--------------------------------------\n");
 }
+
+
+void preload_hash_table(hash_table table){
+
+    //readInt
+    function *func_readi = malloc(sizeof(function));
+    table_item_data *data_readi = malloc(sizeof(table_item_data));
+    func_readi->return_type = INT;
+    data_readi->is_var = false;
+    data_readi->name = "readi";
+    data_readi->f_or_v.function = func_readi;
+    hash_table_insert(table, &(*data_readi));
+
+    //readFloat
+    function *func_readf = malloc(sizeof(function));
+    table_item_data *data_readf = malloc(sizeof(table_item_data));
+    func_readf->return_type = FLOAT;
+    data_readf->is_var = false;
+    data_readf->name = "readf";
+    data_readf->f_or_v.function = func_readf;
+    hash_table_insert(table, &(*data_readf));
+
+    //readString
+    function *func_reads = malloc(sizeof(function));
+    table_item_data *data_reads = malloc(sizeof(table_item_data));
+    func_reads->return_type = STRING;
+    data_reads->is_var = false;
+    data_reads->name = "reads";
+    data_reads->f_or_v.function = func_reads;
+    hash_table_insert(table, &(*data_reads));
+
+    //ord
+    function *func_ord = malloc(sizeof(function));
+    table_item_data *data_ord = malloc(sizeof(table_item_data));
+    parameter *param_ord = malloc(sizeof(parameter));
+    func_ord->return_type = INT;
+    param_ord->type = STRING;
+    func_ord->parameters = param_ord;
+    data_ord->is_var = false;
+    data_ord->name = "ord";
+    data_ord->f_or_v.function = func_ord;
+    hash_table_insert(table, &(*data_ord));
+
+    //chr
+    function *func_chr = malloc(sizeof(function));
+    table_item_data *data_chr = malloc(sizeof(table_item_data));
+    parameter *param_chr = malloc(sizeof(parameter));
+    func_chr->return_type = STRING;
+    param_chr->type = INT;
+    func_chr->parameters = param_chr;
+    data_chr->is_var = false;
+    data_chr->name = "chr";
+    data_chr->f_or_v.function = func_chr;
+    hash_table_insert(table, &(*data_chr));
+
+    //substring
+    function *func_substring = malloc(sizeof(function));
+    table_item_data *data_substring = malloc(sizeof(table_item_data));
+    parameter *param_substring = malloc(sizeof(parameter)*3);
+    func_substring->return_type = STRING;
+    param_substring[0].type = STRING;
+    param_substring[1].type = INT;
+    param_substring[2].type = INT;
+    func_substring->parameters = param_substring;
+    data_substring->is_var = false;
+    data_substring->name = "substring";
+    data_substring->f_or_v.function = func_substring;
+    hash_table_insert(table, &(*data_substring));
+
+    //floatval
+    function *func_floatval = malloc(sizeof(function));
+    table_item_data *data_floatval = malloc(sizeof(table_item_data));
+    parameter *param_floatval = malloc(sizeof(parameter));
+    func_floatval->return_type = FLOAT;
+    param_floatval->type = TERM_TYPE;
+    func_floatval->parameters = param_floatval;
+    data_floatval->is_var = false;
+    data_floatval->name = "floatval";
+    data_floatval->f_or_v.function = func_floatval;
+    hash_table_insert(table, &(*data_floatval));
+
+    //intval
+    function *func_intval = malloc(sizeof(function));
+    table_item_data *data_intval = malloc(sizeof(table_item_data));
+    parameter *param_intval = malloc(sizeof(parameter));
+    func_intval->return_type = INT;
+    param_intval->type = TERM_TYPE;
+    func_intval->parameters = param_intval;
+    data_intval->is_var = false;
+    data_intval->name = "intval";
+    data_intval->f_or_v.function = func_intval;
+    hash_table_insert(table, &(*data_intval));
+
+    //strval
+    function *func_strval = malloc(sizeof(function));
+    table_item_data *data_strval = malloc(sizeof(table_item_data));
+    parameter *param_strval = malloc(sizeof(parameter));
+    func_strval->return_type = STRING;
+    param_strval->type = TERM_TYPE;
+    func_strval->parameters = param_strval;
+    data_strval->is_var = false;
+    data_strval->name = "strval";
+    data_strval->f_or_v.function = func_strval;
+    hash_table_insert(table, &(*data_strval));
+
+    //write
+    function *func_write = malloc(sizeof(function));
+    table_item_data *data_write = malloc(sizeof(table_item_data));
+    parameter *param_write = malloc(sizeof(parameter));
+    func_write->return_type = NULL_TYPE;
+    param_write->type = TERM_TYPE;
+    func_write->parameters = param_write;
+    data_write->is_var = false;
+    data_write->name = "write";
+    data_write->f_or_v.function = func_write;
+    hash_table_insert(table, &(*data_write));
+
+}

@@ -135,13 +135,13 @@ int count_breakpoint(expr_stack *expr_stack) {
 }
 
 data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left, symtables tables) {
-    if (item_right->type == TERM) {
+    if (item_right->type == TERM) { // id
         if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
             table_item_data *item;
-            printf("Seraching for %s \n",item_right->token_ptr->VAL.string);
+            printf("Seraching for %s \n", item_right->token_ptr->VAL.string);
             item = hash_table_lookup(tables.local, item_right->token_ptr->VAL.string);
             if (!item) {
-            item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
+                item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
             }
             if (!item) {
                 ERROR = UNDEFINED_VAR_ERR;
@@ -155,7 +155,6 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
                     ERROR = SEM_OTHER_ERR;
                     return UNDEFINED;
                 }
-                
             }
             return INT; // TODO search symtable if not found return NONE -- error 5
         }
@@ -169,10 +168,10 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             return STRING;
         }
     }
-    else if (item_middle->type == NONTERM) {
+    else if (item_middle->type == NONTERM) { // (E)
         return item_middle->data_type;
     }
-    else {
+    else { // E something E
         data_type right = item_right->data_type;
         data_type left = item_left->data_type;
 
@@ -180,11 +179,41 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
         case TOKEN_ID_PLUS:
         case TOKEN_ID_MINUS:
         case TOKEN_ID_MULTIPLICATION:
-            if (right == INT && left == INT) {
-                return INT;
+            if (left == INT) {
+                if (right == INT || right == NULL_TYPE) {
+                    return INT;
+                }
+                else if (right == FLOAT) {
+                    return FLOAT;
+                }
+                else {
+                    ERROR = EXPR_ERR;
+                    return UNDEFINED;
+                }
             }
-            else if (right == FLOAT || left == FLOAT) {
-                return FLOAT;
+            else if (left == FLOAT) {
+                if (right == INT || right == FLOAT || right == NULL_TYPE) {
+                    return FLOAT;
+                }
+                else {
+                    ERROR = EXPR_ERR;
+                    return UNDEFINED;
+                }
+            }
+            else if (left == NULL_TYPE) {
+                if (right == INT) {
+                    return INT;
+                }
+                else if (right == FLOAT) {
+                    return FLOAT;
+                }
+                else if (right == NULL_TYPE) {
+                    return NULL_TYPE;
+                }
+                else {
+                    ERROR = EXPR_ERR;
+                    return UNDEFINED;
+                }
             }
             else {
                 ERROR = EXPR_ERR;
@@ -192,16 +221,19 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             }
             break;
         case TOKEN_ID_DIVISION:
-            if ((right != INT && right != FLOAT) || (left != INT && left != FLOAT)) {
+            if (left == NULL_TYPE && right == NULL_TYPE) {
+                ERROR = EXPR_ERR;
+                return UNDEFINED;
+            } else if ((left == INT || left == FLOAT || left == NULL_TYPE) && (right == INT || right == FLOAT || right == NULL_TYPE)) {
+                return FLOAT;
+            }
+            else {
                 ERROR = EXPR_ERR;
                 return UNDEFINED;
             }
-            else {
-                return FLOAT;
-            }
             break;
         case TOKEN_ID_CONCAT:
-            if (right == STRING && left == STRING) {
+            if ((right == STRING || right == NULL_TYPE) && (left == STRING || left == NULL_TYPE)) {
                 return STRING;
             }
             else {
