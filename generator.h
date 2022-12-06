@@ -7,10 +7,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// #define FUNCTION_FLOAT_VALUE "LABEL $float_value\n\
-// PUSHS GF@%s\n\
-// TYPE GF@%s_type\n"
-
 #define START ".IFJcode22\n\
 CREATEFRAME\n\
 CALL $$main\n\
@@ -176,6 +172,68 @@ PUSHFRAME\n\
 DEFVAR LF@&1\n\
 POPS LF@&1\n\
 STRLEN LF@&1 LF@&1\n\
+POPFRAME\n\
+RETURN\n\
+\n"
+
+#define FUNCTION_SUBSTRING "LABEL $substr\n\
+PUSHFRAME\n\
+DEFVAR LF@string\n\
+DEFVAR LF@start\n\
+DEFVAR LF@last\n\
+DEFVAR LF@i\n\
+DEFVAR LF@checking\n\
+DEFVAR LF@ret\n\
+DEFVAR LF@bool\n\
+DEFVAR LF@len\n\
+DEFVAR LF@string2\n\
+POPS LF@string\n\
+POPS LF@start\n\
+POPS LF@last\n\
+SUB LF@i LF@last LF@start\n\
+ADD LF@i LF@i int@1\n\
+GT LF@checking LF@start LF@last\n\
+JUMPIFEQ $substr_error LF@checking bool@true\n\
+STRLEN LF@len LF@string\n\
+GT LF@checking LF@last LF@len\n\
+JUMPIFEQ $substr_error LF@checking bool@true\n\
+EQ LF@checking LF@start LF@len\n\
+JUMPIFEQ $substr_error LF@checking bool@true\n\
+MOVE LF@ret string@\n\
+CLEARS\n\
+PUSHS LF@len\n\
+PUSHS int@0\n\
+GTS\n\
+PUSHS LF@start\n\
+PUSHS int@0\n\
+LTS \n\
+NOTS\n\
+ANDS\n\
+POPS LF@bool\n\
+JUMPIFEQ $substr_error LF@bool bool@false\n\
+PUSHS LF@len\n\
+PUSHS LF@start\n\
+SUBS\n\
+PUSHS LF@i\n\
+LTS\n\
+POPS LF@bool\n\
+ADD LF@i LF@i LF@start\n\
+JUMPIFEQ $substr_lts LF@bool bool@false\n\
+MOVE LF@i LF@len\n\
+LABEL $substr_lts\n\
+LABEL $substr_loop\n\
+PUSHS LF@start\n\
+PUSHS LF@i\n\
+LTS\n\
+POPS LF@bool\n\
+JUMPIFEQ $substr_end LF@bool bool@false\n\
+GETCHAR LF@string2 LF@string LF@start\n\
+CONCAT LF@ret LF@ret LF@string2\n\
+ADD LF@start LF@start int@1\n\
+JUMP $substr_loop\n\
+LABEL $substr_error\n\
+MOVE LF@ret nil@nil\n\
+LABEL $substr_end\n\
 POPFRAME\n\
 RETURN\n\
 \n"

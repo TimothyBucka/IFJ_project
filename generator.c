@@ -87,7 +87,7 @@
     }
 
     void gen_fun_substr(){
-        //TODO printf(FUNCTION_SUBSTRING); 
+        printf(FUNCTION_SUBSTRING); 
     }
 
     void gen_fun_ord(){
