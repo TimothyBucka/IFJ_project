@@ -10,6 +10,7 @@
 #ifndef CHARARRAY_H
 #define CHARARRAY_H
 
+
 /**
  * @brief Creates new char array
  * 
@@ -39,5 +40,6 @@ void chararray_append_string(char **chararray, char* str);
  * @param array 
  */
 void chararray_free (char* chararray);
+
 
 #endif

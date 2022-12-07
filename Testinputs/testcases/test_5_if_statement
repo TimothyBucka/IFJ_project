@@ -10,8 +10,18 @@
 
 declare(strict_types=1);
 
-if (100 === 100) {
+if (10 === 100) {
     write("ano");
+    
+
+} 
+else{
+
+    write("ne\n");
+}
+
+if (100 === 100) {
+    write("ano\086");
     
 
 } 
@@ -19,7 +29,6 @@ else{
 
     write("ne");
 }
-
 
 
 ?>

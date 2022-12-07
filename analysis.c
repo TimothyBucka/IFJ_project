@@ -9,6 +9,8 @@
 
 #include "analysis.h"
 #include "expressions.h"
+#include <stdlib.h>
+
 
 extern error ERROR;
 extern int ERRORFROMLEXER;
@@ -23,6 +25,7 @@ bool accept(token *token_ptr, token_ID acceptedID) {
         return true;
     }
     return false;
+
 }
 
 
@@ -43,6 +46,7 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
     hash_table local = init_hash_table();
 
     preload_hash_table(global);
+
 
     symtables tables = {global, local};
 
@@ -524,13 +528,15 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     BODYRECURSIONCOUNT++;
     data_type final_type;
-
+    int if_count_at_depth = 0;
+    
     token *token_ptr;
 
     next_tok;
 
     // case Function
     if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_FUNCTION && BODYRECURSIONCOUNT == 1) { //  function
+
         next_tok;
         function *func = malloc(sizeof(function));
         table_item_data *data = malloc(sizeof(table_item_data));
@@ -592,6 +598,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     // case If
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_IF) { //  if
         IFRECURSIONCOUNT++;
+
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             IFRECURSIONCOUNT--;
