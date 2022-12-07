@@ -668,6 +668,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
 
         //FIXME Gen Code
+        BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
         }

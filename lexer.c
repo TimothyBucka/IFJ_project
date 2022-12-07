@@ -139,11 +139,6 @@ void clean_string(char **str) {
     for (size_t i = 0, n_i = 0; i < str_len; i++) {
         char c = (char)0;
 
-        if ((*str)[i] == '$') { // escape character
-            printf("Unescaped $\n");
-            continue;
-        }
-
         if ((*str)[i] == '\\') {
             switch ((*str)[i + 1]) {
             case 'x':
