@@ -1,0 +1,41 @@
+<?php 
+
+/*sdfdf
+ @DanielMacura
+ @Patrick0482
+ @TimothyBucka
+ @Tobsterr58
+
+*/
+
+declare(strict_types=1);
+
+if (1 === 1) {
+    if (1 === 1) {
+        if (1 === 1) {
+            write("1");
+        } 
+        else{
+            write("2");
+        }
+    } 
+    else{
+        if (1 === 1) {
+            write("3");
+        } 
+        else{
+            write("4");
+        }
+    }
+    if (1 === 1) {
+        write("5");
+    } 
+    else{
+        write("6");
+    }
+} 
+else{
+    write("7");
+}
+
+?>
