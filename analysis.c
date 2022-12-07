@@ -88,7 +88,7 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
  * @return true 
  * @return false 
  */
-bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data) {
+bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data, char *function_name) {
     token *token_ptr;
     ARGSCOUNT++;
 
@@ -108,26 +108,39 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_ite
                 ERROR = UNDEFINED_VAR_ERR;
                 return false;
             }
+            
             compare_params(var_data->f_or_v.variable->type);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
         else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
             compare_params(INT);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
         else if (accept(token_ptr, TOKEN_ID_STRING)) {
             compare_params(STRING);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
         else if (accept(token_ptr, TOKEN_ID_FLOAT)) {
             compare_params(FLOAT);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
@@ -181,48 +194,58 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
             ERROR = UNDEFINED_VAR_ERR;
             return false;
         }
-
-
-
-
-
-
-
-
-
-
-        write_single_var(token_ptr);
-
-
-
-
-
-
-
-
-
-
-
         compare_params(var_data->f_or_v.variable->type);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+
+
+
+
+
+
+
+
+
+
+        if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+
+
+
+
+
+
+
+
+
+        
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
+                if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
         compare_params(INT);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_STRING)) {
+                if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
         compare_params(STRING);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_FLOAT)) {
+                if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
         compare_params(FLOAT);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }

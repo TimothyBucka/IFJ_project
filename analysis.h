@@ -56,7 +56,7 @@ bool accept(token *token_ptr, token_ID acceptedID);
 
 bool expect(token *token_ptr, token_ID acceptedID);
 
-bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data);
+bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data, char *function_name);
 
 bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables);
 
