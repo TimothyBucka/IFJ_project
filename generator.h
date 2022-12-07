@@ -6,6 +6,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "chararray.h"
+#include "expressions.h"
+#include "analysis.h"
+#include "DLL.h"
+
 #define START ".IFJcode22\n\
 CREATEFRAME\n\
 CALL $main\n\
@@ -246,5 +251,9 @@ RETURN\n\
 void start_of_generator();
 
 void generate_buildin_functions();
+
+bool generate_main();
+
+bool generate_function_return(data_type type);
 
 #endif
