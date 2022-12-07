@@ -302,4 +302,12 @@ bool generate_if_else ();
 
 bool generate_if_end ();
 
+
+bool pop_to_strname(char* name);
+
+bool create_temp_frame();
+
+bool implicit_conversion (data_type type, data_type converted_type, char *var1);
+
+bool push_from_strname(char* name);
 #endif

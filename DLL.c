@@ -10,11 +10,7 @@
 #include "DLL.h"
 #include <stdio.h>
 
-/**
- * @brief Creates new doubly linked list
- * 
- * @return DLL* 
- */
+
 DLL *createDLL() {
     DLL *newDLL = malloc(sizeof(DLL));
     newDLL->firstElement = NULL;
@@ -23,12 +19,7 @@ DLL *createDLL() {
     return newDLL;
 }
 
-/**
- * @brief Pushes new token to the end of the list
- * 
- * @param dll 
- * @param t 
- */
+
 void DLL_push(DLL *dll, token *t) {
     DLLElementPtr new_element = malloc(sizeof(*new_element));
     new_element->data = *t;
@@ -44,12 +35,7 @@ void DLL_push(DLL *dll, token *t) {
     dll->activeElement = dll->lastElement;
 }
 
-/**
- * @brief Returns token from the end of the list
- * 
- * @param dll 
- * @return token* 
- */
+
 token *DLL_get_active(DLL *dll) {
     if (dll->activeElement != NULL) {
         return &dll->activeElement->data;
@@ -57,11 +43,7 @@ token *DLL_get_active(DLL *dll) {
     return NULL;
 }
 
-/**
- * @brief Moves active element to the left
- * 
- * @param dll 
- */
+
 void DLL_move_active_left(DLL *dll) {
     if (dll->activeElement == NULL) {
         return;
@@ -69,11 +51,7 @@ void DLL_move_active_left(DLL *dll) {
     dll->activeElement = dll->activeElement->previousElement;
 }
 
-/**
- * @brief Moves active element to the right
- * 
- * @param dll 
- */
+
 void DLL_move_active_right(DLL *dll) {
     if (dll->activeElement == NULL) {
         dll->activeElement = dll->firstElement;
@@ -82,17 +60,13 @@ void DLL_move_active_right(DLL *dll) {
     dll->activeElement = dll->activeElement->nextElement;
 }
 
-/**
- * @brief Frees the list
- * 
- * @param dll 
- */
+
 void DLL_free(DLL *dll) {
     DLLElementPtr current = dll->firstElement;
     DLLElementPtr next;
     while (current != NULL) {
         next = current->nextElement;
-        if (current->data.VAL.string!= NULL && current->data.ID !=TOKEN_ID_KEYWORD) {
+        if (current->data.VAL.string!= NULL && current->data.ID !=TOKEN_ID_KEYWORD) { //keywords are not allocated
             free(current->data.VAL.string);
         }
         free(current);

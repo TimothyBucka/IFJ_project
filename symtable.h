@@ -64,23 +64,81 @@ typedef struct{
     hash_table local;
 }symtables;
 
+/**
+ * @brief Get the hash object
+ * 
+ * @param key 
+ * @return int 
+ */
 int get_hash(char *key);
 
+/**
+ * @brief Creates a new hash table
+ * 
+ * @return hash_table 
+ */
 hash_table init_hash_table();
 
+/**
+ * @brief Inserts a new item into the hash table
+ * 
+ * @param table 
+ * @param key 
+ * @return table_item_data* 
+ */
 table_item_data *hash_table_lookup(hash_table table, char *key);
 
+/**
+ * @brief Inserts a new item into the hash table
+ * 
+ * @param table 
+ * @param key 
+ * @return true 
+ * @return false 
+ */
 bool hash_table_has_item(hash_table table, char *key);
 
+/**
+ * @brief Inserts a new item into the hash table
+ * 
+ * @param table 
+ * @param item 
+ */
 void hash_table_insert(hash_table table, table_item_data *item);
 
+/**
+ * @brief Deletes an item from the hash table
+ * 
+ * @param table 
+ * @param key 
+ */
 void hash_table_remove(hash_table table, char *key);
 
+/**
+ * @brief Prints the hash table
+ * 
+ * @param table 
+ */
 void debug_print_table(hash_table table);
 
+/**
+ * @brief Deletes the hash table
+ * 
+ * @param table 
+ */
 void hash_table_free(hash_table table);
 
+/**
+ * @brief Preloads the hash table with the built in functions
+ * 
+ * @param table 
+ */
 void preload_hash_table(hash_table table);
 
+/**
+ * @brief Resets the hash table
+ * 
+ * @param table 
+ */
 void clear_hash_table_to_inicialised(hash_table table);
 #endif

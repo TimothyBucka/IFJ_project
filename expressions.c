@@ -15,7 +15,7 @@ extern int BODYRECURSIONCOUNT;
 
 size_t COUNTER = 0;
 
-expr_item *expr_item_new(token *token_ptr, expr_item_type type) {
+expr_item *expr_item_new(token *token_ptr, expr_item_type type) { // creates new item
     expr_item *item = malloc(sizeof(*item));
     item->token_ptr = token_ptr;
     item->type = type;
@@ -25,7 +25,7 @@ expr_item *expr_item_new(token *token_ptr, expr_item_type type) {
     return item;
 }
 
-expr_stack *expr_stack_new() {
+expr_stack *expr_stack_new() { // creates new stack
     expr_stack *stack = malloc(sizeof(*stack));
     if (!stack)
         return NULL;
@@ -34,8 +34,8 @@ expr_stack *expr_stack_new() {
     return stack;
 }
 
-void expr_stack_push(expr_stack *stack, expr_item *item) {
-    if (!stack->top_item) {
+void expr_stack_push(expr_stack *stack, expr_item *item) { // pushes item to top of stack
+    if (!stack->top_item) { 
         stack->top_item = item;
     }
     else {
@@ -45,7 +45,7 @@ void expr_stack_push(expr_stack *stack, expr_item *item) {
     stack->size++;
 }
 
-expr_item *expr_stack_pop(expr_stack *stack) {
+expr_item *expr_stack_pop(expr_stack *stack) { // returns top item from stack
     if (!stack->top_item) {
         return NULL;
     }
@@ -57,7 +57,7 @@ expr_item *expr_stack_pop(expr_stack *stack) {
     }
 }
 
-void expr_stack_free(expr_stack *stack) {
+void expr_stack_free(expr_stack *stack) { // frees all items in stack
     expr_item *item = stack->top_item;
     while (item) {
         expr_item *next_item = item->next_item;
@@ -67,7 +67,7 @@ void expr_stack_free(expr_stack *stack) {
     free(stack);
 }
 
-int get_index_token(token *token_ptr) {
+int get_index_token(token *token_ptr) { // returns index of token in precedence table
     if (!token_ptr) { // dollar
         return 0;
     }
@@ -102,7 +102,7 @@ int get_index_token(token *token_ptr) {
     }
 }
 
-data_type get_data_type(token *token_ptr) {
+data_type get_data_type(token *token_ptr) { // returns data type of token
     switch (token_ptr->ID) {
     case TOKEN_ID_INTEGER:
         return INT;
@@ -115,7 +115,7 @@ data_type get_data_type(token *token_ptr) {
     }
 }
 
-char get_precedence(token *token_on_stack, token *token_ptr) {
+char get_precedence(token *token_on_stack, token *token_ptr) { // returns precedence of two tokens
     int index[2] = {0, 0};
 
     index[0] = get_index_token(token_on_stack);
@@ -128,7 +128,7 @@ char get_precedence(token *token_on_stack, token *token_ptr) {
     return prec_table[index[0]][index[1]];
 }
 
-int count_breakpoint(expr_stack *expr_stack) {
+int count_breakpoint(expr_stack *expr_stack) {// counts number of items in stack before breakpoint
     int count = 0;
     expr_item *item = expr_stack->top_item;
     while (item) {
@@ -144,7 +144,7 @@ int count_breakpoint(expr_stack *expr_stack) {
     return count;
 }
 
-data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left, symtables tables) {
+data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left, symtables tables) { // returns data type of expression
     if (item_right->type == TERM && item_right->token_ptr->ID != TOKEN_ID_RBRACKET) { // id
         if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
             table_item_data *item = NULL;
@@ -199,6 +199,19 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
                     return INT;
                 }
                 else if (right == FLOAT) {
+                    create_temp_frame();
+                    //change type of left to float
+                    // pop keeep, pop to var, change var, push var, push keeep
+                                        printf("DEFVAR TF@rval\n");
+                    printf("DEFVAR TF@lval\n");
+
+
+                    pop_to_strname("rval");
+                    pop_to_strname("lval");
+                    implicit_conversion(INT, FLOAT, "lval");
+                    push_from_strname("lval");
+                    push_from_strname("rval");
+
                     return FLOAT;
                 }
                 else {
@@ -207,7 +220,28 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
                 }
             }
             else if (left == FLOAT) {
-                if (right == INT || right == FLOAT || right == NULL_TYPE) {
+                if(right == INT){
+                    //change type
+                    create_temp_frame();
+                    //change type of left to float
+                    // pop keeep, pop to var, change var, push var, push keeep
+
+
+                    printf("DEFVAR TF@rval\n");
+
+                    pop_to_strname("rval");
+
+                    implicit_conversion(INT, FLOAT, "rval");
+
+                    push_from_strname("rval");
+
+
+
+
+
+                    return FLOAT;
+                }
+                if (right == FLOAT || right == NULL_TYPE) {
                     return FLOAT;
                 }
                 else {
@@ -239,7 +273,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
             if (left == NULL_TYPE && right == NULL_TYPE) {
                 ERROR = EXPR_ERR;
                 return UNDEFINED;
-            } else if ((left == INT || left == FLOAT || left == NULL_TYPE) && (right == INT || right == FLOAT || right == NULL_TYPE)) {
+            } else if ((left == INT || left == FLOAT || left == NULL_TYPE) && (right == INT || right == FLOAT || right == NULL_TYPE)) { 
                 return FLOAT;
             }
             else {
@@ -271,7 +305,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
     return UNDEFINED;
 }
 
-bool apply_rule(expr_stack *expr_stack, symtables tables) {
+bool apply_rule(expr_stack *expr_stack, symtables tables) { // applies rule to stack
     int number_of_items = count_breakpoint(expr_stack);
 
     bool ret_val = false;
@@ -280,6 +314,8 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
     expr_item *item_middle = NULL;
     expr_item *item_left = NULL;
 
+    data_type expression_type;
+
 
     rules rule;
 
@@ -287,6 +323,7 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
         item_right = expr_stack_pop(expr_stack);
         if (item_right->type == TERM && get_index_token(item_right->token_ptr) == 7) { // E -> id
             rule = ID;
+            expression_type =  get_data_type_from_item(item_right, item_middle, item_left, tables);
             operation_rule(rule, item_right->token_ptr);
             ret_val = true;
         }
@@ -345,15 +382,18 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
                 ret_val = true;
             }
             else {
-                
                 ret_val = false;
             }
-            operation_rule(rule, NULL);
+            if (ret_val){
+                expression_type =  get_data_type_from_item(item_right, item_middle, item_left, tables);
+                operation_rule(rule, NULL);
+            }
         }
         else if ((item_right->type == TERM && get_index_token(item_right->token_ptr) == 2) &&
                  (item_left->type == TERM && get_index_token(item_left->token_ptr) == 1) &&
                  (item_middle->type == NONTERM)) { // E -> (E)
             ret_val = true;
+            expression_type =  get_data_type_from_item(item_right, item_middle, item_left, tables);
         }
         else {
             ret_val = false;
@@ -364,7 +404,7 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
     }
 
     if (ret_val) {
-        item_right->data_type = get_data_type_from_item(item_right, item_middle, item_left, tables);
+        item_right->data_type = expression_type;
         item_right->type = NONTERM;
         item_right->token_ptr = NULL;
         expr_stack_push(expr_stack, item_right);
@@ -378,7 +418,7 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
     return ret_val;
 }
 
-expr_item *get_term_or_dollar(expr_stack *expr_stack) {
+expr_item *get_term_or_dollar(expr_stack *expr_stack) { // returns pointer to top term or dollar
     expr_item *item = expr_stack->top_item;
     while (item->type != TERM && item->type != DOLLAR) {
         item = item->next_item;
@@ -386,11 +426,10 @@ expr_item *get_term_or_dollar(expr_stack *expr_stack) {
     return item;
 }
 
-bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *final_type, bool exp_brack) {
+bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *final_type, bool exp_brack) { // parses expression
     if (ERROR == LEXICAL_ERR) {
         return false;
     }
-    // printf("Parsing expression...\n");
     token *token_ptr;
     expr_item *new_item;
     expr_stack *expr_stack = expr_stack_new();
@@ -409,9 +448,9 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *fin
         return false;
     }
 
-    do {
+    do { 
         expr_item *stack_term = get_term_or_dollar(expr_stack);
-        switch (get_precedence(stack_term->token_ptr, token_ptr)) {
+        switch (get_precedence(stack_term->token_ptr, token_ptr)) { // precedence table
         case '=':
             NEXT_TOKEN;
             NEW_ITEM(new_item, &dll->activeElement->previousElement->data, TERM);
@@ -447,20 +486,18 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *fin
                 UNDO_DLL_ACTIVE;
                 return false;
             }
-            if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token_ptr) == 0) {
+            if (expr_stack->top_item->type == NONTERM && expr_stack->top_item->next_item->type == DOLLAR && get_index_token(token_ptr) == 0) { 
                 if (exp_brack) {
                     ERROR = SYNTAX_ERR;
-                    // printf("BAD expresoizn\n");
                     expr_stack_free(expr_stack);
                     UNDO_DLL_ACTIVE;
                     return false;
                 }
                 *final_type = expr_stack->top_item->data_type;
                 expr_stack_free(expr_stack);
-                // printf(":D GOOOT expresoizn\n");
-                DLL_move_active_left(dll); // FIXME asi si zabudol mi posunut aktivny spat o jeden ak to dobre chapem, tak som to snad opravil
+                DLL_move_active_left(dll); 
                 COUNTER = 0;
-                return true; // TODO @Timo
+                return true; 
             }
             break;
         case '\0':
@@ -476,14 +513,12 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *fin
                     expr_stack_free(expr_stack);
                     DLL_move_active_left(dll);
                     DLL_move_active_left(dll);
-                    // printf(":D GOOOT expresoizn\n");
                     COUNTER = 0;
 
                     return true;
                 }
                 else {
                     ERROR = SYNTAX_ERR;
-                    // printf("BAD expresoizn\n");
                     expr_stack_free(expr_stack);
                     UNDO_DLL_ACTIVE;
                     return false;
@@ -491,7 +526,6 @@ bool parse_expression(lexer_T *lexer, DLL *dll, symtables tables, data_type *fin
             }
             expr_stack_free(expr_stack);
             ERROR = SYNTAX_ERR;
-            // printf("BAD expresoizn\n");
             UNDO_DLL_ACTIVE;
             return false;
         }

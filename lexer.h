@@ -61,26 +61,69 @@ typedef struct lexer_struct {
 
 enum stav {CEL, DES, EXP};
 
+/**
+ * @brief Initializes the lexer
+ * 
+ * @return lexer_T* 
+ */
 lexer_T *lexer_init();
 
+/**
+ * @brief Frees the lexer
+ * 
+ * @param lexer 
+ */
 void lexer_free(lexer_T *lexer);
 
+/**
+ * @brief Advances the lexer
+ * 
+ * @param lexer 
+ */
 void lexer_advance(lexer_T *lexer);
 
+/**
+ * @brief Skips the comments
+ * 
+ * @param lexer 
+ */
 void lexer_skip_comment(lexer_T *lexer);
 
+/**
+ * @brief Skips the whitespace
+ * 
+ * @param lexer 
+ */
 void lexer_skip_whitespace(lexer_T *lexer);
 
+/**
+ * @brief Returns the next token from the lexer
+ * 
+ * @param lexer 
+ * @param Token 
+ * @return error 
+ */
 error lexer_next_token(lexer_T *lexer, token *Token);
 
 int isoctdigit(char c);
 
+/**
+ * @brief Checks if the identifier is a keyword
+ * 
+ * @param src 
+ * @return int 
+ */
 int is_keyword(char *src);
 
 int str_to_int(char *src); 
 
 double str_to_doule(char *src); 
 
+/**
+ * @brief Sanitizes the string
+ * 
+ * @param str 
+ */
 void clean_string(char **src); 
 
 #endif

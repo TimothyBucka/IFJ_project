@@ -16,14 +16,7 @@ extern int BODYRECURSIONCOUNT;
 int ARGSCOUNT = 0;
 int PARAMSCOUNT = 0;
 
-/**
- * @brief Shoud be called if an error wont be thrown
- * 
- * @param token_ptr 
- * @param acceptedID 
- * @return true 
- * @return false 
- */
+
 bool accept(token *token_ptr, token_ID acceptedID) {
     if (acceptedID == token_ptr->ID) {
         return true;
@@ -31,14 +24,7 @@ bool accept(token *token_ptr, token_ID acceptedID) {
     return false;
 }
 
-/**
- * @brief Shoud be called if an error will be thrown
- * 
- * @param token_ptr 
- * @param acceptedID 
- * @return true 
- * @return false 
- */
+
 bool expect(token *token_ptr, token_ID acceptedID) {
     if (acceptedID == token_ptr->ID) {
         return true;
@@ -47,14 +33,7 @@ bool expect(token *token_ptr, token_ID acceptedID) {
     return false;
 }
 
-/**
- * @brief Inicializes the analysis
- * 
- * @param lexer 
- * @param dll 
- * @return true 
- * @return false 
- */
+
 bool run_analysis(lexer_T *lexer, DLL *dll) {
     start_of_generator();
 
@@ -78,22 +57,13 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
     return var;
 }
 
-/**
- * @brief Parses the remaining arguments of a function call
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @param data 
- * @return true 
- * @return false 
- */
-bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data) {
+
+bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data, char *function_name) {
     token *token_ptr;
     ARGSCOUNT++;
 
     next_tok;
-    if (accept(token_ptr, TOKEN_ID_COMMA)) {
+    if (accept(token_ptr, TOKEN_ID_COMMA)) { 
         next_tok;
         hash_table table_to_use;
         if (BODYRECURSIONCOUNT == 1) {
@@ -102,32 +72,45 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_ite
         else {
             table_to_use = tables.local;
         }
-        if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
+        if (accept(token_ptr, TOKEN_ID_VARIABLE)) { 
             table_item_data *var_data = hash_table_lookup(table_to_use, token_ptr->VAL.string);
             if (var_data == NULL) {
                 ERROR = UNDEFINED_VAR_ERR;
                 return false;
             }
+            
             compare_params(var_data->f_or_v.variable->type);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
-        else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
+        else if (accept(token_ptr, TOKEN_ID_INTEGER)) { 
             compare_params(INT);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
         else if (accept(token_ptr, TOKEN_ID_STRING)) {
             compare_params(STRING);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
         else if (accept(token_ptr, TOKEN_ID_FLOAT)) {
             compare_params(FLOAT);
-            if (!parse_arguments_prime(lexer, dll, tables, data)) {
+                    if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+            if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
                 return false;
             }
         }
@@ -144,15 +127,7 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_ite
     return true;
 }
 
-/**
- * @brief Parses the first argument of a function call
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @return true 
- * @return false 
- */
+
 bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
     ARGSCOUNT = 0;
@@ -181,48 +156,58 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
             ERROR = UNDEFINED_VAR_ERR;
             return false;
         }
-
-
-
-
-
-
-
-
-
-
-        write_single_var(token_ptr);
-
-
-
-
-
-
-
-
-
-
-
         compare_params(var_data->f_or_v.variable->type);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+
+
+
+
+
+
+
+
+
+
+        if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
+
+
+
+
+
+
+
+
+
+        
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_INTEGER)) {
+                if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
         compare_params(INT);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_STRING)) {
+                if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
         compare_params(STRING);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }
     else if (accept(token_ptr, TOKEN_ID_FLOAT)) {
+                if(!strcmp(function_name, "write") ){
+            write_single_var(token_ptr);
+        }
         compare_params(FLOAT);
-        if (!parse_arguments_prime(lexer, dll, tables, data)) {
+        if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
     }
@@ -234,15 +219,7 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     return true;
 }
 
-/**
- * @brief Parses the type tokens
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @return true 
- * @return false 
- */
+
 bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
 
@@ -265,16 +242,7 @@ bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
     }
 }
 
-/**
- * @brief Parses the remaining parameters of a function
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @param func 
- * @return true 
- * @return false 
- */
+
 bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function *func) {
     token *token_ptr;
 
@@ -323,16 +291,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
     return true;
 }
 
-/**
- * @brief Parses the first parameter of a function
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @param func 
- * @return true 
- * @return false 
- */
+
 bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func) {
     PARAMSCOUNT = 0;
     token *token_ptr;
@@ -387,31 +346,14 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
     return true;
 }
 
-/**
- * @brief Parses the assignment of a expression 
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @param type 
- * @return true 
- * @return false 
- */
+
 bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables, data_type *type) {
     token *token_ptr;
     bool r = parse_expression(lexer, dll, tables, type, false);
     return r;
 }
 
-/**
- * @brief Parses the assignment of a function call or expression
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @return true 
- * @return false 
- */
+
 bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
 
@@ -531,15 +473,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     return true;
 }
 
-/**
- * @brief Parses a function call
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @return true 
- * @return false 
- */
+
 bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
     next_tok;
@@ -585,15 +519,7 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
     return true;
 }
 
-/**
- * @brief Parses the main body component of a program and simulates local scope
- * 
- * @param lexer 
- * @param dll 
- * @param tables 
- * @return true 
- * @return false 
- */
+
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     BODYRECURSIONCOUNT++;
     data_type final_type;

@@ -113,27 +113,29 @@ bool generate_function_call (char *function_id) {
 }
 
 bool implicit_conversion (data_type type, data_type converted_type, char *var1) {
-    if (type == FLOAT && converted_type == INT) {
-        printf("INT2FLOAT TF@&conval TF@&conval\n");
+    //printf("DEFVAR TF@%s\n", var1);
+
+    if (converted_type == FLOAT && type == INT) {
+        printf("INT2FLOAT TF@%s TF@%s\n", var1, var1);
     }
-    else if (type == INT && converted_type == FLOAT) {
-        printf("FLOAT2INT TF@&conval TF@&conval\n");
+    else if (converted_type == INT && type == FLOAT) {
+        printf("FLOAT2INT TF@%s TF@%s\n", var1, var1);
     }
-    else if (type == NULL_TYPE && converted_type == STRING) {
-        printf("MOVE TF@&conval string@""\n");
+    else if (converted_type == NULL_TYPE && type == STRING) {
+        printf("MOVE TF@%s string@""\n", var1);
     }
-    else if (type == NULL_TYPE && converted_type == INT) {
-        printf("MOVE TF@&conval int@0\n");
+    else if (converted_type == NULL_TYPE && type == INT) {
+        printf("MOVE TF@%s int@0\n",   var1);
     }
-    else if (type == NULL_TYPE && converted_type == FLOAT) {
-        printf("MOVE TF@&conval float@0.0\n");
+    else if (converted_type == NULL_TYPE && type == FLOAT) {
+        printf("MOVE TF@%s float@0.0\n", var1);
     }
     else {
         return false;    
     }
-    printf("MOVE LF@");
-    printf("%s", var1);
-    printf(" TF@&conval\n");
+    // printf("MOVE LF@");
+    // printf("%s", var1);
+    // printf(" TF@&%s\n");
 
     return true;
 }
@@ -346,4 +348,22 @@ bool write_single_var(token* token_ptr){
     return true;
 }
 
-// zistit ci su rovnake typy ak nie zmenit
+bool pop_to_strname(char* name){
+    printf("POPS TF@");
+    printf("%s", name);
+    printf("\n");
+    return true;
+}
+
+bool create_temp_frame(){
+    printf("CREATEFRAME\n");
+    return true;
+}
+
+bool push_from_strname(char* name){
+    printf("PUSHS TF@");
+    printf("%s", name);
+    printf("\n");
+    return true;
+}
+
