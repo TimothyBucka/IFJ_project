@@ -601,7 +601,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  expresion
-        generate_if_begin();
+        generate_if_begin(IFRECURSIONCOUNT);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -626,7 +626,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  else
-        generate_if_else();
+        generate_if_else(IFRECURSIONCOUNT);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -641,7 +641,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  }
-        generate_if_end();
+        generate_if_end(IFRECURSIONCOUNT);
         IFRECURSIONCOUNT--;
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
