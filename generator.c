@@ -43,6 +43,7 @@ bool generate_main () {
     printf("LABEL $main\n");
     printf("CREATEFRAME\n");
     printf("PUSHFRAME\n");
+    
     return true;
 }
 
@@ -98,6 +99,7 @@ bool generate_function_return (data_type type) {
     else {
         printf("\n");
     }
+
     return true;
 }
 
@@ -148,6 +150,7 @@ bool generate_variable_value (token* token_ptr) {
     else {
         printf("\n");
     }
+
     return true;
 }
 
@@ -155,6 +158,7 @@ bool pop_to_var(token* token_ptr){
     printf("POPS LF@");
     printf("%s", token_ptr->VAL.string);
     printf("\n");
+
     return true;
 }
 
@@ -176,6 +180,7 @@ bool generate_term(token* token_ptr){
     else{
         return false;
     }
+
     return true;
 }
 
@@ -189,6 +194,7 @@ bool generate_user_input (token* token_ptr, data_type type) {
     else {
         printf("\n");
     }
+
     return true;
 }
 
@@ -274,6 +280,7 @@ bool operation_rule (rules operation, token* token_ptr) {
     case NONE:
         break;
     }
+
     return true;
 }
 
@@ -281,6 +288,7 @@ bool generate_label (char *function_id) {
     printf("LABEL $");
     printf("%s", function_id);
     printf("\n");
+
     return true;
 }
 
@@ -289,20 +297,40 @@ bool create_var (token* token_ptr) {
     printf("DEFVAR LF@");
     printf("%s", token_ptr->VAL.string);
     printf("\n");
+
     return true;
 }
 
-//TODO bool generate_while_begin (char *function_id) {
-//     printf("JUMPIFEQ $");
-//     printf("%s", function_id);
-//     return true;
-// }
+// =============== WHILE ================= 
+bool generate_while_label (int depth, int count_at_depth) {
+    printf("LABEL $");
+    printf("WHILE%d-%d",depth, count_at_depth);
+    printf("\n");
 
-// bool generate_while_end (char *function_id) {
-//     printf("JUMP $");
-    
-//     return true;
-// }
+    return true;
+}
+bool generate_while_begin (int depth, int count_at_depth) {
+    printf("PUSHS bool@false\n");
+    printf("JUMPIFEQS $");
+    printf("WHILE_END%d-%d",depth, count_at_depth);
+    printf("\n");
+
+    return true;
+}
+
+bool generate_while_end (int depth, int count_at_depth) {
+    printf("JUMP $");
+    printf("WHILE%d-%d",depth, count_at_depth);
+    printf("\n");
+
+    printf("LABEL $");
+    printf("WHILE_END%d-%d",depth, count_at_depth);
+    printf("\n");
+
+    return true;
+}
+
+// =============== WHILE END =================
 
 
 // =============== IF ================= //som vnoreny v IFe zacinam od 1
@@ -311,6 +339,7 @@ bool generate_if_begin (int depth, int count_at_depth) {
     printf("JUMPIFEQS $");
     printf("ELSE&%d-%d",depth, count_at_depth);
     printf("\n"); //IF toto mi da true jumpuje na else ak false pokracuje v IFe
+
     return true;
     //nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
 }
@@ -321,6 +350,7 @@ bool generate_if_else (int depth, int count_at_depth) {
     printf("_end\n");
     printf("LABEL $");
     printf("ELSE&%d-%d\n",depth, count_at_depth); 
+
     return true;
     //nasleduju else prikazy
 }
@@ -328,6 +358,7 @@ bool generate_if_else (int depth, int count_at_depth) {
 bool generate_if_end (int depth, int count_at_depth) {
     printf("LABEL $");
     printf("IF&%d-%d",depth, count_at_depth);
+
     printf("_end\n");
     return true;
 }
@@ -340,6 +371,7 @@ bool write_single_var(token* token_ptr){
         return false;
     }
     printf("\n");
+
     return true;
 }
 
@@ -347,11 +379,13 @@ bool pop_to_strname(char* name){
     printf("POPS TF@");
     printf("%s", name);
     printf("\n");
+
     return true;
 }
 
 bool create_temp_frame(){
     printf("CREATEFRAME\n");
+
     return true;
 }
 
@@ -359,6 +393,7 @@ bool push_from_strname(char* name){
     printf("PUSHS TF@");
     printf("%s", name);
     printf("\n");
+
     return true;
 }
 
