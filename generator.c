@@ -166,7 +166,7 @@ bool generate_term(token* token_ptr){
         printf("int@%s", token_ptr->VAL.string);
     }
     else if (token_ptr->ID == TOKEN_ID_FLOAT){
-        printf("float@%s", token_ptr->VAL.string);
+        printf("float@%a", atof(token_ptr->VAL.string));
     }
     else if (token_ptr->ID == TOKEN_ID_STRING){
         printf("string@%s", token_ptr->VAL.string);
@@ -321,8 +321,6 @@ bool generate_if_else (char *function_id) {
     return true;
 }
 
-//
-
 bool write_single_var(token* token_ptr){
     printf("WRITE ");
     if (generate_term(token_ptr)==false){
@@ -331,3 +329,4 @@ bool write_single_var(token* token_ptr){
     printf("\n");
     return true;
 }
+
