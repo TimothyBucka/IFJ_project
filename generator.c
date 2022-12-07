@@ -305,21 +305,37 @@ bool create_var (token* token_ptr) {
 //     return true;
 // }
 
-bool generate_if_begin (char *function_id) {
+
+// =============== IF ================= //TODO ak tak zo stackom 2 ify
+bool generate_if_begin () {
+    IF_COUNT++;
     printf("DEFVAR LF@tmpbool\n");
     printf("POPS LF@tmpbool\n");
     printf("JUMPIFEQ $");
-    printf("%s ", function_id);
-    printf("LF@tmpbool bool@true\n"); //IF FALSE jumpuje na else ak true pokracuje v IFe
+    printf("ELSE&%d ",IF_COUNT);
+    printf("LF@tmpbool bool@false\n"); //IF toto mi da true jumpuje na else ak false pokracuje v IFe
+    return true;
+    //nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
+}
+
+bool generate_if_else () {
+    printf("JUMP $");
+    printf("IF&%d",IF_COUNT);
+    printf("_end\n");
+    printf("LABEL $");
+    printf("ELSE&%d\n",IF_COUNT); 
+    return true;
+    //nasleduju else prikazy
+}
+
+bool generate_if_end () {
+    printf("LABEL $");
+    printf("IF&%d",IF_COUNT);
+    printf("_end\n");
     return true;
 }
 
-bool generate_if_else (char *function_id) {
-    printf("JUMP $");
-    printf("%s", function_id);
-    printf("_end\n"); 
-    return true;
-}
+// =============== END OF IF =================
 
 bool write_single_var(token* token_ptr){
     printf("WRITE ");
@@ -330,3 +346,4 @@ bool write_single_var(token* token_ptr){
     return true;
 }
 
+// zistit ci su rovnake typy ak nie zmenit

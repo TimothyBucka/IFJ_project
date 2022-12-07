@@ -295,4 +295,11 @@ bool create_var (token* token_ptr);
 bool pop_to_var(token* token_ptr);
 
 bool write_single_var(token* token_ptr);
+
+bool generate_if_begin ();
+
+bool generate_if_else ();
+
+bool generate_if_end ();
+
 #endif
