@@ -82,7 +82,7 @@ bool expect(token *token_ptr, token_ID acceptedID);
  * @return true 
  * @return false 
  */
-bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data);
+bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_item_data *data, char *function_name);
 
 /**
  * @brief Parses the first argument of a function call
