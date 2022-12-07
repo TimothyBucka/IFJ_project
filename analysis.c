@@ -56,6 +56,8 @@ bool expect(token *token_ptr, token_ID acceptedID) {
  * @return false 
  */
 bool run_analysis(lexer_T *lexer, DLL *dll) {
+    start_of_generator();
+
 
     hash_table global = init_hash_table();
     hash_table local = init_hash_table();
@@ -66,8 +68,8 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
 
     bool var = parse_body(lexer, dll, tables);
 
-    debug_print_table(global);
-    debug_print_table(local);
+   // debug_print_table(global);
+    //debug_print_table(local);
 
     hash_table_free(tables.global);
 
@@ -158,7 +160,6 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     table_item_data *data = hash_table_lookup(tables.global, function_name);
 
     if (data != NULL) {
-    printf("pocet argumentov: %d\n", data->f_or_v.function->num_of_params);
     }
 
 
@@ -180,6 +181,28 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
             ERROR = UNDEFINED_VAR_ERR;
             return false;
         }
+
+
+
+
+
+
+
+
+
+
+        write_single_var(token_ptr);
+
+
+
+
+
+
+
+
+
+
+
         compare_params(var_data->f_or_v.variable->type);
         if (!parse_arguments_prime(lexer, dll, tables, data)) {
             return false;
@@ -425,8 +448,9 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         return false;
     }
     //generate instructions for new variable
-    create_var (dll->activeElement->previousElement);
-    
+    token* func_name_token = &dll->activeElement->previousElement->data;
+    create_var (func_name_token);
+
 
 
     next_tok;
@@ -477,12 +501,17 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error(SYNTAX_ERR);
         }
+
+
+
     }
     else {
         return_tok;
         if (!parse_assignment_prime(lexer, dll, tables, &assi_type)) {
             return_error(SYNTAX_ERR);
         }
+        //pop the result of the expression to the variable
+        pop_to_var(func_name_token);
 
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {

@@ -15,8 +15,25 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "token.h"
+#include "symtable.h"
 
-#include "expressions.h"
+typedef enum rules{
+    PAR_E_PAR,  // E -> (E)
+    E_PLUS_E,   // E -> E + E
+    E_MINUS_E,  // E -> E - E
+    E_TIMES_E,  // E -> E * E
+    E_DIVIDE_E, // E -> E / E
+    E_CONCAT_E, // E -> E . E
+    E_EQ_E,     // E -> E === E
+    E_NEQ_E,    // E -> E !== E
+    E_LT_E,     // E -> E < E
+    E_GT_E,     // E -> E > E
+    E_LEQ_E,    // E -> E <= E
+    E_GEQ_E,    // E -> E >= E
+    ID,         // E -> id
+    NONE        // No rule
+} rules;
 
 
 #define START ".IFJcode22\n\
@@ -274,4 +291,8 @@ bool operation_rule(rules operation, token *token_ptr);
 bool generate_label(char *function_id);
 
 bool create_var (token* token_ptr);
+
+bool pop_to_var(token* token_ptr);
+
+bool write_single_var(token* token_ptr);
 #endif
