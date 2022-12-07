@@ -8,7 +8,8 @@
 */
 #include "generator.h"
 
-
+int IF_COUNT = 0;
+int WHILE_COUNT = 0;
 
     void start_of_generator(){
 
@@ -280,7 +281,7 @@ bool operation_rule (rules operation, token* token_ptr) {
 bool generate_label (char *function_id) {
     printf("LABEL $");
     printf("%s", function_id);
-    printf("\n"); //TODO LABEL aby bol unique takze doplnit nejake cislo popripade globalne pocitadlo a inicializovat ho pri kazdom volani
+    printf("\n");
     return true;
 }
 
@@ -291,6 +292,36 @@ bool create_var (token* token_ptr) {
     printf("\n");
     return true;
 }
+
+//TODO bool generate_while_begin (char *function_id) {
+//     printf("JUMPIFEQ $");
+//     printf("%s", function_id);
+//     return true;
+// }
+
+// bool generate_while_end (char *function_id) {
+//     printf("JUMP $");
+    
+//     return true;
+// }
+
+bool generate_if_begin (char *function_id) {
+    printf("DEFVAR LF@tmpbool\n");
+    printf("POPS LF@tmpbool\n");
+    printf("JUMPIFEQ $");
+    printf("%s ", function_id);
+    printf("LF@tmpbool bool@true\n"); //IF FALSE jumpuje na else ak true pokracuje v IFe
+    return true;
+}
+
+bool generate_if_else (char *function_id) {
+    printf("JUMP $");
+    printf("%s", function_id);
+    printf("_end\n"); 
+    return true;
+}
+
+//
 
 bool write_single_var(token* token_ptr){
     printf("WRITE LF@");
