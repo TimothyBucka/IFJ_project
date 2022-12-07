@@ -145,7 +145,7 @@ int count_breakpoint(expr_stack *expr_stack) {
 }
 
 data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left, symtables tables) {
-    if (item_right->type == TERM) { // id
+    if (item_right->type == TERM && item_right->token_ptr->ID != TOKEN_ID_RBRACKET) { // id
         if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
             table_item_data *item = NULL;
 
