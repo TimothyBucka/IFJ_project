@@ -207,9 +207,9 @@ void clean_string(char **str) {
     }
 
     char *str_final = chararray_init(4*strlen(new_str) +1);
-    if (str_final == NULL) {
-       return INTERNAL_ERR;
-    }
+    //if (str_final == NULL) {
+    //   return INTERNAL_ERR;
+    //}
 
     for (size_t i = 0; i < strlen(new_str); i++) {
         char num[7] = {(char)0};
