@@ -9,6 +9,8 @@
 
 #include "analysis.h"
 #include "expressions.h"
+#include <stdlib.h>
+
 
 extern error ERROR;
 extern int ERRORFROMLEXER;
@@ -23,6 +25,7 @@ bool accept(token *token_ptr, token_ID acceptedID) {
         return true;
     }
     return false;
+
 }
 
 
@@ -43,6 +46,7 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
     hash_table local = init_hash_table();
 
     preload_hash_table(global);
+
 
     symtables tables = {global, local};
 
@@ -525,7 +529,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     BODYRECURSIONCOUNT++;
     data_type final_type;
     int if_count_at_depth = 0;
-
+    
     token *token_ptr;
 
     next_tok;
@@ -594,7 +598,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     // case If
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_IF) { //  if
         IFRECURSIONCOUNT++;
-        if_count_at_depth ++;
+
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -604,7 +608,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  expresion
-        generate_if_begin(IFRECURSIONCOUNT, if_count_at_depthIFRECURSIONCOUNT);
+        generate_if_begin(IFRECURSIONCOUNT);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -629,7 +633,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  else
-        generate_if_else(IFRECURSIONCOUNT, if_count_at_depthIFRECURSIONCOUNT);
+        generate_if_else(IFRECURSIONCOUNT);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -644,7 +648,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  }
-        generate_if_end(IFRECURSIONCOUNT, if_count_at_depthIFRECURSIONCOUNT);
+        generate_if_end(IFRECURSIONCOUNT);
         IFRECURSIONCOUNT--;
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {

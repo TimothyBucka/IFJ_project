@@ -8,6 +8,8 @@
 */
 #include "generator.h"
 
+int IF_COUNT = 0;
+int WHILE_COUNT = 0;
     void start_of_generator(){
 
         printf(START);
@@ -306,28 +308,29 @@ bool create_var (token* token_ptr) {
 
 
 // =============== IF ================= //som vnoreny v IFe zacinam od 1
-bool generate_if_begin (int depth, int count_at_depth) {
+bool generate_if_begin (int depth) {
+    IF_COUNT++;
     printf("PUSHS bool@false\n");
     printf("JUMPIFEQS $");
-    printf("ELSE&%d-%d",depth, count_at_depth);
+    printf("ELSE&%d",IF_COUNT);
     printf("\n"); //IF toto mi da true jumpuje na else ak false pokracuje v IFe
     return true;
     //nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
 }
 
-bool generate_if_else (int depth, int count_at_depth) {
+bool generate_if_else (int depth) {
     printf("JUMP $");
-    printf("IF&%d-%d",depth, count_at_depth);
+    printf("IF&%d",IF_COUNT);
     printf("_end\n");
     printf("LABEL $");
-    printf("ELSE&%d-%d\n",depth, count_at_depth); 
+    printf("ELSE&%d\n",IF_COUNT); 
     return true;
     //nasleduju else prikazy
 }
 
-bool generate_if_end (int depth, int count_at_depth) {
+bool generate_if_end (int depth) {
     printf("LABEL $");
-    printf("IF&%d-%d",depth, count_at_depth);
+    printf("IF&%d",IF_COUNT);
     printf("_end\n");
     return true;
 }
