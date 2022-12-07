@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file lexer.c
+ * @brief Implementation of lexer
+ * 
+ * @authors xmacur09, xfrust00, xstect00, xbucka00
+*/
+
 #include "lexer.h"
 #include <math.h>
 #include <stdio.h>

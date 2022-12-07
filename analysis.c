@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file analysis.c
+ * @brief Implementation of syntax analysis
+ * 
+ * @authors xmacur09, xstect00, xbucka00
+*/
+
 #include "analysis.h"
 #include "expressions.h"
 
@@ -668,7 +677,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         }
         else {
             if (dll->activeElement != NULL /*&& expect(&dll->activeElement->data, TOKEN_ID_SEMICOLLON)*/) {
-                if ((ERROR == SYNTAX_ERR && ERRORFROMLEXER == 0) || (ERROR == UNDEFINED_VAR_ERR && ERRORFROMLEXER == 0)) {
+                if (ERROR == SYNTAX_ERR && ERRORFROMLEXER == 0) {
                     ERROR = SUCCESS;
                     BODYRECURSIONCOUNT--;
                     return true;

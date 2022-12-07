@@ -1,3 +1,11 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file main.c
+ * @brief Main file of the compiler
+ * 
+ * @authors xmacur09
+*/
 
 #include "DLL.h"
 #include "expressions.h"

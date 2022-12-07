@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file symtable.c
+ * @brief Implementation of symbol table
+ * 
+ * @authors xmacur09, xbucka00
+*/
+
 #include "symtable.h"
 #include <math.h>
 #include <stdbool.h>
@@ -23,7 +32,6 @@ int get_hash(char *key) {
     }
 
     hash_value = ((A * hash_value + B) % PRIME) % TABLESIZE; /* MAD (multiply add divide) compression method using positive int A and B <0;p-1> (also not a multiple of N) and prime larger then N*/
-    printf("hash value: %d\n", hash_value);
     return hash_value;
 }
 

@@ -5,16 +5,16 @@
 //
 //--------------------//
 
-%token EOF func_id EXPRESSION var_id void
+%token EOF func_id EXPRESSION LOCAL_SCOPE var_id void
 %%
 BODY : /*eps*/
-| "function" func_id "(" PARAMETERS ")" ":" TYPE "{" LOCAL_SCOPE "}" BODY
-| "if" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" "else" "{" LOCAL_SCOPE "}" BODY
-| "while" "(" EXPRESSION ")" "{" LOCAL_SCOPE "}" BODY
-| "return" RETURN ";" BODY;
+| "function" func_id "(" PARAMETERS ")" ":" TYPE "{" BODY "}" BODY
+| "if" "(" EXPRESSION ")" "{" BODY "}" "else" "{" BODY "}" BODY
+| "while" "(" EXPRESSION ")" "{" BODY "}" BODY
+| "return" RETURN ";" BODY
 | FUNCTION_CALL ";" BODY
 | ASSIGNMENT ";" BODY
-| EXPRESSION ";" BODY                               //  TODO
+| EXPRESSION ";" BODY;                               //  TODO
 
 
 ASSIGNMENT : var_id "=" ASSIGNMENT_PRIME;

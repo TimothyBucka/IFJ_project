@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file symtable.h
+ * @brief Interface for symbol table
+ * 
+ * @authors xmacur09, xbucka00
+*/
+
 #ifndef SYMTABLE_H
 #define SYMTABLE_H
 

@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file lexer.h
+ * @brief Interface for lexer
+ * 
+ * @authors xmacur09, xfrust00, xstect00, xbucka00
+*/
+
 #ifndef LEXER_H
 #define LEXER_H
 

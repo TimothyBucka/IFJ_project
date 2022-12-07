@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file token.h
+ * @brief Token structure
+ * 
+ * @authors xmacur09, xbucka00
+*/
+
 #ifndef TOKEN_H
 #define TOKEN_H
 

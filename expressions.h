@@ -1,10 +1,18 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file expressions.h
+ * @brief Interface for expressions
+ * 
+ * @authors xmacur09, xbucka00
+*/
+
 #ifndef EXPRESSIONS_H
 #define EXPRESSIONS_H
 
 #include "DLL.h"
 #include "lexer.h"
 #include "semantics.h"
-#include "stack.h"
 #include "symtable.h"
 #include "token.h"
 #include "analysis.h"
