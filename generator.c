@@ -161,7 +161,6 @@ bool pop_to_var(token* token_ptr){
 }
 
 bool generate_term(token* token_ptr){
-    char buffer[100];
 
     if (token_ptr->ID == TOKEN_ID_INTEGER){
         printf("int@%s", token_ptr->VAL.string);
@@ -308,7 +307,7 @@ bool create_var (token* token_ptr) {
 
 
 // =============== IF ================= //som vnoreny v IFe zacinam od 1
-bool generate_if_begin (int depth) {
+bool generate_if_begin () {
     IF_COUNT++;
     printf("PUSHS bool@false\n");
     printf("JUMPIFEQS $");
@@ -318,7 +317,7 @@ bool generate_if_begin (int depth) {
     //nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
 }
 
-bool generate_if_else (int depth) {
+bool generate_if_else () {
     printf("JUMP $");
     printf("IF&%d",IF_COUNT);
     printf("_end\n");
@@ -328,7 +327,7 @@ bool generate_if_else (int depth) {
     //nasleduju else prikazy
 }
 
-bool generate_if_end (int depth) {
+bool generate_if_end () {
     printf("LABEL $");
     printf("IF&%d",IF_COUNT);
     printf("_end\n");

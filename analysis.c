@@ -225,7 +225,7 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 
-bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
+bool parse_type(lexer_T *lexer, DLL *dll) {
     token *token_ptr;
 
     next_tok;
@@ -253,7 +253,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
 
     next_tok;
     if (accept(token_ptr, TOKEN_ID_COMMA)) {
-        if (!parse_type(lexer, dll, tables)) {
+        if (!parse_type(lexer, dll)) {
             return_error(SYNTAX_ERR);
         }
         next_tok;
@@ -265,7 +265,6 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
 
             table_item_data *local_data;
             char *variable_name = dll->activeElement->data.VAL.string;
-            data_type assi_type;
             if (!hash_table_has_item(tables.local, variable_name)) {
                 local_data = malloc(sizeof(table_item_data));
                 local_data->name = variable_name;
@@ -300,7 +299,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
 bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func) {
     PARAMSCOUNT = 0;
     token *token_ptr;
-    if (!parse_type(lexer, dll, tables)) {
+    if (!parse_type(lexer, dll)) {
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
 
@@ -321,7 +320,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
 
         table_item_data *local_data;
         char *variable_name = dll->activeElement->data.VAL.string;
-        data_type assi_type;
+
         if (!hash_table_has_item(tables.local, variable_name)) {
             local_data = malloc(sizeof(table_item_data));
             local_data->name = variable_name;
@@ -353,7 +352,6 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
 
 
 bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables, data_type *type) {
-    token *token_ptr;
     bool r = parse_expression(lexer, dll, tables, type, false);
     return r;
 }
@@ -528,7 +526,7 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     BODYRECURSIONCOUNT++;
     data_type final_type;
-    int if_count_at_depth = 0;
+
     
     token *token_ptr;
 
@@ -561,7 +559,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_COLON)) {
             return_error(SYNTAX_ERR);
         } //  :
-        if (!parse_type(lexer, dll, tables)) {
+        if (!parse_type(lexer, dll)) {
             return_error(SYNTAX_ERR);
         } //  type
         func->return_type = kw_to_data_type(dll->activeElement->data.VAL.keyword);
@@ -608,7 +606,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  expresion
-        generate_if_begin(IFRECURSIONCOUNT);
+        generate_if_begin();
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -633,7 +631,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  else
-        generate_if_else(IFRECURSIONCOUNT);
+        generate_if_else();
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -648,7 +646,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  }
-        generate_if_end(IFRECURSIONCOUNT);
+        generate_if_end();
         IFRECURSIONCOUNT--;
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
@@ -662,6 +660,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
         } //  (
+        
         if (!parse_expression(lexer, dll, tables, &final_type, true)) {
             return_error(SYNTAX_ERR);
         }

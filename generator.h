@@ -296,11 +296,11 @@ bool pop_to_var(token* token_ptr);
 
 bool write_single_var(token* token_ptr);
 
-bool generate_if_begin (int depth);
+bool generate_if_begin ();
 
-bool generate_if_else (int depth);
+bool generate_if_else ();
 
-bool generate_if_end (int depth);
+bool generate_if_end ();
 
 bool pop_to_strname(char* name);
 
