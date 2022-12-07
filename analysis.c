@@ -658,6 +658,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
     // case While
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_WHILE) { //  while
+        generate_while_label();
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
@@ -673,8 +674,8 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
         }
+        generate_while_begin();
 
-        //FIXME Gen Code
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
         }
@@ -682,8 +683,8 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
         }
+        generate_while_end();
 
-        //FIXME Gen Code
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
