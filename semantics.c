@@ -8,7 +8,12 @@
 */
 
 #include "semantics.h"
-
+/**
+ * @brief Converts keyword to data type
+ * 
+ * @param kw 
+ * @return data_type 
+ */
 data_type kw_to_data_type(keyword kw) {
     switch (kw) {
     case KW_VOID:

@@ -85,16 +85,4 @@ typedef struct
     
 } token;
 
-// typedef enum {
-//     STRING,
-//     DECIMAL,
-//     INTEGER,
-//     VOID,
-//     STRING_NULL,
-//     DECIMAL_NULL,
-//     INTEGER_NULL,
-//     NULL_VAL,
-//     UNDEFINED
-// } data_type;
-
 #endif
