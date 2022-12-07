@@ -5,95 +5,136 @@
 
 #include "generator.h"
 #include "chararray.h"
+#include "expressions.h"
+#include "analysis.h"
+#include "DLL.h"
 
 
-	// (FUNCTION_SUBSTR);
-	// (FUNCTION_CHR);
-    // (FUNCTION_ORD);
-    // (FUNCTION_STRLEN);
-    // // (FUNCTION_READS); //read string
-    // // (FUNCTION_READI); //read int
-    // // (FUNCTION_READF); //read float
-    // // (FUNCTION_WRITE);
-    // // (FUNCTION_FLOATVAL);
-    // // (FUNCTION_INTVAL);
-    // // (FUNCTION_STRVAL);
-
-
-	// ("# Start of program");
-
-	// (".IFJcode22");
-
-	// ("DEFVAR GF@%input_prompt");
-	// ("MOVE GF@%input_prompt string@?\\032");
-
-	// ("DEFVAR GF@%tmp_op1");
-	// ("DEFVAR GF@%tmp_op2");
-	// ("DEFVAR GF@%tmp_op3");
-
-	// ("DEFVAR GF@%exp_result");
-
-	// ("JUMP $$main");
 
 
     void start_of_generator(){
+
         printf(START);
 
-        gen_fun_reads();
-        gen_fun_readi();
-        gen_fun_readf();
-        gen_fun_write();
-        gen_fun_floatval();
-        gen_fun_intval();
-        gen_fun_strval();
-        gen_fun_strlen();
-        gen_fun_substr();
-        gen_fun_ord();
-        gen_fun_chr();
+        generate_buildin_functions();
 
-        printf("LABEL $$main\n");
+        generate_main();
     }
 
-    void gen_fun_reads(){
-        printf(FUNCTION_READS); 
+    void end_of_generator(){
+
+        printf("LABEL $end\n");
+        printf("EXIT int@0\n");
     }
 
-    void gen_fun_readi(){
-        printf(FUNCTION_READI); 
+    void generate_buildin_functions(){
+        printf(FUNCTION_READS);
+        printf(FUNCTION_READI);
+        printf(FUNCTION_READF);
+        printf(FUNCTION_WRITE);
+        printf(FUNCTION_FLOAT_VALUE);
+        printf(FUNCTION_INT_VALUE);
+        printf(FUNCTION_STRING_VALUE);
+        printf(FUNCTION_STRING_LENGTH);
+        printf(FUNCTION_SUBSTRING);
+        printf(FUNCTION_ORD);
+        printf(FUNCTION_CHR);
+// TODO zavolame write zakazdym z danym termom a mame hotovy write
+//MBY can be fixed with danny a urobit cez while loop podla poctu termov
     }
 
-    void gen_fun_readf(){
-        printf(FUNCTION_READF); 
+bool generate_main () {
+    printf("LABEL $main\n");
+    printf("PUSHFRAME\n");
+    return true;
+}
+
+bool generate_end_of_main () {
+    printf("POPFRAME\n");
+    printf("CLEARS\n");
+
+    return true;
+}
+
+bool generate_function (char *function_id) {
+    printf("LABEL $");
+    printf("%s", function_id); //FIXME
+    printf("\n");
+    printf("PUSHFRAME\n");
+
+    return true;
+}
+
+bool generate_end_of_function () { //FIXME mby
+    printf("POPFRAME\n");
+    printf("CLEARS\n");
+
+    return true;
+} 
+
+bool data_type_to (data_type type) {
+    if (type == INT) {
+        printf("int@");
+    }
+    else if (type == FLOAT) {
+        printf("float@");
+    }
+    else if (type == STRING) {
+        printf("string@");
+    }
+    else if (type == NULL_TYPE) {
+        printf("nil@");
+    }
+    else {
+        return false;
     }
 
-    void gen_fun_write(){
-        printf(FUNCTION_WRITE); 
-    }
+    return true;
+}
 
-    void gen_fun_floatval(){
-        printf(FUNCTION_FLOAT_VALUE); 
+bool generate_function_return (data_type type) {
+    printf("MOVE LF@&retval ");
+    if(data_type_to(type)==0){
+        return false;
     }
+    else {
+        printf("\n");
+    }
+    return true;
+}
 
-    void gen_fun_intval(){
-        printf(FUNCTION_INT_VALUE); 
-    }
+bool generate_function_call (char *function_id) {
+    printf("CALL $");
+    printf("%s", function_id);
+    printf("\n");
 
-    void gen_fun_strval(){
-        printf(FUNCTION_STRING_VALUE); 
-    }
+    return true;
+}
 
-    void gen_fun_strlen(){
-        printf(FUNCTION_STRING_LENGTH); 
+bool implicit_conversion (data_type type, data_type converted_type, char *var1) {
+    if (type == FLOAT && converted_type == INT) {
+        printf("INT2FLOAT TF@&conval TF@&conval\n");
     }
+    else if (type == INT && converted_type == FLOAT) {
+        printf("FLOAT2INT TF@&conval TF@&conval\n");
+    }
+    else if (type == NULL_TYPE && converted_type == STRING) {
+        printf("MOVE TF@&conval string@""\n");
+    }
+    else if (type == NULL_TYPE && converted_type == INT) {
+        printf("MOVE TF@&conval int@0\n");
+    }
+    else if (type == NULL_TYPE && converted_type == FLOAT) {
+        printf("MOVE TF@&conval float@0.0\n");
+    }
+    else {
+        return false;    
+    }
+    printf("MOVE LF@");
+    printf("%s", var1);
+    printf(" TF@&conval\n");
 
-    void gen_fun_substr(){
-        printf(FUNCTION_SUBSTRING); 
-    }
+    return true;
+}
 
-    void gen_fun_ord(){
-        printf(FUNCTION_ORD); 
-    }
 
-    void gen_fun_chr(){
-        printf(FUNCTION_CHR); 
-    }
