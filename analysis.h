@@ -1,11 +1,11 @@
 /**
  * Project: IFJ22 Compiler
- * 
+ *
  * @file analysis.h
  * @brief Interface of syntax analysis
- * 
+ *
  * @authors xmacur09, xstect00, xbucka00
-*/
+ */
 
 #ifndef ANALYSIS_H
 #define ANALYSIS_H
@@ -22,11 +22,13 @@
     }                            \
     return false;
 
-#define compare_params(type_of_param)                                         \
-    if (data->f_or_v.function->parameters[ARGSCOUNT].type != type_of_param && \
-        data->f_or_v.function->parameters[ARGSCOUNT].type != TERM_TYPE) {     \
-        ERROR = PARAMETERS_ERR;                                               \
-        return false;                                                         \
+#define compare_params(type_of_param)                                             \
+    if (strcmp(data->name, "write")) {                                            \
+        if (data->f_or_v.function->parameters[ARGSCOUNT].type != type_of_param && \
+            data->f_or_v.function->parameters[ARGSCOUNT].type != TERM_TYPE) {     \
+            ERROR = PARAMETERS_ERR;                                               \
+            return false;                                                         \
+        }                                                                         \
     }
 
 #define next_tok                                    \

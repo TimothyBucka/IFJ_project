@@ -62,7 +62,7 @@ bool parse_arguments_prime(lexer_T *lexer, DLL *dll, symtables tables, table_ite
     if (accept(token_ptr, TOKEN_ID_COMMA)) {
         next_tok;
         hash_table table_to_use;
-        if (BODYRECURSIONCOUNT == 0) {
+        if (BODYRECURSIONCOUNT == 1) {
             table_to_use = tables.global;
         }
         else {
@@ -127,7 +127,7 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     }
     next_tok;
     hash_table table_to_use;
-    if (BODYRECURSIONCOUNT == 0) {
+    if (BODYRECURSIONCOUNT == 1) {
         table_to_use = tables.global;
     }
     else {
@@ -217,7 +217,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
                 var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
                 local_data->f_or_v.variable = var;
                 local_data->is_var = true;
-                local_data->f_or_v.function->num_of_params = PARAMSCOUNT;
+                func->num_of_params = PARAMSCOUNT;
                 hash_table_insert(tables.local, local_data);
             }
             else {
@@ -272,7 +272,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
             var->type = kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword);
             local_data->f_or_v.variable = var;
             local_data->is_var = true;
-            local_data->f_or_v.function->num_of_params = PARAMSCOUNT;
+            func->num_of_params = PARAMSCOUNT;
             hash_table_insert(tables.local, local_data);
         }
         else {
@@ -384,9 +384,6 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error(SYNTAX_ERR);
         }
-        if (!parse_body(lexer, dll, tables)) {
-            return_error(SYNTAX_ERR);
-        }
     }
     else {
         return_tok;
@@ -415,6 +412,7 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
 bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
     token *token_ptr;
     next_tok;
+    // Function call
     if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
