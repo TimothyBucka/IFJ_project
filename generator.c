@@ -14,7 +14,7 @@ int WHILE_COUNT = 0;
 
         printf(START);
 
-        //generate_buildin_functions();
+        generate_buildin_functions();
 
         generate_main();
     }
