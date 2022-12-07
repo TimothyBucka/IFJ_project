@@ -115,7 +115,7 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables);
  * @return true 
  * @return false 
  */
-bool parse_type(lexer_T *lexer, DLL *dll, symtables tables);
+bool parse_type(lexer_T *lexer, DLL *dll);
 
 /**
  * @brief Parses the remaining parameters of a function
@@ -186,5 +186,6 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables);
 bool run_analysis(lexer_T *lexer, DLL *dll);
 
 void preload_hash_table(hash_table table);
+
 
 #endif

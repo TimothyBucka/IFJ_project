@@ -9,6 +9,8 @@
 
 #include "analysis.h"
 #include "expressions.h"
+#include <stdlib.h>
+
 
 extern error ERROR;
 extern int ERRORFROMLEXER;
@@ -23,6 +25,7 @@ bool accept(token *token_ptr, token_ID acceptedID) {
         return true;
     }
     return false;
+
 }
 
 
@@ -43,6 +46,7 @@ bool run_analysis(lexer_T *lexer, DLL *dll) {
     hash_table local = init_hash_table();
 
     preload_hash_table(global);
+
 
     symtables tables = {global, local};
 
@@ -221,7 +225,7 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
 }
 
 
-bool parse_type(lexer_T *lexer, DLL *dll, symtables tables) {
+bool parse_type(lexer_T *lexer, DLL *dll) {
     token *token_ptr;
 
     next_tok;
@@ -249,7 +253,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
 
     next_tok;
     if (accept(token_ptr, TOKEN_ID_COMMA)) {
-        if (!parse_type(lexer, dll, tables)) {
+        if (!parse_type(lexer, dll)) {
             return_error(SYNTAX_ERR);
         }
         next_tok;
@@ -261,7 +265,6 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
 
             table_item_data *local_data;
             char *variable_name = dll->activeElement->data.VAL.string;
-            data_type assi_type;
             if (!hash_table_has_item(tables.local, variable_name)) {
                 local_data = malloc(sizeof(table_item_data));
                 local_data->name = variable_name;
@@ -296,7 +299,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
 bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func) {
     PARAMSCOUNT = 0;
     token *token_ptr;
-    if (!parse_type(lexer, dll, tables)) {
+    if (!parse_type(lexer, dll)) {
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
 
@@ -317,7 +320,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
 
         table_item_data *local_data;
         char *variable_name = dll->activeElement->data.VAL.string;
-        data_type assi_type;
+
         if (!hash_table_has_item(tables.local, variable_name)) {
             local_data = malloc(sizeof(table_item_data));
             local_data->name = variable_name;
@@ -349,7 +352,6 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
 
 
 bool parse_assignment_prime(lexer_T *lexer, DLL *dll, symtables tables, data_type *type) {
-    token *token_ptr;
     bool r = parse_expression(lexer, dll, tables, type, false);
     return r;
 }
@@ -525,12 +527,14 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     BODYRECURSIONCOUNT++;
     data_type final_type;
 
+    
     token *token_ptr;
 
     next_tok;
 
     // case Function
     if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_FUNCTION && BODYRECURSIONCOUNT == 1) { //  function
+
         next_tok;
         function *func = malloc(sizeof(function));
         table_item_data *data = malloc(sizeof(table_item_data));
@@ -555,7 +559,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_COLON)) {
             return_error(SYNTAX_ERR);
         } //  :
-        if (!parse_type(lexer, dll, tables)) {
+        if (!parse_type(lexer, dll)) {
             return_error(SYNTAX_ERR);
         } //  type
         func->return_type = kw_to_data_type(dll->activeElement->data.VAL.keyword);
@@ -592,6 +596,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     // case If
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_IF) { //  if
         IFRECURSIONCOUNT++;
+
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -651,10 +656,12 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
     // case While
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_WHILE) { //  while
+        generate_while_label();
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
         } //  (
+        
         if (!parse_expression(lexer, dll, tables, &final_type, true)) {
             return_error(SYNTAX_ERR);
         }
@@ -666,6 +673,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
         }
+        generate_while_begin();
 
         //FIXME Gen Code
         BODYRECURSIONCOUNT--;
@@ -676,8 +684,8 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
             return_error(SYNTAX_ERR);
         }
+        generate_while_end();
 
-        //FIXME Gen Code
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);

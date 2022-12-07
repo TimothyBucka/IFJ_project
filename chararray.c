@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "chararray.h"
 
 char *chararray_init(unsigned int size) {
     char *value = (char *)calloc(size + 1, sizeof(char));
@@ -53,3 +53,4 @@ void chararray_append_string(char **chararray, char* str) {
 
 
 void chararray_free(char *chararray) { free(chararray); }
+
