@@ -165,7 +165,6 @@ bool pop_to_var(token* token_ptr){
 }
 
 bool generate_term(token* token_ptr){
-    char buffer[100];
 
     if (token_ptr->ID == TOKEN_ID_INTEGER){
         printf("int@%s", token_ptr->VAL.string);
