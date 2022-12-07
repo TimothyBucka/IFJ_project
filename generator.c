@@ -304,29 +304,30 @@ bool create_var (token* token_ptr) {
 }
 
 // =============== WHILE ================= 
-bool generate_while_label (int depth, int count_at_depth) {
+bool generate_while_label () {
+    WHILE_COUNT++;
     printf("LABEL $");
-    printf("WHILE%d-%d",depth, count_at_depth);
+    printf("WHILE&%d",WHILE_COUNT);
     printf("\n");
 
     return true;
 }
-bool generate_while_begin (int depth, int count_at_depth) {
+bool generate_while_begin () {
     printf("PUSHS bool@false\n");
     printf("JUMPIFEQS $");
-    printf("WHILE_END%d-%d",depth, count_at_depth);
+    printf("WHILE_END%d",WHILE_COUNT);
     printf("\n");
 
     return true;
 }
 
-bool generate_while_end (int depth, int count_at_depth) {
+bool generate_while_end () {
     printf("JUMP $");
-    printf("WHILE%d-%d",depth, count_at_depth);
+    printf("WHILE%d",WHILE_COUNT);
     printf("\n");
 
     printf("LABEL $");
-    printf("WHILE_END%d-%d",depth, count_at_depth);
+    printf("WHILE_END%d",WHILE_COUNT);
     printf("\n");
 
     return true;
@@ -336,7 +337,7 @@ bool generate_while_end (int depth, int count_at_depth) {
 
 
 // =============== IF ================= //som vnoreny v IFe zacinam od 1
-bool generate_if_begin (int depth) {
+bool generate_if_begin () {
     IF_COUNT++;
     printf("PUSHS bool@false\n");
     printf("JUMPIFEQS $");
@@ -347,7 +348,7 @@ bool generate_if_begin (int depth) {
     //nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
 }
 
-bool generate_if_else (int depth) {
+bool generate_if_else () {
     printf("JUMP $");
     printf("IF&%d",IF_COUNT);
     printf("_end\n");
@@ -357,7 +358,7 @@ bool generate_if_else (int depth) {
     //nasleduju else prikazy
 }
 
-bool generate_if_end (int depth) {
+bool generate_if_end () {
     printf("LABEL $");
     printf("IF&%d",IF_COUNT);
     printf("_end\n");
