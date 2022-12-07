@@ -15,6 +15,7 @@
 #include "semantics.h"
 #include "symtable.h"
 #include "token.h"
+#include "generator.h"
 
 
 #define NEW_ITEM(new_item, token_ptr, type)    \
@@ -62,22 +63,7 @@ typedef enum {
     DOLLAR
 } expr_item_type;
 
-typedef enum rules{
-    PAR_E_PAR,  // E -> (E)
-    E_PLUS_E,   // E -> E + E
-    E_MINUS_E,  // E -> E - E
-    E_TIMES_E,  // E -> E * E
-    E_DIVIDE_E, // E -> E / E
-    E_CONCAT_E, // E -> E . E
-    E_EQ_E,     // E -> E === E
-    E_NEQ_E,    // E -> E !== E
-    E_LT_E,     // E -> E < E
-    E_GT_E,     // E -> E > E
-    E_LEQ_E,    // E -> E <= E
-    E_GEQ_E,    // E -> E >= E
-    ID,         // E -> id
-    NONE        // No rule
-} rules;
+
 
 
 typedef struct expr_item {
