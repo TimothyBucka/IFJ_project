@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file chararray.c
+ * @brief Implementation of dynamic char array
+ * 
+ * @authors xmacur09
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

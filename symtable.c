@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file symtable.c
+ * @brief Implementation of symbol table
+ * 
+ * @authors xmacur09, xbucka00
+*/
+
 #include "symtable.h"
 #include <math.h>
 #include <stdbool.h>

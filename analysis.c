@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file analysis.c
+ * @brief Implementation of syntax analysis
+ * 
+ * @authors xmacur09, xstect00, xbucka00
+*/
+
 #include "analysis.h"
 #include "expressions.h"
 

@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file generator.c
+ * @brief Implementation of generator
+ * 
+ * @authors xstect00
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

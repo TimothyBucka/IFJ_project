@@ -18,4 +18,6 @@ function bar(string $y) : ?float {
     return $x;
 }
 
+$y = $x;
+
 ?>

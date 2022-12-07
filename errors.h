@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file errors.h
+ * @brief Error codes
+ * 
+ * @authors xbucka00
+*/
+
 #ifndef ERRORS_H
 #define ERRORS_H
 

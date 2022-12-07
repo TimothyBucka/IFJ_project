@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file DLL.c
+ * @brief Implementation of doubly linked list
+ * 
+ * @authors xmacur09
+*/
+
 #include "DLL.h"
 #include <stdio.h>
 
@@ -28,6 +37,7 @@ token *DLL_get_active(DLL *dll) {
     if (dll->activeElement != NULL) {
         return &dll->activeElement->data;
     }
+    return NULL;
 }
 
 void DLL_move_active_left(DLL *dll) {

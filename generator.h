@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file generator.h
+ * @brief Interface for code generator
+ * 
+ * @authors xstect00
+*/
+
 #ifndef CODE_GEN_H
 #define CODE_GEN_H
 

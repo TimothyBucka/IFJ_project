@@ -1,7 +1,17 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file expressions.c
+ * @brief Implementation of expression parser
+ * 
+ * @authors xmacur09, xbucka00
+*/
+
 #include "expressions.h"
 
 extern error ERROR;
 extern int ERRORFROMLEXER;
+extern int BODYRECURSIONCOUNT;
 
 size_t COUNTER = 0;
 
@@ -137,9 +147,14 @@ int count_breakpoint(expr_stack *expr_stack) {
 data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle, expr_item *item_left, symtables tables) {
     if (item_right->type == TERM) { // id
         if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
-            table_item_data *item;
-            printf("Seraching for %s \n", item_right->token_ptr->VAL.string);
-            item = hash_table_lookup(tables.local, item_right->token_ptr->VAL.string);
+            table_item_data *item = NULL;
+
+            if (BODYRECURSIONCOUNT == 0) {
+                item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
+            } else {
+                item = hash_table_lookup(tables.local, item_right->token_ptr->VAL.string);
+            }
+
             if (!item) {
                 item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
             }
@@ -156,7 +171,7 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
                     return UNDEFINED;
                 }
             }
-            return INT; // TODO search symtable if not found return NONE -- error 5
+            return INT;
         }
         else if (item_right->token_ptr->ID == TOKEN_ID_INTEGER) {
             return INT;

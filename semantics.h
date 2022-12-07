@@ -1,3 +1,11 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file semantics.h
+ * @brief Interface for semantics
+ * 
+ * @authors xmacur09, xbucka00
+*/
 
 #ifndef SEMANTICS_H
 #define SEMANTICS_H

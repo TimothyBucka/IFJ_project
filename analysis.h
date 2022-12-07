@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file analysis.h
+ * @brief Interface of syntax analysis
+ * 
+ * @authors xmacur09, xstect00, xbucka00
+*/
+
 #ifndef ANALYSIS_H
 #define ANALYSIS_H
 

@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file semantics.c
+ * @brief Implementation of function that converts keyword to data type
+ * 
+ * @authors xbucka00
+*/
+
 #include "semantics.h"
 
 data_type kw_to_data_type(keyword kw) {

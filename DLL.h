@@ -1,3 +1,12 @@
+/**
+ * Project: IFJ22 Compiler
+ * 
+ * @file DLL.h
+ * @brief Interface for doubly linked list
+ * 
+ * @authors xmacur09
+*/
+
 #ifndef DLL_H
 #define DLL_H
 
