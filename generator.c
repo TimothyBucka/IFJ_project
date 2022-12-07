@@ -324,8 +324,10 @@ bool generate_if_else (char *function_id) {
 //
 
 bool write_single_var(token* token_ptr){
-    printf("WRITE LF@");
-    printf("%s", token_ptr->VAL.string);
+    printf("WRITE ");
+    if (generate_term(token_ptr)==false){
+        return false;
+    }
     printf("\n");
     return true;
 }
