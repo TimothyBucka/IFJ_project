@@ -199,6 +199,19 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
                     return INT;
                 }
                 else if (right == FLOAT) {
+                    create_temp_frame();
+                    //change type of left to float
+                    // pop keeep, pop to var, change var, push var, push keeep
+                                        printf("DEFVAR TF@rval\n");
+                    printf("DEFVAR TF@lval\n");
+
+
+                    pop_to_strname("rval");
+                    pop_to_strname("lval");
+                    implicit_conversion(INT, FLOAT, "lval");
+                    push_from_strname("lval");
+                    push_from_strname("rval");
+
                     return FLOAT;
                 }
                 else {
@@ -207,7 +220,28 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
                 }
             }
             else if (left == FLOAT) {
-                if (right == INT || right == FLOAT || right == NULL_TYPE) {
+                if(right == INT){
+                    //change type
+                    create_temp_frame();
+                    //change type of left to float
+                    // pop keeep, pop to var, change var, push var, push keeep
+
+
+                    printf("DEFVAR TF@rval\n");
+
+                    pop_to_strname("rval");
+
+                    implicit_conversion(INT, FLOAT, "rval");
+
+                    push_from_strname("rval");
+
+
+
+
+
+                    return FLOAT;
+                }
+                if (right == FLOAT || right == NULL_TYPE) {
                     return FLOAT;
                 }
                 else {
@@ -280,6 +314,8 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
     expr_item *item_middle = NULL;
     expr_item *item_left = NULL;
 
+    data_type expression_type;
+
 
     rules rule;
 
@@ -287,6 +323,7 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
         item_right = expr_stack_pop(expr_stack);
         if (item_right->type == TERM && get_index_token(item_right->token_ptr) == 7) { // E -> id
             rule = ID;
+            expression_type =  get_data_type_from_item(item_right, item_middle, item_left, tables);
             operation_rule(rule, item_right->token_ptr);
             ret_val = true;
         }
@@ -345,15 +382,18 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
                 ret_val = true;
             }
             else {
-                
                 ret_val = false;
             }
-            operation_rule(rule, NULL);
+            if (ret_val){
+                expression_type =  get_data_type_from_item(item_right, item_middle, item_left, tables);
+                operation_rule(rule, NULL);
+            }
         }
         else if ((item_right->type == TERM && get_index_token(item_right->token_ptr) == 2) &&
                  (item_left->type == TERM && get_index_token(item_left->token_ptr) == 1) &&
                  (item_middle->type == NONTERM)) { // E -> (E)
             ret_val = true;
+            expression_type =  get_data_type_from_item(item_right, item_middle, item_left, tables);
         }
         else {
             ret_val = false;
@@ -364,7 +404,7 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
     }
 
     if (ret_val) {
-        item_right->data_type = get_data_type_from_item(item_right, item_middle, item_left, tables);
+        item_right->data_type = expression_type;
         item_right->type = NONTERM;
         item_right->token_ptr = NULL;
         expr_stack_push(expr_stack, item_right);
