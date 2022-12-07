@@ -12,12 +12,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-/**
- * @brief Get the hash object
- * 
- * @param key 
- * @return int 
- */
+
 int get_hash(char *key) {
     int length = strlen(key);
 
@@ -30,11 +25,7 @@ int get_hash(char *key) {
     hash_value = ((A * hash_value + B) % PRIME) % TABLESIZE; /* MAD (multiply add divide) compression method using positive int A and B <0;p-1> (also not a multiple of N) and prime larger then N*/
     return hash_value;
 }
-/**
- * @brief Creates a new hash table
- * 
- * @return hash_table 
- */
+
 hash_table init_hash_table() {
     hash_table table = calloc(TABLESIZE, sizeof(table_item_t *));
     for (int i = 0; i < TABLESIZE; i++) {
@@ -42,13 +33,7 @@ hash_table init_hash_table() {
     }
     return table;
 }
-/**
- * @brief Inserts a new item into the hash table
- * 
- * @param table 
- * @param key 
- * @return table_item_data* 
- */
+
 table_item_data *hash_table_lookup(hash_table table, char *key) {   
     table_item_t *item = table[get_hash(key)];
     if (item != NULL) {
@@ -67,14 +52,7 @@ table_item_data *hash_table_lookup(hash_table table, char *key) {
         return NULL;
     }
 }
-/**
- * @brief Inserts a new item into the hash table
- * 
- * @param table 
- * @param key 
- * @return true 
- * @return false 
- */
+
 bool hash_table_has_item(hash_table table, char *key) {
     table_item_t *item = table[get_hash(key)];
     if (item != NULL) {
@@ -93,24 +71,14 @@ bool hash_table_has_item(hash_table table, char *key) {
         return false;
     }
 }
-/**
- * @brief Inserts a new item into the hash table
- * 
- * @param table 
- * @param item 
- */
+
 void hash_table_insert(hash_table table, table_item_data *item) {
     table_item_t *new_item = calloc(1, sizeof(table_item_t));
     new_item->next_item = table[get_hash(item->name)];
     new_item->value = *item;
     table[get_hash(item->name)] = new_item;
 }
-/**
- * @brief Deletes an item from the hash table
- * 
- * @param table 
- * @param key 
- */
+
 void hash_table_remove(hash_table table, char *key) {
     table_item_t *item = table[get_hash(key)];
     while (item != NULL) {
@@ -131,11 +99,7 @@ void hash_table_remove(hash_table table, char *key) {
         }
     }
 }
-/**
- * @brief Deletes the hash table
- * 
- * @param table 
- */
+
 void hash_table_free(hash_table table) {
     for (int i = 0; i < TABLESIZE; i++) {
 
@@ -156,11 +120,7 @@ void hash_table_free(hash_table table) {
     free(table);
 }
 
-/**
- * @brief Resets the hash table
- * 
- * @param table 
- */
+
 void clear_hash_table_to_inicialised(hash_table table) {
     for (int i = 0; i < TABLESIZE; i++) {
 
@@ -179,11 +139,7 @@ void clear_hash_table_to_inicialised(hash_table table) {
 }
 
 
-/**
- * @brief Prints the hash table
- * 
- * @param table 
- */
+
 void debug_print_table(hash_table table) {
     printf("\n\n--------------------------------------\n");
     for (int i = 0; i < TABLESIZE; i++) {
@@ -206,11 +162,7 @@ void debug_print_table(hash_table table) {
     printf("--------------------------------------\n");
 }
 
-/**
- * @brief Preloads the hash table with the built in functions
- * 
- * @param table 
- */
+
 void preload_hash_table(hash_table table) {
 
     // readInt

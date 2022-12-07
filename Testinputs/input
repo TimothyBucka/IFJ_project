@@ -3,4 +3,4 @@ declare(strict_types=1);
 
 $a = 5 + ( 6 - 0.2 );
 
-write($a)
+write($a, 5, 2.2, "foo");
