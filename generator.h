@@ -271,4 +271,8 @@ bool generate_term(token* token_ptr);
 
 bool generate_user_input(token *token_ptr, data_type type);
 
+bool operation_rule(rules operation, token *token_ptr);
+
+bool generate_label(char *function_id);
+
 #endif
