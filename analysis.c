@@ -15,6 +15,7 @@ extern int ERRORFROMLEXER;
 extern int BODYRECURSIONCOUNT;
 int ARGSCOUNT = 0;
 int PARAMSCOUNT = 0;
+int IFRECURSIONCOUNT = 0;
 
 
 bool accept(token *token_ptr, token_ID acceptedID) {
@@ -590,47 +591,58 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
     // case If
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_IF) { //  if
+        IFRECURSIONCOUNT++;
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  (
         if (!parse_expression(lexer, dll, tables, &final_type, true)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  expresion
+        generate_if_begin();
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  )
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  {
-
-        //FIXME Gen Code
         if (!parse_body(lexer, dll, tables)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  body
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  }
         next_tok;
         if (!accept(token_ptr, TOKEN_ID_KEYWORD) || token_ptr->VAL.keyword != KW_ELSE) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  else
+        generate_if_else();
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  {
         if (!parse_body(lexer, dll, tables)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  body
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RCURLYBRACKET)) {
+            IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  }
-
-        //FIXME Gen Code
+        generate_if_end();
+        IFRECURSIONCOUNT--;
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);

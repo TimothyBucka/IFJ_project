@@ -10,11 +10,16 @@
 
 declare(strict_types=1);
 
-if (1e2 !== 100) {
-    return;
+if (100 === 100) {
+    write("ano");
+    
+
 } 
 else{
-    return;
+
+    write("ne");
 }
+
+
 
 ?>
