@@ -524,6 +524,7 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
 bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     BODYRECURSIONCOUNT++;
     data_type final_type;
+    int if_count_at_depth = 0;
 
     token *token_ptr;
 
@@ -531,6 +532,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
     // case Function
     if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_FUNCTION && BODYRECURSIONCOUNT == 1) { //  function
+
         next_tok;
         function *func = malloc(sizeof(function));
         table_item_data *data = malloc(sizeof(table_item_data));
@@ -592,6 +594,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
     // case If
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_IF) { //  if
         IFRECURSIONCOUNT++;
+        if_count_at_depth ++;
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -601,7 +604,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  expresion
-        generate_if_begin();
+        generate_if_begin(IFRECURSIONCOUNT, if_count_at_depth);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_RBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -626,7 +629,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  else
-        generate_if_else();
+        generate_if_else(IFRECURSIONCOUNT, if_count_at_depth);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
             IFRECURSIONCOUNT--;
@@ -641,7 +644,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             IFRECURSIONCOUNT--;
             return_error(SYNTAX_ERR);
         } //  }
-        generate_if_end();
+        generate_if_end(IFRECURSIONCOUNT, if_count_at_depth);
         IFRECURSIONCOUNT--;
         BODYRECURSIONCOUNT--;
         if (!parse_body(lexer, dll, tables)) {
