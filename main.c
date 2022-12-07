@@ -15,6 +15,13 @@
 #include <string.h>
 #include "analysis.h"
 #include "generator.h"
+#include "lexer.h"
+#include "semantics.h"
+#include "symtable.h"
+#include "token.h"
+#include "chararray.h"
+
+
 
 error ERROR = SUCCESS;
 int ERRORFROMLEXER = 0;

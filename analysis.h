@@ -15,6 +15,7 @@
 #include "semantics.h"
 #include "symtable.h"
 #include "token.h"
+#include "generator.h"
 
 #define return_error(error_type) \
     if (ERROR == SUCCESS) {      \

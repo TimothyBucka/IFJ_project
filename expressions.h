@@ -15,7 +15,7 @@
 #include "semantics.h"
 #include "symtable.h"
 #include "token.h"
-#include "analysis.h"
+
 
 #define NEW_ITEM(new_item, token_ptr, type)    \
     new_item = expr_item_new(token_ptr, type); \
@@ -62,7 +62,7 @@ typedef enum {
     DOLLAR
 } expr_item_type;
 
-typedef enum {
+typedef enum rules{
     PAR_E_PAR,  // E -> (E)
     E_PLUS_E,   // E -> E + E
     E_MINUS_E,  // E -> E - E

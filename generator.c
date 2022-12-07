@@ -6,55 +6,43 @@
  * 
  * @authors xstect00
 */
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
 #include "generator.h"
-#include "chararray.h"
-#include "expressions.h"
-#include "analysis.h"
-#include "DLL.h"
 
 
 
+    void start_of_generator(){
 
-void start_of_generator(){
+        printf(START);
 
-    printf(START);
+        generate_buildin_functions();
 
-    //generate_buildin_functions();
+        generate_main();
+    }
 
-    generate_main();
-}
+    void end_of_generator(){
 
-void end_of_generator(){
+        printf("LABEL $end\n");
+        printf("EXIT int@0\n");
+    }
 
-    printf("LABEL $end\n");
-    printf("EXIT int@0\n");
-}
-
-void generate_buildin_functions(){
-    printf(FUNCTION_READS);
-    printf(FUNCTION_READI);
-    printf(FUNCTION_READF);
-    printf(FUNCTION_WRITE);
-    printf(FUNCTION_FLOAT_VALUE);
-    printf(FUNCTION_INT_VALUE);
-    printf(FUNCTION_STRING_VALUE);
-    printf(FUNCTION_STRING_LENGTH);
-    printf(FUNCTION_SUBSTRING);
-    printf(FUNCTION_ORD);
-    printf(FUNCTION_CHR);
+    void generate_buildin_functions(){
+        printf(FUNCTION_READS);
+        printf(FUNCTION_READI);
+        printf(FUNCTION_READF);
+        printf(FUNCTION_WRITE);
+        printf(FUNCTION_FLOAT_VALUE);
+        printf(FUNCTION_INT_VALUE);
+        printf(FUNCTION_STRING_VALUE);
+        printf(FUNCTION_STRING_LENGTH);
+        printf(FUNCTION_SUBSTRING);
+        printf(FUNCTION_ORD);
+        printf(FUNCTION_CHR);
 // TODO zavolame write zakazdym z danym termom a mame hotovy write
 //MBY can be fixed with danny a urobit cez while loop podla poctu termov
     }
 
 bool generate_main () {
     printf("LABEL $main\n");
-    PRINTF("CREATEFRAME\n");
     printf("PUSHFRAME\n");
     return true;
 }
@@ -82,19 +70,20 @@ bool generate_end_of_function () { //FIXME mby
     return true;
 } 
 
-bool data_type_to (data_type type) { //FIXME mby delete
-    if (type == INT) {
-        printf("int");
+bool data_type_to (data_type type) {
+    if (
+        type == INT) {
+        printf("int@");
     }
     else if (type == FLOAT) {
-        printf("float");
+        printf("float@");
     }
     else if (type == STRING) {
-        printf("string");
+        printf("string@");
     }
-    // else if (type == NULL_TYPE) { //zatial neviem ci to bude potrebne nepouzival som to ja
-    //     printf("nil@");
-    // }
+    else if (type == NULL_TYPE) {
+        printf("nil@");
+    }
     else {
         return false;
     }
@@ -102,9 +91,9 @@ bool data_type_to (data_type type) { //FIXME mby delete
     return true;
 }
 
-bool generate_function_return (token* token_ptr) {
+bool generate_function_return (data_type type) {
     printf("MOVE LF@&retval ");
-    if(generate_term(token_ptr)==0){ //FIXME
+    if(data_type_to(type)==0){
         return false;
     }
     else {
@@ -120,8 +109,6 @@ bool generate_function_call (char *function_id) {
 
     return true;
 }
-
-
 
 bool implicit_conversion (data_type type, data_type converted_type, char *var1) {
     if (type == FLOAT && converted_type == INT) {
@@ -148,6 +135,7 @@ bool implicit_conversion (data_type type, data_type converted_type, char *var1) 
 
     return true;
 }
+
 
 bool generate_variable_value (token* token_ptr) {
     printf("MOVE LF@");
@@ -278,5 +266,13 @@ bool generate_label (char *function_id) {
     printf("LABEL $");
     printf("%s", function_id);
     printf("\n"); //TODO LABEL aby bol unique takze doplnit nejake cislo popripade globalne pocitadlo a inicializovat ho pri kazdom volani
+    return true;
+}
+
+
+bool create_var (token* token_ptr) {
+    printf("DEFVAR LF@");
+    printf("%s", token_ptr->VAL.string);
+    printf("\n");
     return true;
 }

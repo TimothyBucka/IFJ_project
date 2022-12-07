@@ -10,16 +10,14 @@
 #ifndef CODE_GEN_H
 #define CODE_GEN_H
 
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "chararray.h"
 #include "expressions.h"
-#include "analysis.h"
-#include "DLL.h"
-#include "token.h"
+
 
 #define START ".IFJcode22\n\
 CALL $main\n\
@@ -263,7 +261,7 @@ void generate_buildin_functions();
 
 bool generate_main();
 
-bool generate_function_return(token *token_ptr);
+bool generate_function_return (data_type type);
 
 bool generate_variable_value(token *token_ptr);
 
@@ -275,4 +273,5 @@ bool operation_rule(rules operation, token *token_ptr);
 
 bool generate_label(char *function_id);
 
+bool create_var (token* token_ptr);
 #endif

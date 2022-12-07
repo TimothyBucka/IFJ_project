@@ -424,6 +424,11 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
         
         return false;
     }
+    //generate instructions for new variable
+    create_var (dll->activeElement->previousElement);
+    
+
+
     next_tok;
     if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
 
