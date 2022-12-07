@@ -77,10 +77,10 @@ int isoctdigit(char c);
 
 int is_keyword(char *src);
 
-int str_to_int(char *src); //12 2431424343
+int str_to_int(char *src); 
 
-double str_to_doule(char *src); //1e4 1E4 1.2e5  1.4E-/+6449
+double str_to_doule(char *src); 
 
-void clean_string(char **src); // "\123 \xAF"
+void clean_string(char **src); 
 
 #endif

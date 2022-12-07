@@ -11,6 +11,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * @brief Creates new char array
+ * 
+ * @return char_array* 
+ */
 char *chararray_init(unsigned int size) {
     char *value = (char *)calloc(size + 1, sizeof(char));
 
@@ -19,18 +24,13 @@ char *chararray_init(unsigned int size) {
     return value;
 }
 
+/**
+ * @brief Adds a char to the char array
+ * 
+ * @param array 
+ * @param c 
+ */
 void chararray_append(char **chararray, char c) {
-
-    // size_t len = strlen(chararray) + 1; // including \0
-
-    // char *temp = realloc(chararray, sizeof(char) * (len + 1)); // 1 for the new char
-    // if (temp != NULL) {
-    //     chararray = temp;
-    // }
-    // else {
-    //     printf("Big memory problem.\n");
-    // }
-
     char *new_str;
     char* str2 = malloc(sizeof(char) * 2);
     str2[0] = c;
@@ -41,16 +41,17 @@ void chararray_append(char **chararray, char c) {
         strcat(new_str, str2);
     }
 
-
-    // chararray[len - 1] = c;
-    // chararray[len] = '\0';
-
-    //free(chararray);
     free(*chararray);
     *chararray = new_str;
     free(str2);
 }
 
+/**
+ * @brief Adds a string to the char array
+ * 
+ * @param array 
+ * @param c 
+ */
 void chararray_append_string(char **chararray, char* str) {
     char *new_str;
     if ((new_str = malloc(strlen(*chararray) + strlen(str) + 1)) != NULL) {
@@ -64,4 +65,9 @@ void chararray_append_string(char **chararray, char* str) {
     *chararray = new_str;
 }
 
+/**
+ * @brief Frees the char array
+ * 
+ * @param array 
+ */
 void chararray_free(char *chararray) { free(chararray); }

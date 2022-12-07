@@ -20,6 +20,11 @@ error ERROR = SUCCESS;
 int ERRORFROMLEXER = 0;
 int BODYRECURSIONCOUNT = 0;
 
+/**
+ * @brief Main function of the compiler
+ * 
+ * @return int 
+ */
 int main() {
 
     lexer_T *lexer = lexer_init();

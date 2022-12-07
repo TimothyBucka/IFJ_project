@@ -19,9 +19,9 @@
 #include "expressions.h"
 #include "analysis.h"
 #include "DLL.h"
+#include "token.h"
 
 #define START ".IFJcode22\n\
-CREATEFRAME\n\
 CALL $main\n\
 JUMP $end\n\
 \n"
@@ -92,7 +92,7 @@ LABEL $write\n\
 PUSHFRAME\n\
 DEFVAR LF@&1\n\
 POPS LF@&1\n\
-MOVE LF@&1 LF@%%1 #THIS SHOULD IDENTIFY PARAMETER\n\
+MOVE LF@&1 LF@&1\n\
 WRITE LF@&1\n\
 POPFRAME\n\
 RETURN\n\
@@ -249,10 +249,10 @@ RETURN\n\
 
 #define FUNCTION_CHR "LABEL $chr\n\
 PUSHFRAME\n\
-DEFVAR LF@&parameter\n\
-DEFVAR LF@&ret\n\
-POPS LF@&parameter\n\
-INT2CHAR LF@&ret LF@&parameter\n\
+DEFVAR LF@parameter\n\
+DEFVAR LF@ret\n\
+POPS LF@parameter\n\
+INT2CHAR LF@ret LF@parameter\n\
 POPFRAME\n\
 RETURN\n\
 \n"
@@ -263,6 +263,16 @@ void generate_buildin_functions();
 
 bool generate_main();
 
-bool generate_function_return(data_type type);
+bool generate_function_return(token *token_ptr);
+
+bool generate_variable_value(token *token_ptr);
+
+bool generate_term(token* token_ptr);
+
+bool generate_user_input(token *token_ptr, data_type type);
+
+bool operation_rule(rules operation, token *token_ptr);
+
+bool generate_label(char *function_id);
 
 #endif
