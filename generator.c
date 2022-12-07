@@ -309,18 +309,17 @@ bool create_var (token* token_ptr) {
 
 
 // =============== IF ================= //TODO ak tak zo stackom 2 ify
-bool generate_if_begin () {
+bool generate_if_begin (int depth) {
     IF_COUNT++;
-    printf("DEFVAR LF@tmpbool\n");
-    printf("POPS LF@tmpbool\n");
-    printf("JUMPIFEQ $");
+    printf("PUSHS bool@false\n");
+    printf("JUMPIFEQS $");
     printf("ELSE&%d ",IF_COUNT);
-    printf("LF@tmpbool bool@false\n"); //IF toto mi da true jumpuje na else ak false pokracuje v IFe
+    printf("\n"); //IF toto mi da true jumpuje na else ak false pokracuje v IFe
     return true;
     //nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
 }
 
-bool generate_if_else () {
+bool generate_if_else (int depth) {
     printf("JUMP $");
     printf("IF&%d",IF_COUNT);
     printf("_end\n");
@@ -330,7 +329,7 @@ bool generate_if_else () {
     //nasleduju else prikazy
 }
 
-bool generate_if_end () {
+bool generate_if_end (int depth) {
     printf("LABEL $");
     printf("IF&%d",IF_COUNT);
     printf("_end\n");
