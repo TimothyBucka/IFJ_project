@@ -215,6 +215,10 @@ bool operation_rule (rules operation, token* token_ptr) {
     case E_DIVIDE_E:
         printf("DIVS\n");
         break;
+    case E_CONCAT_E:
+        printf("DEFVAR LF@tempstring\n");
+        printf("CONCAT LF@tempstring LF@&1 LF@&2\n");
+        break;
     case E_LT_E:
         printf("LTS\n");
         break;
@@ -243,7 +247,36 @@ bool operation_rule (rules operation, token* token_ptr) {
         printf("EQS\n");
         //TODO EQS hodi true/false na vrchol zasobnika vymysliet co dalej
         break;
+    case E_GEQ_E:
+        printf("DEFVAR LF@tempbool\n");
+        printf("PUSHS LF@&1\n");
+        printf("PUSHS LF@&2\n");
+        printf("PUSHS LF@&1\n");
+        printf("PUSHS LF@&2\n");
+        printf("EQS\n");
+        printf("POPS LF@tempbool\n");
+        printf("GTS\n");
+        printf("PUSHS LF@tempbool\n");
+        printf("ORS\n");
+        printf("PUSHS bool@true\n");
+        printf("EQS\n");
+        //TODO EQS hodi true/false na vrchol zasobnika vymysliet co dalej
+        break;
+    case ID:
+        printf("PUSHS LF@");
+        printf("%s", token_ptr->VAL.string);
+        printf("\n");
+        break;
     default:
+    case NONE:
         break;
     }
+    return true;
+}
+
+bool generate_label (char *function_id) {
+    printf("LABEL $");
+    printf("%s", function_id);
+    printf("\n"); //TODO LABEL aby bol unique takze doplnit nejake cislo popripade globalne pocitadlo a inicializovat ho pri kazdom volani
+    return true;
 }
