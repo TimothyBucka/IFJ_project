@@ -13,11 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/**
- * @brief Initializes the lexer
- * 
- * @return lexer_T* 
- */
+
 lexer_T *lexer_init() {
     lexer_T *lexer = calloc(1, sizeof(struct lexer_struct));
 
@@ -30,20 +26,12 @@ lexer_T *lexer_init() {
     return lexer;
 }
 
-/**
- * @brief Frees the lexer
- * 
- * @param lexer 
- */
+
 void lexer_free(lexer_T *lexer) {
     free(lexer);
 }
 
-/**
- * @brief Advances the lexer
- * 
- * @param lexer 
- */
+
 void lexer_advance(lexer_T *lexer) {
     if (lexer->c != EOF) {
         lexer->i += 1;
@@ -51,11 +39,7 @@ void lexer_advance(lexer_T *lexer) {
     }
 }
 
-/**
- * @brief Skips the comments
- * 
- * @param lexer 
- */
+
 void lexer_skip_comment(lexer_T *lexer) {
     if (lexer->c != '/')
         return;
@@ -88,11 +72,7 @@ void lexer_skip_comment(lexer_T *lexer) {
     }
 }
 
-/**
- * @brief Skips the whitespace
- * 
- * @param lexer 
- */
+
 void lexer_skip_whitespace(lexer_T *lexer) {
     while (lexer->c == ' ' || lexer->c == '\r' || lexer->c == '\t' || lexer->c == '\n') {
         lexer_advance(lexer);
@@ -102,12 +82,7 @@ void lexer_skip_whitespace(lexer_T *lexer) {
 
 int isoctdigit(char c) { return c >= '0' && c <= '7'; }
 
-/**
- * @brief Checks if the identifier is a keyword
- * 
- * @param src 
- * @return int 
- */
+
 int is_keyword(char *src) {
     
     if (!strcmp(src, "else")) {
@@ -152,11 +127,7 @@ int is_keyword(char *src) {
     return 0;
 }
 
-/**
- * @brief Sanitizes the string
- * 
- * @param str 
- */
+
 void clean_string(char **str) {
     size_t str_len = strlen(*str);
 
@@ -168,19 +139,19 @@ void clean_string(char **str) {
     for (size_t i = 0, n_i = 0; i < str_len; i++) {
         char c = (char)0;
 
-        if ((*str)[i] == '$') {
+        if ((*str)[i] == '$') { // escape character
             printf("Unescaped $\n");
-            continue; // TODO: implement
+            continue;
         }
 
         if ((*str)[i] == '\\') {
             switch ((*str)[i + 1]) {
             case 'x':
-                if (i + 3 < str_len && isxdigit((*str)[i + 2]) &&
+                if (i + 3 < str_len && isxdigit((*str)[i + 2]) && // check if the next two characters are hex digits
                     isxdigit((*str)[i + 3])) {
                     char hex[3] = {(*str)[i + 2], (*str)[i + 3], '\0'};
                     int num = (int)strtol(hex, NULL, 16);
-                    if (num >= 0x01 && num <= 0xFF) {
+                    if (num >= 0x01 && num <= 0xFF) { // check if the number is in the range of 1-255
                         c = num;
                         i += 3;
                     }
@@ -213,10 +184,10 @@ void clean_string(char **str) {
                 i++;
                 break;
             default:
-                if (i + 3 < str_len && isoctdigit((*str)[i + 1]) && isoctdigit((*str)[i + 2]) && isoctdigit((*str)[i + 3])) {
+                if (i + 3 < str_len && isoctdigit((*str)[i + 1]) && isoctdigit((*str)[i + 2]) && isoctdigit((*str)[i + 3])) { // check if the next three characters are octal digits
                     char oct[4] = {(*str)[i + 1], (*str)[i + 2], (*str)[i + 3], '\0'};
                     int num = (int)strtol(oct, NULL, 8);
-                    if (num >= 1 && num <= 255) {
+                    if (num >= 1 && num <= 255) { // check if the number is in the range of 1-255
                         c = num;
                         i += 3;
                     }
@@ -237,7 +208,7 @@ void clean_string(char **str) {
 
     char *str_final = chararray_init(4*strlen(new_str) +1);
     if (str_final == NULL) {
-        // TODO error
+       return INTERNAL_ERR;
     }
 
     for (size_t i = 0; i < strlen(new_str); i++) {
@@ -247,7 +218,7 @@ void clean_string(char **str) {
         c_as_string[0] = new_str[i];
         c_as_string[1] = '\0';
 
-        if ((new_str[i] >= 0 && new_str[i] <= 32) || new_str[i] == 35 || new_str[i] == 92) {
+        if ((new_str[i] >= 0 && new_str[i] <= 32) || new_str[i] == 35 || new_str[i] == 92) { // 0-32, 35, 92
             sprintf(num, "\\0%d", new_str[i]);
             strcat(str_final, num);
         } else {
@@ -262,7 +233,7 @@ void clean_string(char **str) {
 }
 
 
-void str_to_double(char *string) {
+void str_to_double(char *string) { 
     int stringCounter = 0;
     int CELCounter = 0;
     int EXPCounter = 0;
@@ -272,12 +243,12 @@ void str_to_double(char *string) {
     arrayEXP[0] = '1';
     enum stav mojstav = CEL;
     while (1) {
-        if (mojstav == CEL && (string[stringCounter] >= '0' && string[stringCounter] <= '9')) {
+        if (mojstav == CEL && (string[stringCounter] >= '0' && string[stringCounter] <= '9')) { // if the character is a digit
             arrayCEL[CELCounter] = string[stringCounter];
             stringCounter++;
             CELCounter++;
         }
-        else if (mojstav == CEL && string[stringCounter] == '.') {
+        else if (mojstav == CEL && string[stringCounter] == '.') { // if the character is a dot
             // convert arrayCEL to integer
             int cel = atoi(arrayCEL);
             if (cel >= 1000000000) 
@@ -287,15 +258,15 @@ void str_to_double(char *string) {
             arrayCEL[CELCounter++] = '.';
             stringCounter++;
         }
-        else if (mojstav == CEL && (string[stringCounter] == 'e' || string[stringCounter] == 'E')) {
+        else if (mojstav == CEL && (string[stringCounter] == 'e' || string[stringCounter] == 'E')) { // if the character is e or E
             mojstav = EXP;
             stringCounter++;
         }
-        else if (mojstav == EXP && (string[stringCounter] == '+' || string[stringCounter] == '-')) {
+        else if (mojstav == EXP && (string[stringCounter] == '+' || string[stringCounter] == '-')) { // if the character is + or -
             sign = string[stringCounter];
             stringCounter++;
         }
-        else if (mojstav == EXP && (string[stringCounter] >= '0' && string[stringCounter] <= '9')) {
+        else if (mojstav == EXP && (string[stringCounter] >= '0' && string[stringCounter] <= '9')) { // if the character is a digit
             arrayEXP[EXPCounter] = string[stringCounter];
             stringCounter++;
             EXPCounter++;
@@ -333,13 +304,7 @@ void str_to_double(char *string) {
     }
 }
 
-/**
- * @brief Returns the next token from the lexer
- * 
- * @param lexer 
- * @param Token 
- * @return error 
- */
+
 error lexer_next_token(lexer_T *lexer, token *Token) {
     char prolog[] = "<?phpdeclare(strict_types=1);";
 

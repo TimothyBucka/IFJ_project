@@ -26,6 +26,12 @@ typedef enum {
     
 } data_type;
 
+/**
+ * @brief Converts keyword to data type
+ * 
+ * @param kw 
+ * @return data_type 
+ */
 data_type kw_to_data_type(keyword);
 
 #endif
