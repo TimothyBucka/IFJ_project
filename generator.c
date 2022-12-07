@@ -14,7 +14,7 @@ int WHILE_COUNT = 0;
 
         printf(START);
 
-        //generate_buildin_functions();
+        generate_buildin_functions();
 
         generate_main();
     }
@@ -45,6 +45,7 @@ bool generate_main () {
     printf("LABEL $main\n");
     printf("CREATEFRAME\n");
     printf("PUSHFRAME\n");
+    printf("DEFVAR GF@&typecheck\n");
     
     return true;
 }
@@ -199,7 +200,6 @@ bool generate_user_input (token* token_ptr, data_type type) {
     return true;
 }
 
-//TODO WRITE 
 
 bool operation_rule (rules operation, token* token_ptr) {
     switch (operation)
@@ -246,7 +246,6 @@ bool operation_rule (rules operation, token* token_ptr) {
         printf("ORS\n");
         printf("PUSHS bool@true\n");
         printf("EQS\n");
-        //TODO EQS hodi true/false na vrchol zasobnika vymysliet co dalej
         break;
     case E_GEQ_E:
         printf("DEFVAR LF@tempbool\n");
@@ -261,7 +260,6 @@ bool operation_rule (rules operation, token* token_ptr) {
         printf("ORS\n");
         printf("PUSHS bool@true\n");
         printf("EQS\n");
-        //TODO EQS hodi true/false na vrchol zasobnika vymysliet co dalej
         break;
     case ID:
 
@@ -295,10 +293,16 @@ bool generate_label (char *function_id) {
 
 
 bool create_var (token* token_ptr) {
+    printf("TYPE GF@&typecheck LF@%s\n", token_ptr->VAL.string);
+    printf("PUSHS GF@&typecheck\n");
+    printf("PUSHS string@\n");
+    printf("EQS\n");
+    printf("JUMPIFEQS $ND");
     printf("DEFVAR LF@");
     printf("%s", token_ptr->VAL.string);
     printf("\n");
-
+    printf("LABEL $ND\n");
+    
     return true;
 }
 
