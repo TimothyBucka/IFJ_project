@@ -29,8 +29,7 @@ RETURN : /*eps*/
 | EXPRESSION
 | FUNCTION_CALL;                                //TODO implement later
 
-TYPE : void
-| PREFIX C_TYPE;
+TYPE : PREFIX C_TYPE;
 
 PREFIX : /*eps*/
 | "?";

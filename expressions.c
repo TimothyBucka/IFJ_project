@@ -280,9 +280,14 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
     expr_item *item_middle = NULL;
     expr_item *item_left = NULL;
 
+
+    rules rule;
+
     if (number_of_items == 1) {
         item_right = expr_stack_pop(expr_stack);
         if (item_right->type == TERM && get_index_token(item_right->token_ptr) == 7) { // E -> id
+            rule = ID;
+            operation_rule(rule, item_right->token_ptr);
             ret_val = true;
         }
         else {
@@ -296,41 +301,54 @@ bool apply_rule(expr_stack *expr_stack, symtables tables) {
 
         if (item_left->type == NONTERM && item_middle->type == TERM && item_right->type == NONTERM) {
             if (item_middle->token_ptr->ID == TOKEN_ID_PLUS) { // E -> E + E
+                rule =  E_PLUS_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_MINUS) { // E -> E - E
+                rule = E_MINUS_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_MULTIPLICATION) { // E -> E * E
+                rule = E_TIMES_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_DIVISION) { // E -> E / E
+                rule = E_DIVIDE_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_CONCAT) { // E -> E . E
+                rule = E_CONCAT_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_TRIPLE_EQUALS) { // E -> E == E
+                rule = E_EQ_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_NOT_EQUALS) { // E -> E !== E
+                rule = E_NEQ_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_LT) { // E -> E < E
+                rule = E_LT_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_GT) { // E -> E > E
+                rule = E_GT_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_LTE) { // E -> E <= E
+                rule = E_LEQ_E;
                 ret_val = true;
             }
             else if (item_middle->token_ptr->ID == TOKEN_ID_GTE) { // E -> E >= E
+                rule = E_GEQ_E;
                 ret_val = true;
             }
             else {
+                
                 ret_val = false;
             }
+            operation_rule(rule, NULL);
         }
         else if ((item_right->type == TERM && get_index_token(item_right->token_ptr) == 2) &&
                  (item_left->type == TERM && get_index_token(item_left->token_ptr) == 1) &&

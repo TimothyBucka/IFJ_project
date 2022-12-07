@@ -15,7 +15,7 @@ int WHILE_COUNT = 0;
 
         printf(START);
 
-        generate_buildin_functions();
+        //generate_buildin_functions();
 
         generate_main();
     }
@@ -44,6 +44,7 @@ int WHILE_COUNT = 0;
 
 bool generate_main () {
     printf("LABEL $main\n");
+    printf("CREATEFRAME\n");
     printf("PUSHFRAME\n");
     return true;
 }
@@ -151,7 +152,12 @@ bool generate_variable_value (token* token_ptr) {
     return true;
 }
 
-
+bool pop_to_var(token* token_ptr){
+    printf("POPS LF@");
+    printf("%s", token_ptr->VAL.string);
+    printf("\n");
+    return true;
+}
 
 bool generate_term(token* token_ptr){
     char buffer[100];
@@ -252,9 +258,18 @@ bool operation_rule (rules operation, token* token_ptr) {
         //TODO EQS hodi true/false na vrchol zasobnika vymysliet co dalej
         break;
     case ID:
-        printf("PUSHS LF@");
-        printf("%s", token_ptr->VAL.string);
-        printf("\n");
+
+        if(token_ptr->ID == TOKEN_ID_VARIABLE){
+            printf("PUSHS LF@");
+            printf("%s", token_ptr->VAL.string);
+            printf("\n");
+        }
+        else if (token_ptr->ID == TOKEN_ID_INTEGER || token_ptr->ID == TOKEN_ID_FLOAT || token_ptr->ID == TOKEN_ID_STRING){
+            printf("PUSHS ");    
+            generate_term(token_ptr);
+            printf("\n");
+        }
+        
         break;
     default:
     case NONE:
@@ -307,3 +322,10 @@ bool generate_if_else (char *function_id) {
 }
 
 //
+
+bool write_single_var(token* token_ptr){
+    printf("WRITE LF@");
+    printf("%s", token_ptr->VAL.string);
+    printf("\n");
+    return true;
+}
