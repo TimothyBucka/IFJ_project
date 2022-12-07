@@ -9,11 +9,18 @@
 
 
     void start_of_generator(){
+
         printf(START);
 
         generate_buildin_functions();
 
         printf("LABEL $main\n");
+    }
+
+    void end_of_generator(){
+
+        printf("LABEL $end\n");
+        printf("EXIT int@0\n");
     }
 
     void generate_buildin_functions(){
@@ -28,6 +35,8 @@
         printf(FUNCTION_SUBSTRING);
         printf(FUNCTION_ORD);
         printf(FUNCTION_CHR);
+// TODO zavolame write zakazdym z danym termom a mame hotovy write
+//MBY can be fixed with danny a urobit cez while loop podla poctu termov
     }
 
-// TODO zavolame write zakazdym z danym termom a mame hotovy write
+
