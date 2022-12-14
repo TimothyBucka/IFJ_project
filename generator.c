@@ -20,7 +20,6 @@ int WHILE_COUNT = 0;
     }
 
     void end_of_generator(){
-
         printf("LABEL $end\n");
         printf("EXIT int@0\n");
     }
@@ -37,20 +36,24 @@ int WHILE_COUNT = 0;
         printf(FUNCTION_SUBSTRING);
         printf(FUNCTION_ORD);
         printf(FUNCTION_CHR);
-// TODO zavolame write zakazdym z danym termom a mame hotovy write
-//MBY can be fixed with danny a urobit cez while loop podla poctu termov
     }
 
 bool generate_main () {
     printf("LABEL $main\n");
     printf("CREATEFRAME\n");
     printf("PUSHFRAME\n");
-    printf("DEFVAR GF@&typecheck\n");
+    
+    printf("DEFVAR LF@tempstring\n");
+    printf("DEFVAR LF@tempbool\n");
+
+    printf("DEFVAR LF@&1\n");
+    printf("DEFVAR LF@&2\n");
     
     return true;
 }
 
 bool generate_end_of_main () {
+    printf("LABEL $END_MAIN\n");
     printf("POPFRAME\n");
     printf("CLEARS\n");
 
@@ -115,7 +118,6 @@ bool generate_function_call (char *function_id) {
 }
 
 bool implicit_conversion (data_type type, data_type converted_type, char *var1) {
-    //printf("DEFVAR TF@%s\n", var1);
 
     if (converted_type == FLOAT && type == INT) {
         printf("INT2FLOAT TF@%s TF@%s\n", var1, var1);
@@ -135,9 +137,6 @@ bool implicit_conversion (data_type type, data_type converted_type, char *var1) 
     else {
         return false;    
     }
-    // printf("MOVE LF@");
-    // printf("%s", var1);
-    // printf(" TF@&%s\n");
 
     return true;
 }
@@ -217,8 +216,10 @@ bool operation_rule (rules operation, token* token_ptr) {
         printf("DIVS\n");
         break;
     case E_CONCAT_E:
-        printf("DEFVAR LF@tempstring\n");
+        printf("POPS LF@&2\n");
+        printf("POPS LF@&1\n");
         printf("CONCAT LF@tempstring LF@&1 LF@&2\n");
+        printf("PUSHS LF@tempstring\n");
         break;
     case E_LT_E:
         printf("LTS\n");
@@ -234,7 +235,6 @@ bool operation_rule (rules operation, token* token_ptr) {
         printf("NOTS\n");
         break;
     case E_LEQ_E:
-        printf("DEFVAR LF@tempbool\n");
         printf("PUSHS LF@&1\n");
         printf("PUSHS LF@&2\n");
         printf("PUSHS LF@&1\n");
@@ -248,7 +248,6 @@ bool operation_rule (rules operation, token* token_ptr) {
         printf("EQS\n");
         break;
     case E_GEQ_E:
-        printf("DEFVAR LF@tempbool\n");
         printf("PUSHS LF@&1\n");
         printf("PUSHS LF@&2\n");
         printf("PUSHS LF@&1\n");
@@ -293,16 +292,16 @@ bool generate_label (char *function_id) {
 
 
 bool create_var (token* token_ptr) {
-    printf("TYPE GF@&typecheck LF@%s\n", token_ptr->VAL.string);
-    printf("PUSHS GF@&typecheck\n");
-    printf("PUSHS string@\n");
-    printf("EQS\n");
-    printf("JUMPIFEQS $ND");
     printf("DEFVAR LF@");
     printf("%s", token_ptr->VAL.string);
     printf("\n");
-    printf("LABEL $ND\n");
     
+    return true;
+}
+
+bool generate_return () {
+    printf("JUMP $END_MAIN\n");
+
     return true;
 }
 
@@ -318,7 +317,7 @@ bool generate_while_label () {
 bool generate_while_begin () {
     printf("PUSHS bool@false\n");
     printf("JUMPIFEQS $");
-    printf("WHILE_END%d",WHILE_COUNT);
+    printf("WHILE_END&%d",WHILE_COUNT);
     printf("\n");
 
     return true;
@@ -326,11 +325,11 @@ bool generate_while_begin () {
 
 bool generate_while_end () {
     printf("JUMP $");
-    printf("WHILE%d",WHILE_COUNT);
+    printf("WHILE&%d",WHILE_COUNT);
     printf("\n");
 
     printf("LABEL $");
-    printf("WHILE_END%d",WHILE_COUNT);
+    printf("WHILE_END&%d",WHILE_COUNT);
     printf("\n");
 
     return true;

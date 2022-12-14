@@ -149,15 +149,12 @@ data_type get_data_type_from_item(expr_item *item_right, expr_item *item_middle,
         if (item_right->token_ptr->ID == TOKEN_ID_VARIABLE) {
             table_item_data *item = NULL;
 
-            if (BODYRECURSIONCOUNT == 1) {
-                item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
-            } else {
-                item = hash_table_lookup(tables.local, item_right->token_ptr->VAL.string);
-            }
+            item = hash_table_lookup(tables.local, item_right->token_ptr->VAL.string);
 
             if (!item) {
                 item = hash_table_lookup(tables.global, item_right->token_ptr->VAL.string);
             }
+
             if (!item) {
                 ERROR = UNDEFINED_VAR_ERR;
                 return UNDEFINED;

@@ -38,7 +38,7 @@ typedef enum rules{
 
 #define START ".IFJcode22\n\
 CALL $main\n\
-JUMP $end\n\
+JUMP $END_MAIN\n\
 \n"
 
 #define FUNCTION_READS "LABEL $reads\n\
@@ -274,6 +274,10 @@ RETURN\n\
 
 void start_of_generator();
 
+void end_of_generator();
+
+bool generate_end_of_main();
+
 void generate_buildin_functions();
 
 bool generate_main();
@@ -315,5 +319,9 @@ bool create_temp_frame();
 bool implicit_conversion (data_type type, data_type converted_type, char *var1);
 
 bool push_from_strname(char* name);
+
+bool generate_return();
+
+// list of all 
 
 #endif

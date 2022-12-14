@@ -10,12 +10,14 @@
 
 declare(strict_types=1);
 
+$x = 9;
+
 function foo(string $x) : ?float {
     return $x;
 }
 function bar(string $y) : ?float {
 
-    return $x;
+    return $y;
 }
 
 $y = $x;

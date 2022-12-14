@@ -17,5 +17,4 @@ declare(strict_types=1);
 $var !== 5;
 $fiz === 45;
 
-
 ?>

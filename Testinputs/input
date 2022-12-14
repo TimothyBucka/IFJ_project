@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
-$a = 5 + ( 6 - 0.2 );
+write("Hello Worldsfd!");
 
-write($a, 5, 2.2, "foo");
+return;
+
+write("Hello World!");

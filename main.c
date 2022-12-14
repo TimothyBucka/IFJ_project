@@ -47,5 +47,8 @@ int main() {
     
     DLL_free(dll);
 
+    generate_end_of_main();
+    end_of_generator();
+
     return ERROR;
 }
