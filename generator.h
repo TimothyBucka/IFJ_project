@@ -322,6 +322,8 @@ bool push_from_strname(char* name);
 
 bool generate_return();
 
+bool read_input(token* token_ptr, data_type type);
+
 // list of all 
 
 #endif

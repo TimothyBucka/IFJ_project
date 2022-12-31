@@ -222,6 +222,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
         }
         next_tok;
         if (expect(token_ptr, TOKEN_ID_VARIABLE)) {
+            create_var (&dll->activeElement->data); 
             PARAMSCOUNT++;
             func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter));
             parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
@@ -280,6 +281,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
         func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter)); // adding function info to global table
         parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
         func->parameters[func->num_of_params] = param;
+        create_var (&dll->activeElement->data); 
 
         table_item_data *local_data;
         char *variable_name = dll->activeElement->data.VAL.string;
@@ -394,7 +396,11 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
             data = hash_table_lookup(table_to_use, variable_name);
             data->f_or_v.variable->type = assi_type;
         }
-
+        if (strcmp(token_ptr->VAL.string, "readi") == 0 || strcmp(token_ptr->VAL.string, "readf") == 0 || strcmp(token_ptr->VAL.string, "reads")==0 )
+        {
+            read_input(&dll->activeElement->previousElement->previousElement->data, assi_type);            
+        }
+        
         next_tok;
 
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {

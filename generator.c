@@ -379,6 +379,27 @@ bool write_single_var(token* token_ptr){
     return true;
 }
 
+bool read_input(token* token_ptr, data_type type){
+    printf("READ LF@");
+    printf("%s ", token_ptr->VAL.string);
+    if (type == FLOAT)
+    {
+        printf("float");
+    }
+    else if (type == INT)
+    {
+        printf("int");
+    }
+    else if (type == STRING){
+        printf("string");
+    }
+    
+    
+    printf("\n");
+
+    return true;
+}
+
 bool pop_to_strname(char* name){
     printf("POPS TF@");
     printf("%s", name);
