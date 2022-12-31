@@ -1,0 +1,39 @@
+# Ukazka slozitejsiho (rucne psaneho, negenerovaneho) kodu pro fibonacciho funkci
+.IFJcode22
+JUMP main
+
+LABEL fibonacci
+# @TF@n -- index of the desired fibonacci's number
+# return the fibonacci's number on stack
+
+JUMPIFEQ end_fibonacci TF@n int@0
+JUMPIFEQ end_fibonacci TF@n int@1
+
+PUSHFRAME
+CREATEFRAME
+DEFVAR TF@n
+
+SUB TF@n LF@n int@1
+CALL fibonacci
+
+ADD TF@n LF@n int@-2
+CALL fibonacci
+
+ADDS
+POPFRAME
+RETURN
+
+LABEL end_fibonacci
+PUSHS TF@n
+RETURN
+
+LABEL main
+CREATEFRAME
+DEFVAR TF@n
+READ TF@n int
+CALL fibonacci
+POPS TF@n
+WRITE TF@n
+WRITE string@\010
+
+

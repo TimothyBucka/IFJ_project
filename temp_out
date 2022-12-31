@@ -1,0 +1,240 @@
+.IFJcode22
+CALL $main
+JUMP $END_MAIN
+
+LABEL $reads
+PUSHFRAME
+DEFVAR LF@&1
+DEFVAR LF@param1
+READ LF@param1 string
+DEFVAR LF@errorCheck
+TYPE LF@errorCheck LF@param1
+JUMPIFNEQ $ERROR$READS string@string LF@errorCheck
+DEFVAR LF@strlen
+STRLEN LF@strlen LF@param1
+JUMPIFEQ $ERROR$READS LF@strlen int@0
+SUB LF@strlen LF@strlen int@1
+DEFVAR LF@getchar
+GETCHAR LF@getchar LF@param1 LF@strlen
+JUMPIFNEQ $END$OF$READS LF@getchar string@\010
+SETCHAR LF@param1 LF@strlen string@\000
+LABEL $ERROR$OF$READS
+MOVE LF@&1 LF@param1
+POPFRAME
+RETURN
+LABEL $ERROR$READS
+MOVE LF@&1 nil@nil
+POPFRAME
+RETURN
+
+LABEL $readi
+PUSHFRAME
+DEFVAR LF@&1
+DEFVAR LF@param1
+DEFVAR LF@errorCheck
+READ LF@param1 int
+TYPE LF@errorCheck LF@param1
+JUMPIFNEQ $ERROR$READI string@int LF@errorCheck
+MOVE LF@&1 LF@param1
+POPFRAME
+RETURN
+LABEL $ERROR$READI
+MOVE LF@&1 nil@nil
+POPFRAME
+RETURN
+
+LABEL $readf
+PUSHFRAME
+DEFVAR LF@&1
+DEFVAR LF@param1
+DEFVAR LF@errorCheck
+READ LF@param1 float
+TYPE LF@errorCheck LF@param1
+JUMPIFNEQ $ERROR$READF string@float LF@errorCheck
+MOVE LF@&1 LF@param1
+POPFRAME
+RETURN
+LABEL $ERROR$READF
+MOVE LF@&1 nil@nil
+POPFRAME
+RETURN
+
+#CALL IT MULTIPLE TIMES WITH DIFFERENT PARAMETERS
+LABEL $write
+PUSHFRAME
+DEFVAR LF@&1
+POPS LF@&1
+MOVE LF@&1 LF@&1
+WRITE LF@&1
+POPFRAME
+RETURN
+
+LABEL $float_value
+PUSHFRAME
+DEFVAR LF@&1
+POPS LF@&1
+DEFVAR LF@&1type
+DEFVAR LF@&1val
+TYPE LF@&1type LF@&1
+JUMPIFEQ $float_value_null nil@nil LF@&1
+JUMPIFEQ $float_value_int string@int LF@&1type
+MOVE LF@&1val LF@&1
+POPFRAME
+RETURN
+LABEL $float_value_int
+INT2FLOAT LF@&1val LF@&1
+POPFRAME
+RETURN
+LABEL $float_value_null
+MOVE LF@&1val int@0
+POPFRAME
+RETURN
+
+LABEL $int_value
+PUSHFRAME
+DEFVAR LF@&1
+POPS LF@&1
+DEFVAR LF@&1type
+DEFVAR LF@&1val
+TYPE LF@&1type LF@&1
+JUMPIFEQ $int_value_null nil@nil LF@&1
+JUMPIFEQ $int_value_float string@float LF@&1type
+MOVE LF@&1val LF@&1
+POPFRAME
+RETURN
+LABEL $int_value_float
+FLOAT2INT LF@&1val LF@&1
+POPFRAME
+RETURN
+LABEL $int_value_null
+MOVE LF@&1val int@0
+POPFRAME
+RETURN
+
+LABEL $string_value
+PUSHFRAME
+DEFVAR LF@&1
+POPS LF@&1
+DEFVAR LF@&1type
+DEFVAR LF@&1val
+TYPE LF@&1type LF@&1
+JUMPIFEQ $string_value_null nil@nil LF@&1
+#ROZSIRENIE NEROBIME
+MOVE LF@&1val LF@&1
+POPFRAME
+RETURN
+LABEL $string_value_null
+MOVE LF@&1val string@
+POPFRAME
+RETURN
+
+LABEL $length
+PUSHFRAME
+DEFVAR LF@&1
+POPS LF@&1
+STRLEN LF@&1 LF@&1
+POPFRAME
+RETURN
+
+LABEL $substr
+PUSHFRAME
+DEFVAR LF@string
+DEFVAR LF@start
+DEFVAR LF@last
+DEFVAR LF@i
+DEFVAR LF@checking
+DEFVAR LF@ret
+DEFVAR LF@bool
+DEFVAR LF@len
+DEFVAR LF@string2
+POPS LF@string
+POPS LF@start
+POPS LF@last
+SUB LF@i LF@last LF@start
+ADD LF@i LF@i int@1
+GT LF@checking LF@start LF@last
+JUMPIFEQ $substr_error LF@checking bool@true
+STRLEN LF@len LF@string
+GT LF@checking LF@last LF@len
+JUMPIFEQ $substr_error LF@checking bool@true
+EQ LF@checking LF@start LF@len
+JUMPIFEQ $substr_error LF@checking bool@true
+MOVE LF@ret string@
+CLEARS
+PUSHS LF@len
+PUSHS int@0
+GTS
+PUSHS LF@start
+PUSHS int@0
+LTS 
+NOTS
+ANDS
+POPS LF@bool
+JUMPIFEQ $substr_error LF@bool bool@false
+PUSHS LF@len
+PUSHS LF@start
+SUBS
+PUSHS LF@i
+LTS
+POPS LF@bool
+ADD LF@i LF@i LF@start
+JUMPIFEQ $substr_lts LF@bool bool@false
+MOVE LF@i LF@len
+LABEL $substr_lts
+LABEL $substr_loop
+PUSHS LF@start
+PUSHS LF@i
+LTS
+POPS LF@bool
+JUMPIFEQ $substr_end LF@bool bool@false
+GETCHAR LF@string2 LF@string LF@start
+CONCAT LF@ret LF@ret LF@string2
+ADD LF@start LF@start int@1
+JUMP $substr_loop
+LABEL $substr_error
+MOVE LF@ret nil@nil
+LABEL $substr_end
+POPFRAME
+RETURN
+
+LABEL $ord
+PUSHFRAME
+DEFVAR LF@&1
+DEFVAR LF@string
+DEFVAR LF@retval
+POPS LF@string
+MOVE LF@&1 int@0
+JUMPIFEQ $ord_error LF@string string@
+STRI2INT LF@&1 LF@string LF@&1
+MOVE LF@retval LF@&1
+LABEL $ord_error
+MOVE LF@retval nil@nil
+POPFRAME
+RETURN
+
+LABEL $chr
+PUSHFRAME
+DEFVAR LF@parameter
+DEFVAR LF@ret
+POPS LF@parameter
+INT2CHAR LF@ret LF@parameter
+POPFRAME
+RETURN
+
+LABEL $main
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@tempstring
+DEFVAR LF@tempbool
+DEFVAR LF@&1
+DEFVAR LF@&2
+WRITE string@Zadejte\032cislo\032pro\032vypocet\032faktorialu\010
+DEFVAR LF@a
+READ LF@a int
+PUSHS LF@a
+DEFVAR LF@a
+LABEL $END_MAIN
+POPFRAME
+CLEARS
+LABEL $end
+EXIT int@0

@@ -1,0 +1,23 @@
+# Ukazka podminenoho prikazu pomoci (podminenych) skoku (psano rucne) - umyslne chybny pro upozorneni na silnou typovanost kodu
+.IFJcode22
+
+# nacti cislo do a a vypis
+DEFVAR GF@a
+READ GF@a int
+WRITE GF@a
+
+# Je-li a > 0, pak
+DEFVAR GF@res
+GT GF@res GF@a int@0
+JUMPIFNEQ $main$if$1$else GF@res bool@true
+#   a = a + 0.5
+#   vypis a (zde dojde k chybe, jelikoz a neni float)
+ADD GF@a GF@a float@0x1p-1
+WRITE GF@a
+JUMP $main$if$1$end 
+# jinak
+#  vypis "\nzaporne\n"
+LABEL $main$if$1$else
+WRITE string@\010zaporne\010
+# konec podminky
+LABEL $main$if$1$end

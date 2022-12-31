@@ -1,0 +1,14 @@
+# Ukazka iterace pomoci podminenych skoku
+.IFJcode22
+
+DEFVAR GF@counter
+MOVE GF@counter string@
+
+LABEL while
+JUMPIFEQ end GF@counter string@aaaaaaaaaaaaa
+WRITE GF@counter
+WRITE string@\010
+CONCAT GF@counter GF@counter string@a
+JUMP while
+
+LABEL end

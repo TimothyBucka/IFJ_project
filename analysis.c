@@ -159,7 +159,12 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!strcmp(function_name, "write")) {
             write_single_var(token_ptr);
         }
+        else {
+            generate_function_frame();
+            push_argument_from_static(token_ptr, INT, ARGSCOUNT);
+        }
         compare_params(INT);
+
         if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
             return false;
         }
@@ -167,6 +172,10 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     else if (accept(token_ptr, TOKEN_ID_STRING)) {
         if (!strcmp(function_name, "write")) {
             write_single_var(token_ptr);
+        }
+        else {
+            generate_function_frame();
+            push_argument_from_static(token_ptr, STRING, ARGSCOUNT);
         }
         compare_params(STRING);
         if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
@@ -176,6 +185,10 @@ bool parse_arguments(lexer_T *lexer, DLL *dll, symtables tables) {
     else if (accept(token_ptr, TOKEN_ID_FLOAT)) {
         if (!strcmp(function_name, "write")) {
             write_single_var(token_ptr);
+        }
+        else {
+            generate_function_frame();
+            push_argument_from_static(token_ptr, FLOAT, ARGSCOUNT);
         }
         compare_params(FLOAT);
         if (!parse_arguments_prime(lexer, dll, tables, data, function_name)) {
@@ -222,7 +235,7 @@ bool parse_parameters_prime(lexer_T *lexer, DLL *dll, symtables tables, function
         }
         next_tok;
         if (expect(token_ptr, TOKEN_ID_VARIABLE)) {
-            create_var (&dll->activeElement->data); 
+            create_var(&dll->activeElement->data);
             PARAMSCOUNT++;
             func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter));
             parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
@@ -277,11 +290,12 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
     next_tok;
 
     if (accept(token_ptr, TOKEN_ID_VARIABLE)) {
-        PARAMSCOUNT++;
         func->parameters = realloc(func->parameters, (func->num_of_params + 1) * sizeof(parameter)); // adding function info to global table
         parameter param = {dll->activeElement->data.VAL.string, kw_to_data_type(dll->activeElement->previousElement->data.VAL.keyword)};
         func->parameters[func->num_of_params] = param;
-        create_var (&dll->activeElement->data); 
+        create_var(&dll->activeElement->data);
+        move_from_argument_to_var(&dll->activeElement->data, PARAMSCOUNT);
+        PARAMSCOUNT++;
 
         table_item_data *local_data;
         char *variable_name = dll->activeElement->data.VAL.string;
@@ -296,6 +310,7 @@ bool parse_parameters(lexer_T *lexer, DLL *dll, symtables tables, function *func
             func->num_of_params = PARAMSCOUNT;
             hash_table_insert(tables.local, local_data);
         }
+
         else {
             return_error(UNDEFINED_FUNCTION_ERR);
         }
@@ -396,11 +411,10 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
             data = hash_table_lookup(table_to_use, variable_name);
             data->f_or_v.variable->type = assi_type;
         }
-        if (strcmp(token_ptr->VAL.string, "readi") == 0 || strcmp(token_ptr->VAL.string, "readf") == 0 || strcmp(token_ptr->VAL.string, "reads")==0 )
-        {
-            read_input(&dll->activeElement->previousElement->previousElement->data, assi_type);            
+        if (strcmp(token_ptr->VAL.string, "readi") == 0 || strcmp(token_ptr->VAL.string, "readf") == 0 || strcmp(token_ptr->VAL.string, "reads") == 0) {
+            read_input(&dll->activeElement->previousElement->previousElement->data, assi_type);
         }
-        
+
         next_tok;
 
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
@@ -449,6 +463,10 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
     next_tok;
     // Function call
     if (accept(token_ptr, TOKEN_ID_IDENTIFIER)) {
+        if(strcmp(token_ptr->VAL.string, "write")) {
+            bool generate_function_frame();
+        }
+        token *func_name_token = token_ptr;
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
@@ -463,6 +481,10 @@ bool parse_function_call(lexer_T *lexer, DLL *dll, symtables tables) {
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             return_error(SYNTAX_ERR);
+        }
+        
+        if(strcmp(func_name_token->VAL.string, "write")) {
+            generate_function_call(func_name_token);    
         }
 
         if (!parse_body(lexer, dll, tables)) {
@@ -496,6 +518,9 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         } //  func_id
         data->name = token_ptr->VAL.string;
 
+        // TODO call label and pushframe
+        generate_function_label(token_ptr);
+
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LBRACKET)) {
             return_error(SYNTAX_ERR);
@@ -514,6 +539,10 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
         if (!parse_type(lexer, dll)) {
             return_error(SYNTAX_ERR);
         } //  type
+
+        // TODO defretval and set to nil
+        generate_function_retval();
+
         func->return_type = kw_to_data_type(dll->activeElement->data.VAL.keyword);
         next_tok;
         if (!expect(token_ptr, TOKEN_ID_LCURLYBRACKET)) {
@@ -534,6 +563,9 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
         BODYRECURSIONCOUNT--;
         clear_hash_table_to_inicialised(tables.local);
+
+        // TODO call popframe and return
+        generate_function_exit();
 
         if (!parse_body(lexer, dll, tables)) {
             return_error(SYNTAX_ERR);
@@ -641,10 +673,11 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
 
     // case Return
     else if (accept(token_ptr, TOKEN_ID_KEYWORD) && token_ptr->VAL.keyword == KW_RETURN) {
-        generate_return();
+        // generate_return();
         next_tok;
         if (expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
             BODYRECURSIONCOUNT--;
+
             if (!parse_body(lexer, dll, tables)) {
                 return_error(SYNTAX_ERR);
             }
@@ -654,6 +687,7 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             if (!parse_expression(lexer, dll, tables, &final_type, false)) {
                 return_error(SYNTAX_ERR);
             }
+            generate_function_return();
             next_tok;
             if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {
                 return_error(SYNTAX_ERR);

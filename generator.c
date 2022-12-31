@@ -1,58 +1,59 @@
 /**
  * Project: IFJ22 Compiler
- * 
+ *
  * @file generator.c
  * @brief Implementation of generator
- * 
+ *
  * @authors xstect00
-*/
+ */
 #include "generator.h"
 
 int IF_COUNT = 0;
 int WHILE_COUNT = 0;
-    void start_of_generator(){
+int FUNCTION_COUNT = 0;
+void start_of_generator() {
 
-        printf(START);
+    printf(START);
 
-        generate_buildin_functions();
+    generate_buildin_functions();
 
-        generate_main();
-    }
+    generate_main();
+}
 
-    void end_of_generator(){
-        printf("LABEL $end\n");
-        printf("EXIT int@0\n");
-    }
+void end_of_generator() {
+    printf("LABEL $end\n");
+    printf("EXIT int@0\n");
+}
 
-    void generate_buildin_functions(){
-        printf(FUNCTION_READS);
-        printf(FUNCTION_READI);
-        printf(FUNCTION_READF);
-        printf(FUNCTION_WRITE);
-        printf(FUNCTION_FLOAT_VALUE);
-        printf(FUNCTION_INT_VALUE);
-        printf(FUNCTION_STRING_VALUE);
-        printf(FUNCTION_STRING_LENGTH);
-        printf(FUNCTION_SUBSTRING);
-        printf(FUNCTION_ORD);
-        printf(FUNCTION_CHR);
-    }
+void generate_buildin_functions() {
+    printf(FUNCTION_READS);
+    printf(FUNCTION_READI);
+    printf(FUNCTION_READF);
+    printf(FUNCTION_WRITE);
+    printf(FUNCTION_FLOAT_VALUE);
+    printf(FUNCTION_INT_VALUE);
+    printf(FUNCTION_STRING_VALUE);
+    printf(FUNCTION_STRING_LENGTH);
+    printf(FUNCTION_SUBSTRING);
+    printf(FUNCTION_ORD);
+    printf(FUNCTION_CHR);
+}
 
-bool generate_main () {
+bool generate_main() {
     printf("LABEL $main\n");
     printf("CREATEFRAME\n");
     printf("PUSHFRAME\n");
-    
+
     printf("DEFVAR LF@tempstring\n");
     printf("DEFVAR LF@tempbool\n");
 
     printf("DEFVAR LF@&1\n");
     printf("DEFVAR LF@&2\n");
-    
+
     return true;
 }
 
-bool generate_end_of_main () {
+bool generate_end_of_main() {
     printf("LABEL $END_MAIN\n");
     printf("POPFRAME\n");
     printf("CLEARS\n");
@@ -60,23 +61,23 @@ bool generate_end_of_main () {
     return true;
 }
 
-bool generate_function (char *function_id) {
+bool generate_function(char *function_id) {
     printf("LABEL $");
-    printf("%s", function_id); //FIXME
+    printf("%s", function_id); // FIXME
     printf("\n");
     printf("PUSHFRAME\n");
 
     return true;
 }
 
-bool generate_end_of_function () { //FIXME mby
+bool generate_end_of_function() { // FIXME mby
     printf("POPFRAME\n");
     printf("CLEARS\n");
 
     return true;
-} 
+}
 
-bool data_type_to (data_type type) {
+bool data_type_to(data_type type) {
     if (
         type == INT) {
         printf("int@");
@@ -97,27 +98,20 @@ bool data_type_to (data_type type) {
     return true;
 }
 
-bool generate_function_return (data_type type) {
+bool generate_function_return() {
     printf("MOVE LF@&retval ");
-    if(data_type_to(type)==0){
-        return false;
-    }
-    else {
-        printf("\n");
-    }
+    // if(data_type_to(type)==0){
+    //     return false;
+    // }
+    // else {
+    //     printf("\n");
+    // }
 
     return true;
 }
 
-bool generate_function_call (char *function_id) {
-    printf("CALL $");
-    printf("%s", function_id);
-    printf("\n");
 
-    return true;
-}
-
-bool implicit_conversion (data_type type, data_type converted_type, char *var1) {
+bool implicit_conversion(data_type type, data_type converted_type, char *var1) {
 
     if (converted_type == FLOAT && type == INT) {
         printf("INT2FLOAT TF@%s TF@%s\n", var1, var1);
@@ -126,27 +120,28 @@ bool implicit_conversion (data_type type, data_type converted_type, char *var1) 
         printf("FLOAT2INT TF@%s TF@%s\n", var1, var1);
     }
     else if (converted_type == NULL_TYPE && type == STRING) {
-        printf("MOVE TF@%s string@""\n", var1);
+        printf("MOVE TF@%s string@"
+               "\n",
+               var1);
     }
     else if (converted_type == NULL_TYPE && type == INT) {
-        printf("MOVE TF@%s int@0\n",   var1);
+        printf("MOVE TF@%s int@0\n", var1);
     }
     else if (converted_type == NULL_TYPE && type == FLOAT) {
         printf("MOVE TF@%s float@0.0\n", var1);
     }
     else {
-        return false;    
+        return false;
     }
 
     return true;
 }
 
-
-bool generate_variable_value (token* token_ptr) {
+bool generate_variable_value(token *token_ptr) {
     printf("MOVE LF@");
     printf("%s", token_ptr->VAL.string);
     printf(" ");
-    if(generate_term(token_ptr)==0){ //FIXME
+    if (generate_term(token_ptr) == 0) { // FIXME
         return false;
     }
     else {
@@ -156,7 +151,7 @@ bool generate_variable_value (token* token_ptr) {
     return true;
 }
 
-bool pop_to_var(token* token_ptr){
+bool pop_to_var(token *token_ptr) {
     printf("POPS LF@");
     printf("%s", token_ptr->VAL.string);
     printf("\n");
@@ -164,32 +159,32 @@ bool pop_to_var(token* token_ptr){
     return true;
 }
 
-bool generate_term(token* token_ptr){
+bool generate_term(token *token_ptr) {
 
-    if (token_ptr->ID == TOKEN_ID_INTEGER){
+    if (token_ptr->ID == TOKEN_ID_INTEGER) {
         printf("int@%s", token_ptr->VAL.string);
     }
-    else if (token_ptr->ID == TOKEN_ID_FLOAT){
+    else if (token_ptr->ID == TOKEN_ID_FLOAT) {
         printf("float@%a", atof(token_ptr->VAL.string));
     }
-    else if (token_ptr->ID == TOKEN_ID_STRING){
+    else if (token_ptr->ID == TOKEN_ID_STRING) {
         printf("string@%s", token_ptr->VAL.string);
     }
-    else if (token_ptr->ID == TOKEN_ID_VARIABLE){
+    else if (token_ptr->ID == TOKEN_ID_VARIABLE) {
         printf("LF@%s", token_ptr->VAL.string);
     }
-    else{
+    else {
         return false;
     }
 
     return true;
 }
 
-bool generate_user_input (token* token_ptr, data_type type) {
+bool generate_user_input(token *token_ptr, data_type type) {
     printf("READ LF@");
     printf("%s", token_ptr->VAL.string);
     printf(" ");
-    if(data_type_to(type)==0){ //FIXME
+    if (data_type_to(type) == 0) { // FIXME
         return false;
     }
     else {
@@ -199,10 +194,8 @@ bool generate_user_input (token* token_ptr, data_type type) {
     return true;
 }
 
-
-bool operation_rule (rules operation, token* token_ptr) {
-    switch (operation)
-    {
+bool operation_rule(rules operation, token *token_ptr) {
+    switch (operation) {
     case E_PLUS_E:
         printf("ADDS\n");
         break;
@@ -262,17 +255,17 @@ bool operation_rule (rules operation, token* token_ptr) {
         break;
     case ID:
 
-        if(token_ptr->ID == TOKEN_ID_VARIABLE){
+        if (token_ptr->ID == TOKEN_ID_VARIABLE) {
             printf("PUSHS LF@");
             printf("%s", token_ptr->VAL.string);
             printf("\n");
         }
-        else if (token_ptr->ID == TOKEN_ID_INTEGER || token_ptr->ID == TOKEN_ID_FLOAT || token_ptr->ID == TOKEN_ID_STRING){
-            printf("PUSHS ");    
+        else if (token_ptr->ID == TOKEN_ID_INTEGER || token_ptr->ID == TOKEN_ID_FLOAT || token_ptr->ID == TOKEN_ID_STRING) {
+            printf("PUSHS ");
             generate_term(token_ptr);
             printf("\n");
         }
-        
+
         break;
     default:
     case NONE:
@@ -282,7 +275,7 @@ bool operation_rule (rules operation, token* token_ptr) {
     return true;
 }
 
-bool generate_label (char *function_id) {
+bool generate_label(char *function_id) {
     printf("LABEL $");
     printf("%s", function_id);
     printf("\n");
@@ -290,46 +283,45 @@ bool generate_label (char *function_id) {
     return true;
 }
 
-
-bool create_var (token* token_ptr) {
+bool create_var(token *token_ptr) {
     printf("DEFVAR LF@");
     printf("%s", token_ptr->VAL.string);
     printf("\n");
-    
+
     return true;
 }
 
-bool generate_return () {
+bool generate_return() {
     printf("JUMP $END_MAIN\n");
 
     return true;
 }
 
-// =============== WHILE ================= 
-bool generate_while_label () {
+// =============== WHILE =================
+bool generate_while_label() {
     WHILE_COUNT++;
     printf("LABEL $");
-    printf("WHILE&%d",WHILE_COUNT);
+    printf("WHILE&%d", WHILE_COUNT);
     printf("\n");
 
     return true;
 }
-bool generate_while_begin () {
+bool generate_while_begin() {
     printf("PUSHS bool@false\n");
     printf("JUMPIFEQS $");
-    printf("WHILE_END&%d",WHILE_COUNT);
+    printf("WHILE_END&%d", WHILE_COUNT);
     printf("\n");
 
     return true;
 }
 
-bool generate_while_end () {
+bool generate_while_end() {
     printf("JUMP $");
-    printf("WHILE&%d",WHILE_COUNT);
+    printf("WHILE&%d", WHILE_COUNT);
     printf("\n");
 
     printf("LABEL $");
-    printf("WHILE_END&%d",WHILE_COUNT);
+    printf("WHILE_END&%d", WHILE_COUNT);
     printf("\n");
 
     return true;
@@ -337,41 +329,40 @@ bool generate_while_end () {
 
 // =============== WHILE END =================
 
-
 // =============== IF ================= //som vnoreny v IFe zacinam od 1
-bool generate_if_begin () {
+bool generate_if_begin() {
     IF_COUNT++;
     printf("PUSHS bool@false\n");
     printf("JUMPIFEQS $");
-    printf("ELSE&%d",IF_COUNT);
-    printf("\n"); //IF toto mi da true jumpuje na else ak false pokracuje v IFe
+    printf("ELSE&%d", IF_COUNT);
+    printf("\n"); // IF toto mi da true jumpuje na else ak false pokracuje v IFe
 
     return true;
-    //nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
+    // nasleduje if prikazy IDK ake si chcete dat popripade skoci na else
 }
 
-bool generate_if_else () {
+bool generate_if_else() {
     printf("JUMP $");
-    printf("IF&%d",IF_COUNT);
+    printf("IF&%d", IF_COUNT);
     printf("_end\n");
     printf("LABEL $");
-    printf("ELSE&%d\n",IF_COUNT); 
+    printf("ELSE&%d\n", IF_COUNT);
     return true;
-    //nasleduju else prikazy
+    // nasleduju else prikazy
 }
 
-bool generate_if_end () {
+bool generate_if_end() {
     printf("LABEL $");
-    printf("IF&%d",IF_COUNT);
+    printf("IF&%d", IF_COUNT);
     printf("_end\n");
     return true;
 }
 
 // =============== END OF IF =================
 
-bool write_single_var(token* token_ptr){
+bool write_single_var(token *token_ptr) {
     printf("WRITE ");
-    if (generate_term(token_ptr)==false){
+    if (generate_term(token_ptr) == false) {
         return false;
     }
     printf("\n");
@@ -379,28 +370,25 @@ bool write_single_var(token* token_ptr){
     return true;
 }
 
-bool read_input(token* token_ptr, data_type type){
+bool read_input(token *token_ptr, data_type type) {
     printf("READ LF@");
     printf("%s ", token_ptr->VAL.string);
-    if (type == FLOAT)
-    {
+    if (type == FLOAT) {
         printf("float");
     }
-    else if (type == INT)
-    {
+    else if (type == INT) {
         printf("int");
     }
-    else if (type == STRING){
+    else if (type == STRING) {
         printf("string");
     }
-    
-    
+
     printf("\n");
 
     return true;
 }
 
-bool pop_to_strname(char* name){
+bool pop_to_strname(char *name) {
     printf("POPS TF@");
     printf("%s", name);
     printf("\n");
@@ -408,13 +396,13 @@ bool pop_to_strname(char* name){
     return true;
 }
 
-bool create_temp_frame(){
+bool create_temp_frame() {
     printf("CREATEFRAME\n");
 
     return true;
 }
 
-bool push_from_strname(char* name){
+bool push_from_strname(char *name) {
     printf("PUSHS TF@");
     printf("%s", name);
     printf("\n");
@@ -422,3 +410,67 @@ bool push_from_strname(char* name){
     return true;
 }
 
+bool push_argument_from_static(token* token_ptr, data_type type, int arg_num){
+    printf("DEFVAR TF@&argument%d\n", arg_num);
+    printf("MOVE  TF@&argument%d ", arg_num);
+
+    if (type == INT) {
+        printf("int@");
+    }
+    else if (type == FLOAT) {
+        printf("float@");
+    }
+    else if (type == STRING) {
+        printf("string@");
+    }
+
+    printf("%s\n", token_ptr->VAL.string);
+
+    return true;
+}
+
+bool push_argument_from_var(token* token_ptr, int arg_num);
+
+bool generate_function_label(token *token_ptr) {
+    printf("JUMP $jump_around_function_number_%d\n", FUNCTION_COUNT);
+    printf("LABEL $%s\n", token_ptr->VAL.string);
+    printf("PUSHFRAME\n");
+
+    return true;
+}
+
+bool generate_function_retval() {
+    printf("DEFVAR LF@&retval\n");
+    printf("MOVE LF@&retval nil@nil\n");
+
+    return true;
+}
+
+bool generate_function_exit() {
+
+    printf("POPFRAME\n");
+    printf("RETURN\n");
+    printf("LABEL $jump_around_function_number_%d\n", FUNCTION_COUNT);
+    FUNCTION_COUNT++;
+    return true;
+}
+
+bool generate_function_frame() {
+    printf("CREATEFRAME\n");
+
+    return true;
+}
+
+bool generate_function_call(token *token_ptr) {
+    printf("CALL $%s\n", token_ptr->VAL.string);
+
+    return true;
+}
+
+bool move_from_argument_to_var(token *token_ptr, int arg_num) {
+    printf("MOVE LF@");
+    printf("%s", token_ptr->VAL.string);
+    printf(" LF@&argument%d\n", arg_num);
+
+    return true;
+}

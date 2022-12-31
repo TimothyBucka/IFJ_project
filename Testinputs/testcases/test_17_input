@@ -10,5 +10,5 @@
 
 declare(strict_types=1);
 $x = readi();
-$y = readi();
+write($x);    
 ?>

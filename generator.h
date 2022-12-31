@@ -282,7 +282,7 @@ void generate_buildin_functions();
 
 bool generate_main();
 
-bool generate_function_return (data_type type);
+bool generate_function_return ();
 
 bool generate_variable_value(token *token_ptr);
 
@@ -323,6 +323,22 @@ bool push_from_strname(char* name);
 bool generate_return();
 
 bool read_input(token* token_ptr, data_type type);
+
+bool push_argument_from_static(token* token_ptr, data_type type, int arg_num);
+
+bool push_argument_from_var(token* token_ptr, int arg_num);
+
+bool generate_function_label(token* token_ptr);
+
+bool generate_function_retval();
+
+bool generate_function_exit();
+
+bool generate_function_call(token *token_ptr);
+
+bool generate_function_frame();
+
+bool move_from_argument_to_var(token *token_ptr, int arg_num);
 
 // list of all 
 

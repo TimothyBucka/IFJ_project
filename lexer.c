@@ -5,6 +5,10 @@
  * @brief Implementation of lexer
  * 
  * @authors xmacur09, xfrust00, xstect00, xbucka00
+ * 
+ * 
+ * 
+ * 
 */
 
 #include "lexer.h"

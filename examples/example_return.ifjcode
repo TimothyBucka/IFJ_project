@@ -1,0 +1,25 @@
+# Ukazka instrukce volani a navratu (bez reseni parametru ci navratovych hodnot)
+.IFJcode22
+
+WRITE string@a
+CALL f1
+WRITE string@b
+CALL f2
+WRITE string@c
+CALL konec
+
+LABEL f1
+WRITE string@f1
+RETURN
+
+LABEL f2
+WRITE string@f2
+CALL f2_2
+RETURN
+
+LABEL f2_2
+WRITE string@f2_2
+RETURN
+
+LABEL konec
+WRITE string@d
