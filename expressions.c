@@ -97,6 +97,13 @@ int get_index_token(token *token_ptr) { // returns index of token in precedence 
     case TOKEN_ID_FLOAT:
     case TOKEN_ID_STRING:
         return 7;
+    case TOKEN_ID_KEYWORD:
+        if (token_ptr->VAL.keyword == KW_NULL) {
+            return 7;
+        }
+        else {
+            return 0;
+        }
     default:
         return 0;
     }

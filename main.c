@@ -50,5 +50,7 @@ int main() {
     generate_end_of_main();
     end_of_generator();
 
+    printf("==== ERROR CODE ==== %d\n", ERROR);
+
     return ERROR;
 }

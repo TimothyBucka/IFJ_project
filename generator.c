@@ -265,7 +265,9 @@ bool operation_rule(rules operation, token *token_ptr) {
             generate_term(token_ptr);
             printf("\n");
         }
-
+        else if (token_ptr->ID == TOKEN_ID_KEYWORD && token_ptr->VAL.keyword == KW_NULL) {
+            printf("PUSHS nil@nil\n");
+        }
         break;
     default:
     case NONE:
