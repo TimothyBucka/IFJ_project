@@ -1,0 +1,2 @@
+<?php//this is opening tag, it is needed for ever php script
+declare(strict_types=1);//bye

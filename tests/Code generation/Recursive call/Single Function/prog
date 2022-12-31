@@ -1,0 +1,13 @@
+<?php
+declare(strict_types=1);
+function f(int $x) : int {
+    if($x === 0) {
+        return 0;
+    } else {
+        $param = $x - 1;
+        $res = f($param);
+        return $res + $x;
+    }
+}
+$res = f(10);
+write($res, "\n");
