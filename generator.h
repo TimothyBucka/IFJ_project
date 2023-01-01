@@ -298,6 +298,10 @@ bool create_var (token* token_ptr);
 
 bool pop_to_var(token* token_ptr);
 
+bool pop_to_var_str(char* var_name);
+
+bool create_var_str(char *var_name);
+
 bool write_single_var(token* token_ptr);
 
 bool generate_while_label();

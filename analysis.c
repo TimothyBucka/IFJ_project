@@ -369,15 +369,15 @@ bool parse_assignment(lexer_T *lexer, DLL *dll, symtables tables) {
     }
     // generate instructions for new variable
     token *func_name_token = &dll->activeElement->previousElement->data;
-    table_item_data *def_var = hash_table_lookup(tables.global, func_name_token->VAL.string);
+    table_item_data *def_var = hash_table_lookup(table_to_use, func_name_token->VAL.string);
 
     if (def_var == NULL) {
         create_var(func_name_token);
     }
     else {
-        if (def_var->f_or_v.variable->type == UNDEFINED) {
-            create_var(func_name_token);
-        }
+        // if (def_var->f_or_v.variable->type == UNDEFINED) {
+        //     create_var(func_name_token);
+        // }
     }
 
     next_tok;
@@ -687,6 +687,8 @@ bool parse_body(lexer_T *lexer, DLL *dll, symtables tables) {
             if (!parse_expression(lexer, dll, tables, &final_type, false)) {
                 return_error(SYNTAX_ERR);
             }
+            create_var_str("helper_return_value_from_expression");
+            pop_to_var_str("helper_return_value_from_expression");
             generate_function_return();
             next_tok;
             if (!expect(token_ptr, TOKEN_ID_SEMICOLLON)) {

@@ -98,17 +98,6 @@ bool data_type_to(data_type type) {
     return true;
 }
 
-bool generate_function_return() {
-    printf("MOVE LF@&retval ");
-    // if(data_type_to(type)==0){
-    //     return false;
-    // }
-    // else {
-    //     printf("\n");
-    // }
-
-    return true;
-}
 
 
 bool implicit_conversion(data_type type, data_type converted_type, char *var1) {
@@ -154,6 +143,14 @@ bool generate_variable_value(token *token_ptr) {
 bool pop_to_var(token *token_ptr) {
     printf("POPS LF@");
     printf("%s", token_ptr->VAL.string);
+    printf("\n");
+
+    return true;
+}
+
+bool pop_to_var_str(char* var_name) {
+    printf("POPS LF@");
+    printf("%s", var_name);
     printf("\n");
 
     return true;
@@ -286,6 +283,14 @@ bool generate_label(char *function_id) {
 bool create_var(token *token_ptr) {
     printf("DEFVAR LF@");
     printf("%s", token_ptr->VAL.string);
+    printf("\n");
+
+    return true;
+}
+
+bool create_var_str(char *var_name) {
+    printf("DEFVAR LF@");
+    printf("%s", var_name);
     printf("\n");
 
     return true;
@@ -463,6 +468,18 @@ bool generate_function_frame() {
 
 bool generate_function_call(token *token_ptr) {
     printf("CALL $%s\n", token_ptr->VAL.string);
+
+    return true;
+}
+
+bool generate_function_return() {
+    printf("MOVE LF@&retval LF@helper_return_value_from_expression\n");
+    // if(data_type_to(type)==0){
+    //     return false;
+    // }
+    // else {
+    //     printf("\n");
+    // }
 
     return true;
 }

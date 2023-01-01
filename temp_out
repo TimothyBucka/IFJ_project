@@ -232,7 +232,6 @@ WRITE string@Zadejte\032cislo\032pro\032vypocet\032faktorialu\010
 DEFVAR LF@a
 READ LF@a int
 PUSHS LF@a
-DEFVAR LF@a
 LABEL $END_MAIN
 POPFRAME
 CLEARS
